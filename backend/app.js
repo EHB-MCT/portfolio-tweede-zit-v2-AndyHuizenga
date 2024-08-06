@@ -4,6 +4,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const nfcHandler = require('./routes/NfcTag'); // Import NFC handler
+const cors = require('cors'); // Import cors
 require('dotenv').config();
 
 const app = express();
@@ -13,6 +14,8 @@ const io = socketIo(server);
 
 // Initialize NFC handler
 nfcHandler(io);
+
+app.use(cors()); // Enable CORS
 
 app.use(express.urlencoded({ extended: true }));
 
