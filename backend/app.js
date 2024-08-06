@@ -7,7 +7,7 @@ const nfcHandler = require('./routes/NfcTag'); // Import NFC handler
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const server = http.createServer(app);
 const io = socketIo(server);
 

@@ -1,10 +1,23 @@
-// Import necessary libraries
-const nfc = require('nfc-pcsc'); // Ensure correct NFC library
+const nfc = require('nfc-pcsc'); // Ensure this is the correct NFC library
 
 // Initialize NFC reader
 const nfcReader = new nfc.NFC();
 
 let activateWriteData = false; // Control flag for write operations
+
+// Define the writeData function
+async function writeData(reader, text) {
+  try {
+      const data = Buffer.allocUnsafe(20);
+      data.fill(0);
+      data.write(text); // if text is longer than 12 bytes, it will be cut off
+      // reader.write(blockNumber, data, blockSize = 4)
+      await reader.write(4, data); // starts writing in block 4, continues to 5 and 6 in order to write 12 bytes
+      console.log(`data written`);
+  } catch (err) {
+      console.error(`error when writing data`, err);
+  }
+}
 
 // Function to handle NFC reader events
 function handleNfcReader(reader) {
@@ -24,8 +37,8 @@ function handleNfcReader(reader) {
             
             // Conditionally write data to NFC tag
             if (activateWriteData) {
-                await writeData(reader, 4, "1"); // Example: write to block 4
-            }
+              await writeData(reader, "1");
+          }
         } catch (err) {
             console.error(`Error reading data: ${err.message}`);
         }
@@ -47,18 +60,9 @@ nfcReader.on('error', err => {
     console.log('NFC error:', err);
 });
 
+// Export function to initialize NFC handling with Socket.IO
 module.exports = (io) => {
+    // Assign io to the module's scope
+    global.io = io; // Set io globally or handle accordingly
     return nfcReader; // Return nfcReader if needed for other purposes
 };
-
-// Define the writeData function
-async function writeData(reader, blockNumber, text) {
-  try {
-      const data = Buffer.from(text, 'utf8'); // Convert text to buffer
-      // Write the data to the NFC tag
-      await reader.write(blockNumber, data);
-      console.log(`Data written to block ${blockNumber}: ${text}`);
-  } catch (err) {
-      console.error(`Error writing data: ${err.message}`);
-  }
-}
