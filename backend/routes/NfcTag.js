@@ -19,4 +19,9 @@ router.get('/:tagId', async (req, res) => {
   }
 });
 
+router.get('/', (req, res) => {
+  res.send('NFC Routes working!');
+});
+
+
 module.exports = router;

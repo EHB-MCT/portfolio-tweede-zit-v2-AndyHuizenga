@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "setup": "node scripts/initialSetup.js"
+    "start": "nodemon app.js"
+
   },
   "keywords": [],
   "author": "",
