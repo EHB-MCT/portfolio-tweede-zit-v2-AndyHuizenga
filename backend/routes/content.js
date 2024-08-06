@@ -1,5 +1,3 @@
-//routes/conent.js
-
 const express = require('express');
 const router = express.Router();
 const contentfulService = require('../services/contentfulService');
@@ -20,4 +18,3 @@ router.get('/:channel', async (req, res) => {
 });
 
 module.exports = router;
-

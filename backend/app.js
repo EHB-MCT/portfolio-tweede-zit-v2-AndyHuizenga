@@ -1,22 +1,36 @@
+// app.js
+
 const express = require('express');
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '.env') });
-const nfcRoutes = require('./routes/NfcTag');
-const contentRoutes = require('./routes/content');
+const http = require('http');
+const socketIo = require('socket.io');
+const nfcHandler = require('./routes/NfcTag'); // Import NFC handler
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
+const io = socketIo(server);
 
-// Middleware
+// Initialize NFC handler
+nfcHandler(io);
+
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use('/api/nfc', nfcRoutes);
-app.use('/api/content', contentRoutes);
+app.use('/api/content', require('./routes/content')); // Add your content route
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    socket.on('tagNumber', (tagNumber) => {
+        console.log(`Received tag number: ${tagNumber}`);
+        // Handle tag number, possibly broadcast to other clients or update content
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
 });
 
-module.exports = app;
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
