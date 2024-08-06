@@ -1,0 +1,41 @@
+
+/*Header.css*/
+
+.current-channel {
+  display: flex;
+  flex-direction: column; /* Stack vertically */
+  align-items: flex-start;
+}
+
+.channel-label {
+  font-size: 14px; /* Smaller font size for the label */
+  color: #333;
+}
+
+.channel-number {
+  font-size: 60px; /* Larger font size for the channel number */
+  font-weight: bold;
+}
+
+.tv-info .time-date {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.tv-info .time {
+  font-size: 36px;
+}
+
+.tv-info .date {
+  font-size: 18px;
+  color: #888;
+}
+
+.help-text {
+  font-size: 16px;
+  color: #333;
+}
+
+.help-text p {
+  margin: 0;
+}
