@@ -4,6 +4,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 const sequelize = require('./config/database');
 const userRoutes = require('./routes/User');
 const nfcRoutes = require('./routes/NfcTag');
+const contentRoutes = require('./routes/content');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,6 +15,7 @@ app.use(express.json());
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/nfc', nfcRoutes);
+app.use('/api/content', contentRoutes);
 
 // Database connection
 sequelize
