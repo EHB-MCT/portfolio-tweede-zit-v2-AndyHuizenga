@@ -1,68 +1,78 @@
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const cors = require('cors');
 const nfc = require('nfc-pcsc'); // Ensure this is the correct NFC library
+
+require('dotenv').config(); // For environment variables
+
+// Initialize Express application
+const app = express();
+const PORT = process.env.PORT || 3001;
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// CORS configuration with wildcard
+const corsOptions = {
+  origin: '*', // Allow requests from any origin
+  credentials: true,
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Define your API routes (adjust paths as needed)
+app.use('/api/content', require('./routes/content')); // Example route
 
 // Initialize NFC reader
 const nfcReader = new nfc.NFC();
 
-let activateWriteData = false; // Control flag for write operations
-
-// Define the writeData function
-async function writeData(reader, text) {
-  try {
-      const data = Buffer.allocUnsafe(20);
-      data.fill(0);
-      data.write(text); // if text is longer than 12 bytes, it will be cut off
-      // reader.write(blockNumber, data, blockSize = 4)
-      await reader.write(4, data); // starts writing in block 4, continues to 5 and 6 in order to write 12 bytes
-      console.log(`data written`);
-  } catch (err) {
-      console.error(`error when writing data`, err);
-  }
-}
-
-// Function to handle NFC reader events
+// Handle NFC reader events
 function handleNfcReader(reader) {
-    console.log(`${reader.reader.name} device attached`);
+  console.log(`${reader.reader.name} device attached`);
 
-    reader.on('card', async card => {
-        console.log(`Card detected:`, card);
+  reader.on('card', async (card) => {
+    console.log('Card detected:', card);
 
-        try {
-            // Read data from NFC tag
-            const data = await reader.read(4, 20); // Adjust block number and length as needed
-            const payload = data.toString('utf8');
-            console.log(`Data read:`, payload);
-            
-            // Emit the tag number to frontend
-            io.emit('tagNumber', payload);
-            
-            // Conditionally write data to NFC tag
-            if (activateWriteData) {
-              await writeData(reader, "1");
-          }
-        } catch (err) {
-            console.error(`Error reading data: ${err.message}`);
-        }
-    });
+    try {
+      const data = await reader.read(4, 20); // Adjust block number and length as needed
+      const payload = data.toString('utf8');
+      console.log('Data read:', payload);
 
-    reader.on('error', err => {
-        console.log(`${reader.reader.name} an error occurred:`, err);
-    });
+      // Emit the tag number to frontend
+      io.emit('tagNumber', payload);
+    } catch (err) {
+      console.error('Error reading data:', err);
+    }
+  });
 
-    reader.on('end', () => {
-        console.log(`${reader.reader.name} device removed`);
-    });
+  reader.on('error', (err) => {
+    console.log(`${reader.reader.name} an error occurred:`, err);
+  });
+
+  reader.on('end', () => {
+    console.log(`${reader.reader.name} device removed`);
+  });
 }
 
-// Register event listeners for NFC reader
 nfcReader.on('reader', handleNfcReader);
 
-nfcReader.on('error', err => {
-    console.log('NFC error:', err);
+nfcReader.on('error', (err) => {
+  console.log('NFC error:', err);
 });
 
-// Export function to initialize NFC handling with Socket.IO
-module.exports = (io) => {
-    // Assign io to the module's scope
-    global.io = io; // Set io globally or handle accordingly
-    return nfcReader; // Return nfcReader if needed for other purposes
-};
+// Handle WebSocket connections
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
+// Start the server
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
