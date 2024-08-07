@@ -23,6 +23,24 @@ const getContentByChannel = async (channel) => {
   }
 };
 
+const getAllRecallItems = async () => {
+  try {
+    const entries = await client.getEntries({
+      content_type: 'recallItem',
+    });
+
+    if (entries.items.length > 0) {
+      // Return the list of recall items
+      return entries.items.map(item => item.fields);
+    } else {
+      throw new Error('No recall items found');
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   getContentByChannel,
+  getAllRecallItems, // Export the new function
 };

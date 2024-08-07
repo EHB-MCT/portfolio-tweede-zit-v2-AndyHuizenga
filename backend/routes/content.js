@@ -21,4 +21,15 @@ router.get('/:channel', async (req, res) => {
   }
 });
 
+router.get('/api/recalls', async (req, res) => {
+  try {
+    const recallItems = await contentfulService.getAllRecallItems();
+    console.log('Recall items fetched successfully:', recallItems);
+    res.status(200).json(recallItems);
+  } catch (error) {
+    console.error('Error fetching recall items:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
