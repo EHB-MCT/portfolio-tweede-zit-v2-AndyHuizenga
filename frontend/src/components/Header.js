@@ -74,7 +74,7 @@ const Header = () => {
       inputRef.current.focus();
       console.log('Input field focused');
     }
-  }, []);
+  }, [inputValue]);
 
   const formatTime = (date) => {
     const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
