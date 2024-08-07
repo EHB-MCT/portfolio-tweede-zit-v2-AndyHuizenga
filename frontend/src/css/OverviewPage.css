@@ -88,3 +88,51 @@
   display: block;
   margin: 0 auto;
 }
+
+/* Ensure the container has relative positioning for the scrollbar positioning */
+.recall-cards-container {
+  position: relative;
+  overflow-x: auto; /* Allow horizontal scrolling */
+  overflow-y: hidden; /* Hide vertical scrolling */
+  white-space: nowrap; /* Ensure items do not wrap */
+  scroll-behavior: smooth; /* Smooth scrolling */
+  padding-bottom: 20px; /* Add space for scrollbar */
+}
+
+/* Hide the default scrollbar */
+.recall-cards-container::-webkit-scrollbar {
+  display: none; /* Hides the scrollbar for WebKit browsers */
+}
+
+
+
+/* Container for the recall cards */
+
+
+.scrollbar-container {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  width: 30%; /* Adjust width as needed */
+  transform: translateX(-50%); /* Center horizontally */
+  height: 10px; /* Height of scrollbar track */
+  background-color: #ddd; /* Track color */
+  border-radius: 5px;
+  pointer-events: none; /* Avoid interfering with content interaction */
+
+}
+
+/* Custom scrollbar thumb */
+.scrollbar-thumb {
+  height: 100%;
+  background-color: #888; /* Thumb color */
+  border-radius: 5px;
+  transition: background-color 0.3s; /* Smooth color transition */
+  position: absolute;
+  top: 0;
+  pointer-events: none; /* Avoid interacting directly with thumb */
+}
+
+.scrollbar-thumb:hover {
+  background-color: #555; /* Darker color on hover */
+}

@@ -7,6 +7,7 @@ const OverviewPage = () => {
   const [recalls, setRecalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null);
+  const scrollbarRef = useRef(null);
 
   useEffect(() => {
     const fetchRecalls = async () => {
@@ -56,6 +57,28 @@ const OverviewPage = () => {
     }
   }, []);
 
+  // Update custom scrollbar width and position
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    const scrollbar = scrollbarRef.current;
+
+    if (container && scrollbar) {
+      const updateScrollbar = () => {
+        const { scrollLeft, scrollWidth, clientWidth } = container;
+        const thumbWidth = (clientWidth / scrollWidth) * 100;
+        scrollbar.style.width = `${thumbWidth}%`;
+        scrollbar.style.left = `${(scrollLeft / scrollWidth) * 100}%`;
+      };
+
+      container.addEventListener('scroll', updateScrollbar);
+      updateScrollbar(); // Initial update
+
+      return () => {
+        container.removeEventListener('scroll', updateScrollbar);
+      };
+    }
+  }, [recalls]);
+
   if (loading) {
     return <Spinner animation="border" className="spinner" />;
   }
@@ -87,6 +110,9 @@ const OverviewPage = () => {
         ) : (
           <p>No recall items found.</p>
         )}
+      </div>
+      <div className="scrollbar-container">
+        <div className="scrollbar-thumb" ref={scrollbarRef}></div>
       </div>
     </div>
   );
