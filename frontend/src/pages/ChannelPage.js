@@ -12,6 +12,7 @@ const ChannelPage = () => {
   const [loading, setLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false); // New state for video playback
   const videoRef = useRef(null); // Reference to the video element
+  const galleryRef = useRef(null); // Reference to the image gallery
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -35,13 +36,15 @@ const ChannelPage = () => {
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.key === '.') {
-        if (videoRef.current) {
+        if (channelContent.contentType === 'video' && videoRef.current) {
           if (isPlaying) {
             videoRef.current.pause();
           } else {
             videoRef.current.play();
           }
           setIsPlaying(prevIsPlaying => !prevIsPlaying); // Toggle playback state
+        } else if (channelContent.contentType === 'album' && galleryRef.current) {
+          galleryRef.current.slideToIndex(galleryRef.current.getCurrentIndex() + 1);
         }
       }
     };
@@ -51,7 +54,7 @@ const ChannelPage = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [isPlaying]);
+  }, [isPlaying, channelContent]);
 
   if (loading) {
     return <Spinner animation="border" className="spinner" />;
@@ -64,7 +67,9 @@ const ChannelPage = () => {
         thumbnail: asset.fields.file.url,
       }));
 
-      return <ImageGallery items={images} showThumbnails={true} showPlayButton={false} showFullscreenButton={false} />;
+      return (
+        <ImageGallery ref={galleryRef} items={images} showThumbnails={true} showPlayButton={false} showFullscreenButton={false} />
+      );
     } else if (channelContent.contentType === 'video') {
       const videoUrl = channelContent.content[0].fields.file.url; // Assuming there's a single video file
 
@@ -89,6 +94,9 @@ const ChannelPage = () => {
           {renderContent()}
         </div>
       </div>
+      <span className="help-text-span">
+        <p>Press [.] to {channelContent.contentType === 'video' ? 'play/pause the video' : 'move ' +'to the next picture'}.</p>
+      </span>
     </div>
   );
 };

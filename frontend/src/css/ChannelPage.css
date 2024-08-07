@@ -7,7 +7,7 @@
   padding: 0; /* Remove default padding */
   margin: 0; /* Remove default margin */
   overflow: hidden; /* Prevent overflow */
-  
+  position: relative; /* Enable absolute positioning for child elements */
 }
 
 /* Container for text and images */
@@ -27,6 +27,7 @@
   flex-direction: column; /* Align children vertically */
   align-items: flex-start; /* Align text to the left */
   padding-right: 50px;
+  position: relative; /* Enable absolute positioning for child elements */
 }
 
 /* Styles for the image section */
@@ -61,7 +62,6 @@
   flex-direction: column; /* Align children vertically */
   align-items: flex-start; /* Align text to the left */
   justify-content: flex-start; /* Align text to the top */
-
 }
 
 /* Styling for different text elements */
@@ -74,9 +74,8 @@
 .content-title {
   font-size: 2rem; /* Adjusted font size for title */
   margin-bottom: 20px; /* Reduced margin */
-  text-transform: uppercase; 
+  text-transform: uppercase;
   font-weight: bold;
-
 }
 
 .content-date {
@@ -84,7 +83,6 @@
   color: #495057; /* Slightly muted color for the date */
   margin-bottom: 20px; /* Reduced margin */
   font-style: italic;
-
 }
 
 .content-description {
@@ -92,8 +90,6 @@
   line-height: 1.4; /* Reduced line height for a more compact look */
   margin: 0; /* Remove default margin */
 }
-
-
 
 /* Styling for author section */
 .author-section {
@@ -129,18 +125,65 @@
 .image-gallery-left-nav,
 .image-gallery-right-nav {
   display: none;
+
+  
 }
 
-.image-gallery-description {
-  display: none;
+
+.image-section .image-gallery {
+  width: 100%;
 }
 
+/* Adjust the position of the thumbnails wrapper */
 .image-gallery-thumbnails-wrapper {
-  margin-top: 10px;
+  position: absolute; /* Position it absolutely */
+  bottom: 0; /* Align it to the bottom of the container */
+  left: 0; /* Align it to the left of the container */
+  width: 100%; /* Full width of the container */
+  margin: 0; /* Remove margin */
+  padding: 0; /* Remove padding */
 }
 
+/* Adjust the position of the thumbnails list */
+.image-gallery-thumbnails {
+  display: flex; /* Use flexbox to align thumbnails */
+  flex-direction: column; /* Align thumbnails vertically */
+  align-items: flex-end; /* Align thumbnails to the left */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+/* Remove default padding and margin from thumbnails */
+.image-gallery-thumbnail {
+  margin: 0; /* Remove margin */
+  padding: 0; /* Remove padding */
+}
+
+/* Adjust thumbnail sizes */
+.image-gallery-thumbnail img {
+  width: 100px; /* Adjust thumbnail width */
+  height: auto; /* Maintain aspect ratio */
+}
+
+
+
+/* Hide the default image gallery description if needed */
+.image-gallery-description {
+  display: none; /* Hide description */
+}
 .content-video {
   max-width: 100%;
   max-height: 60vh;
   object-fit: contain;
+}
+
+/* ChannelPage.css */
+.help-text-span {
+  position: absolute;
+  top: 65%; /* Adjust this value to position it closer to the image section */
+  left: 43%; /* Adjust this value to position it closer to the image section */
+  font-family: 'Roboto Mono', monospace; 
+  font-size: 14px; /* Font size */
+  z-index: 1000; /* Ensure it appears above other elements */
+  text-align: center; /* Center the text */
 }

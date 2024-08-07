@@ -55,11 +55,19 @@ const Header = () => {
       if (inputValue === '00') {
         // Navigate to Home when '00' + [Enter] is pressed
         navigate('/');
+        setChannelNumber(inputValue);
         setInputValue(''); // Clear the input value
         console.log('Navigating to Home');
       } else if (inputValue === '99') {
         // Navigate to Overview when '99' + [Enter] is pressed
         navigate('/overview');
+        setChannelNumber(inputValue);
+        setInputValue(''); // Clear the input value
+        console.log('Navigating to Overview');
+      } else if (inputValue === '98') {
+        // Navigate to Overview when '99' + [Enter] is pressed
+        navigate('/admin');
+        setChannelNumber(inputValue);
         setInputValue(''); // Clear the input value
         console.log('Navigating to Overview');
       } else {
@@ -121,6 +129,8 @@ const Header = () => {
             <div className="help-text-content">
               <p>00 + [ENTER] pour l’acuelle</p>
               <p>99 + [ENTER] pour les chaines</p>
+            
+
             </div>
           </div>
         </div>

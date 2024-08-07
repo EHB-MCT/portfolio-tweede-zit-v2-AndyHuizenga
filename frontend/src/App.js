@@ -16,7 +16,6 @@ function App() {
         <Route path="/admin" element={<PageWrapper><Admin /></PageWrapper>} />
         <Route path="/channel/:channelNumber" element={<PageWrapper><ChannelPage /></PageWrapper>} />
         <Route path="/overview" element={<PageWrapper><OverviewPage /></PageWrapper>} /> 
-
       </Routes>
     </Router>
   );
