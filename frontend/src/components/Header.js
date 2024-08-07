@@ -6,24 +6,21 @@ import '../css/Header.css';
 
 const Header = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [channelNumber, setChannelNumber] = useState('01'); // Displayed channel number
-  const [inputValue, setInputValue] = useState(''); // Current input
-  const inputRef = useRef(null); // Create a ref for the input field
+  const [channelNumber, setChannelNumber] = useState('01');
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Initialize socket connection
     const socket = io('http://localhost:3001', {
       transports: ['websocket'],
       withCredentials: true
     });
 
-    // Handle successful connection
     socket.on('connect', () => {
       console.log('Socket connected successfully!');
     });
 
-    // Handle receiving NFC tag data
     socket.on('tagNumber', (data) => {
       console.log('Received tagNumber event:', data);
       if (data) {
@@ -33,40 +30,34 @@ const Header = () => {
       }
     });
 
-    // Handle socket errors
     socket.on('error', (error) => {
       console.error('Socket error:', error);
     });
 
-    // Cleanup on component unmount
     return () => {
       socket.disconnect();
     };
   }, [navigate]);
 
-  // Handle NFC tag data
   const handleNfcRead = (text) => {
     console.log('Handling NFC read text:', text);
     setChannelNumber(text);
     navigate(`/channel/${text}`);
   };
 
-  // Handle changes to the input field
   const handleInputChange = (event) => {
-    setInputValue(event.target.value); // Update the current input
+    setInputValue(event.target.value);
   };
 
-  // Handle key press events in the input field
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      setChannelNumber(inputValue); // Update the displayed channel number
-      setInputValue(''); // Clear the input field
+      setChannelNumber(inputValue);
+      setInputValue('');
       console.log(`Channel changed to: ${inputValue}`);
       navigate(`/channel/${inputValue}`);
     }
   };
 
-  // Update the current time every second
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentTime(new Date());
@@ -74,38 +65,34 @@ const Header = () => {
 
     return () => {
       clearInterval(intervalId);
-      console.log('Time interval cleared'); // Log when the interval is cleared
+      console.log('Time interval cleared');
     };
   }, []);
 
-  // Focus the input field on component mount
   useEffect(() => {
     if (inputRef.current) {
-      inputRef.current.focus(); // Focus the input field on component mount
+      inputRef.current.focus();
       console.log('Input field focused');
     }
   }, []);
 
-  // Format time as HH:MM
   const formatTime = (date) => {
     const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    console.log(`Formatted time: ${time}`); // Log formatted time
+    console.log(`Formatted time: ${time}`);
     return time;
   };
 
-  // Format date as Weekday, Day Month
   const formatDate = (date) => {
     const options = { weekday: 'long', day: 'numeric', month: 'long' };
     const formattedDate = date.toLocaleDateString('en-GB', options);
-    console.log(`Formatted date: ${formattedDate}`); // Log formatted date
+    console.log(`Formatted date: ${formattedDate}`);
     return formattedDate;
   };
 
   return (
-    <header className="bg-light py-3">
+    <header className="bg-light header">
       <Container>
         <Row className="align-items-center">
-          {/* Left Block: Current Channel */}
           <Col md={4} className="text-left">
             <div className="current-channel">
               <div className="channel-label">chaine actuel:</div>
@@ -128,13 +115,12 @@ const Header = () => {
                   ref={inputRef}
                 />
                 <div className="channel-display">
-                  <strong>{inputValue || channelNumber}</strong> {/* Display the live input or the confirmed channel number */}
+                  <strong>{inputValue || channelNumber}</strong>
                 </div>
               </div>
             </div>
           </Col>
 
-          {/* Middle Block: Smart TV / Saver Screen */}
           <Col md={4} className="text-center">
             <div className="tv-info">
               <div className="time-date">
@@ -144,11 +130,9 @@ const Header = () => {
             </div>
           </Col>
 
-          {/* Right Block: Help Text */}
           <Col md={4} className="text-right">
             <div className="help-text">
-              <p>Need Assistance?</p>
-              <p>Contact support at support@example.com</p>
+              <p>00 + [ENTER] pour l’acuelle</p>
             </div>
           </Col>
         </Row>

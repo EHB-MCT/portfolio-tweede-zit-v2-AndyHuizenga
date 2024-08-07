@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Container, Row, Col, Spinner } from 'react-bootstrap';
+import '../css/ChannelPage.css'; // Add this for custom styling
 
 const ChannelPage = () => {
   const { channelNumber } = useParams();
   const [channelContent, setChannelContent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -16,6 +19,8 @@ const ChannelPage = () => {
         setChannelContent(content);
       } catch (error) {
         console.error('Error fetching content:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -23,36 +28,41 @@ const ChannelPage = () => {
   }, [channelNumber]);
 
   return (
-    <div style={{ padding: '20px' }}>
-      {channelContent ? (
-        <div className="channel-content">
-          <h2>{channelContent.title}</h2>
-          {channelContent.descriptions.content.map((item, index) => {
-            if (item.nodeType === 'heading-1') {
-              return <h1 key={index}>{item.content[0].value}</h1>;
-            } else if (item.nodeType === 'heading-3') {
-              return <h3 key={index}>{item.content[0].value}</h3>;
-            } else if (item.nodeType === 'heading-6') {
-              return <h6 key={index}>{item.content[0].value}</h6>;
-            } else if (item.nodeType === 'paragraph') {
-              return <p key={index}>{item.content[0].value}</p>;
-            } else {
-              return null;
-            }
-          })}
-          {channelContent.content.map((asset, index) => (
-            <img
+    <Container fluid className="channel-page">
+      {loading ? (
+        <Spinner animation="border" className="spinner" />
+      ) : (
+        <Row className="channel-content">
+          <Col md={4} className="text-section">
+      
+            {channelContent.descriptions.content.map((item, index) => {
+              if (item.nodeType === 'heading-1') {
+                return <h1 key={index}>{item.content[0].value}</h1>;
+              } else if (item.nodeType === 'heading-3') {
+                return <h3 key={index}>{item.content[0].value}</h3>;
+              } else if (item.nodeType === 'heading-6') {
+                return <h6 key={index}>{item.content[0].value}</h6>;
+              } else if (item.nodeType === 'paragraph') {
+                return <p key={index}>{item.content[0].value}</p>;
+              } else {
+                return null;
+              }
+            })}
+          </Col>
+          <Col md={8} className="image-section">
+            {channelContent.content.map((asset, index) => (
+              <div> <img
               key={index}
               src={asset.fields.file.url}
               alt={asset.fields.title}
-              style={{ maxWidth: '100%' }}
-            />
-          ))}
-        </div>
-      ) : (
-        <p>Loading content...</p>
+              className="content-image"
+            /></div>
+             
+            ))}
+          </Col>
+        </Row>
       )}
-    </div>
+    </Container>
   );
 };
 

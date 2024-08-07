@@ -1,0 +1,40 @@
+.channel-page {
+    height: 100%; /* Full height of the wrapper */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .spinner {
+    margin: auto;
+  }
+  
+  .channel-content {
+    display: flex;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .text-section {
+    padding: 20px;
+    background-color: #f8f9fa;
+    overflow-y: auto;
+  }
+  
+  .image-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    overflow-y: auto;
+    flex-direction: column;
+  }
+  
+  .content-image {
+    max-width: 100%;
+    height: auto;
+    margin: 10px;
+    display: block;
+  }
+  

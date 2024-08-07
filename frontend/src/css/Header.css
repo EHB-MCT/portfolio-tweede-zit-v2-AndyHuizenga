@@ -39,3 +39,13 @@
 .help-text p {
   margin: 0;
 }
+
+.header {
+  height: 20vh; /* 25% of the viewport height */
+  width: 100%;
+}
+
+.header .container {
+  height: 100%;
+}
+
