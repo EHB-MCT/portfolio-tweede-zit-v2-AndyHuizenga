@@ -1,5 +1,4 @@
-// src/pages/OverviewPage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import RecallCard from '../components/RecallCard';
 import '../css/OverviewPage.css'; // Ensure to include your CSS file
 import { Spinner } from 'react-bootstrap';
@@ -7,6 +6,7 @@ import { Spinner } from 'react-bootstrap';
 const OverviewPage = () => {
   const [recalls, setRecalls] = useState([]);
   const [loading, setLoading] = useState(true);
+  const scrollContainerRef = useRef(null);
 
   useEffect(() => {
     const fetchRecalls = async () => {
@@ -25,6 +25,35 @@ const OverviewPage = () => {
     };
 
     fetchRecalls();
+  }, []);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+
+    if (container) {
+      // Function to handle the horizontal scroll
+      const handleWheel = (e) => {
+        if (e.deltaY !== 0) {
+          container.scrollLeft += e.deltaY;
+          e.preventDefault();
+        }
+      };
+
+      // Add event listener for the wheel event
+      window.addEventListener('wheel', handleWheel);
+
+      return () => {
+        // Clean up event listener
+        window.removeEventListener('wheel', handleWheel);
+      };
+    }
+  }, [recalls]);
+
+  // Ensure the scroll container is focused
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.focus();
+    }
   }, []);
 
   if (loading) {
@@ -47,7 +76,12 @@ const OverviewPage = () => {
           {/* Empty div or any other content for the right section */}
         </div>
       </div>
-      <div className="recall-cards-container">
+      <div 
+        className="recall-cards-container" 
+        ref={scrollContainerRef} 
+        tabIndex="0"  // Ensure it can receive focus
+        role="region" // Optional: to indicate it’s a scrollable region
+      >
         {recalls.length > 0 ? (
           recalls.map((item) => <RecallCard key={item.channel} item={item} />)
         ) : (
