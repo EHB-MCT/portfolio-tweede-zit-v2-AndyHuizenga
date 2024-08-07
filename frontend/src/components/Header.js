@@ -45,7 +45,9 @@ const Header = () => {
   };
 
   const handleInputChange = (event) => {
-    setInputValue(event.target.value);
+    // Filter out non-numeric characters
+    const value = event.target.value.replace(/\D/g, '');
+    setInputValue(value);
   };
 
   const handleKeyPress = (event) => {
