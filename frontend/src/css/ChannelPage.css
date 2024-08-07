@@ -1,3 +1,5 @@
+/* ChannelPage.css */
+
 .channel-page {
   height: 100vh; /* Full viewport height */
   display: flex;
@@ -16,21 +18,21 @@
 
 .text-section {
   flex: 0 0 40%; /* Fixed width for text section */
-  background-color: #f8f9fa;
+  background-color: transparent; /* Remove background color */
   overflow-y: auto;
-
+  padding: 20px; /* Add some padding */
+  border: none; /* Remove any border */
 }
 
 .image-section {
   flex: 0 0 60%; /* Fixed width for image section */
-  background-color: #fff;
+  background-color: transparent; /* Remove background color */
   overflow-y: auto;
   display: flex; /* Enable flexbox layout */
   justify-content: flex-end; /* Align content to the right */
   align-items: flex-start; /* Align content to the top */
   position: relative; /* Enable absolute positioning for child elements */
   padding: 0; /* Remove any default padding */
-  background-color: red;
 }
 
 .content-image {
@@ -40,4 +42,34 @@
   max-width: 100%; /* Ensure image does not exceed container width */
   max-height: 60vh; /* Limits image height to 60% of viewport height */
   object-fit: contain; /* Ensures the entire image fits within the container */
+}
+
+/* Styling for ChannelContent component */
+.channel-content-container {
+  padding: 20px; /* Add some padding */
+  background-color: transparent; /* Remove background color */
+  border: none; /* Remove border */
+  font-family: Arial, sans-serif; /* Use a clean, readable font */
+}
+
+.content-type {
+  color: #6c757d; /* Muted text color for subtitle */
+  font-size: 1.25rem; /* Adjust as needed */
+  margin-bottom: 10px;
+}
+
+.content-title {
+  font-size: 2rem; /* Larger font size for title */
+  margin-bottom: 10px;
+}
+
+.content-date {
+  font-size: 1rem; /* Standard font size for date */
+  color: #495057; /* Slightly muted color for the date */
+  margin-bottom: 20px;
+}
+
+.content-description {
+  font-size: 1rem; /* Standard font size for content */
+  line-height: 1.6; /* Increase line height for readability */
 }
