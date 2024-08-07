@@ -1,8 +1,9 @@
 import React from 'react';
+import '../css/PageWrapper.css'; // Import the CSS file for custom styles
 
 const PageWrapper = ({ children }) => {
   return (
-    <div style={{ height: '80vh' }}>
+    <div className="page-wrapper">
       {children}
     </div>
   );

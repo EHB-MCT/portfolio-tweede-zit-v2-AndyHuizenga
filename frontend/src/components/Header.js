@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import '../css/Header.css';
@@ -91,27 +90,25 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-light header">
-        <Container fluid>
-          <Row className="header-row">
-            <Col className="current-channel">
-              <div className="channel-number">
-                <strong>{inputValue || channelNumber}</strong>
-              </div>
-            </Col>
-            <Col className="tv-info text-center">
-              <div className="time-date">
-                <div className="time">{formatTime(currentTime)}</div>
-              </div>
-            </Col>
-            <Col className="help-text text-right">
-              <div className="help-text-content">
-                <p>00 + [ENTER] pour l’acuelle</p>
-                <p>01 + [ENTER] pour les chaines</p>
-              </div>
-            </Col>
-          </Row>
-        </Container>
+      <header className="header">
+        <div className="header-row">
+          <div className="current-channel">
+            <div className="channel-number">
+              <strong>{inputValue || channelNumber}</strong>
+            </div>
+          </div>
+          <div className="tv-info">
+            <div className="time-date">
+              <div className="time">{formatTime(currentTime)}</div>
+            </div>
+          </div>
+          <div className="help-text">
+            <div className="help-text-content">
+              <p>00 + [ENTER] pour l’acuelle</p>
+              <p>01 + [ENTER] pour les chaines</p>
+            </div>
+          </div>
+        </div>
         {/* Add channel-label and date back on top with absolute positioning */}
         <div className="channel-label">chaine actuel:</div>
         <div className="date">{formatDate(currentTime)}</div>

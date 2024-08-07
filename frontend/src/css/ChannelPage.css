@@ -1,12 +1,11 @@
 .channel-page {
-  height: 100%; /* Full height of the wrapper */
+  height: 100vh; /* Full viewport height */
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.spinner {
-  margin: auto;
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+  overflow: hidden; /* Prevent overflow */
 }
 
 .channel-content {
@@ -16,26 +15,29 @@
 }
 
 .text-section {
-  flex: 0 0 30%; /* Fixed width for text section */
-  padding: 20px;
+  flex: 0 0 40%; /* Fixed width for text section */
   background-color: #f8f9fa;
   overflow-y: auto;
+
 }
 
 .image-section {
-  flex: 0 0 70%; /* Fixed width for image section */
-  padding: 20px;
+  flex: 0 0 60%; /* Fixed width for image section */
   background-color: #fff;
   overflow-y: auto;
   display: flex; /* Enable flexbox layout */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  justify-content: flex-end; /* Align content to the right */
+  align-items: flex-start; /* Align content to the top */
+  position: relative; /* Enable absolute positioning for child elements */
+  padding: 0; /* Remove any default padding */
+  background-color: red;
 }
 
 .content-image {
-  max-width: 100%; /* Ensures image does not exceed container width */
+  position: absolute; /* Position the image absolutely */
+  top: 0; /* Align to the top */
+  right: 0; /* Align to the right */
+  max-width: 100%; /* Ensure image does not exceed container width */
   max-height: 60vh; /* Limits image height to 60% of viewport height */
   object-fit: contain; /* Ensures the entire image fits within the container */
-  margin: 10px; /* Adds vertical space around each image */
-  display: block;
 }

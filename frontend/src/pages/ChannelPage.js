@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Spinner } from 'react-bootstrap'; // Only Spinner and Container from React Bootstrap
+import { Spinner } from 'react-bootstrap'; // Only Spinner from React Bootstrap
 import '../css/ChannelPage.css'; // Add this for custom styling
 
 const ChannelPage = () => {
@@ -28,7 +28,7 @@ const ChannelPage = () => {
   }, [channelNumber]);
 
   return (
-    <Container fluid className="channel-page">
+    <div className="channel-page">
       {loading ? (
         <Spinner animation="border" className="spinner" />
       ) : (
@@ -60,7 +60,7 @@ const ChannelPage = () => {
           </div>
         </div>
       )}
-    </Container>
+    </div>
   );
 };
 

@@ -3,8 +3,9 @@
   width: 100%;
   display: flex;
   align-items: center; /* Center content vertically within the header */
-  padding: 0 15px; /* Optional: Add padding if you want some space from the edges */
+  padding: 0 60px; /* Adjust padding as needed */
   position: relative; /* Position relative for absolute children */
+  background-color: #f8f9fa; /* Light background for the header */
 }
 
 .header-row {
@@ -13,16 +14,11 @@
   width: 100%; /* Ensure the row takes full width */
 }
 
-.tv-info, .help-text {
-  width: 33.33%; /* Each section takes up exactly 1/3 of the header width */
-  display: flex; /* Use flexbox for alignment within each section */
-  align-items: center; /* Center content vertically within each section */
-}
-
 .current-channel {
   display: flex;
   align-items: center; /* Center content vertically */
   justify-content: flex-start; /* Align content to the left */
+  width: 33.33%; /* Each section takes up exactly 1/3 of the header width */
 }
 
 .channel-number {
@@ -31,8 +27,10 @@
 }
 
 .tv-info {
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Center content vertically */
   justify-content: center; /* Center section content horizontally */
-  position: relative; /* Allow positioning of children */
+  width: 33.33%; /* Each section takes up exactly 1/3 of the header width */
 }
 
 .help-text {
@@ -41,8 +39,7 @@
   justify-content: center; /* Center content vertically within the section */
   align-items: flex-end; /* Align text to the right */
   text-align: right; /* Align text to the right */
-  width: 100%; /* Ensure it takes up full width */
-  padding: 0 15px; /* Optional: Add padding if needed */
+  width: 33.33%; /* Each section takes up exactly 1/3 of the header width */
 }
 
 .help-text-content {
@@ -72,8 +69,6 @@
   background: none; /* Background to ensure readability */
   padding: 5px; /* Add some padding for better readability */
 }
-
-
 
 .time-date {
   display: flex;
