@@ -52,10 +52,15 @@ const Header = () => {
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      setChannelNumber(inputValue);
-      setInputValue('');
-      console.log(`Channel changed to: ${inputValue}`);
-      navigate(`/channel/${inputValue}`);
+      if (inputValue === '00') {
+        // Navigate to Home when '00' + [Enter] is pressed
+        navigate('/');
+      } else {
+        setChannelNumber(inputValue);
+        setInputValue('');
+        console.log(`Channel changed to: ${inputValue}`);
+        navigate(`/channel/${inputValue}`);
+      }
     }
   };
 
