@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Row, Col, Spinner } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap'; // Only Spinner and Container from React Bootstrap
 import '../css/ChannelPage.css'; // Add this for custom styling
 
 const ChannelPage = () => {
@@ -32,9 +32,8 @@ const ChannelPage = () => {
       {loading ? (
         <Spinner animation="border" className="spinner" />
       ) : (
-        <Row className="channel-content">
-          <Col md={4} className="text-section">
-      
+        <div className="channel-content">
+          <div className="text-section">
             {channelContent.descriptions.content.map((item, index) => {
               if (item.nodeType === 'heading-1') {
                 return <h1 key={index}>{item.content[0].value}</h1>;
@@ -48,19 +47,18 @@ const ChannelPage = () => {
                 return null;
               }
             })}
-          </Col>
-          <Col md={8} className="image-section">
+          </div>
+          <div className="image-section">
             {channelContent.content.map((asset, index) => (
-              <div> <img
-              key={index}
-              src={asset.fields.file.url}
-              alt={asset.fields.title}
-              className="content-image"
-            /></div>
-             
+              <img
+                key={index}
+                src={asset.fields.file.url}
+                alt={asset.fields.title}
+                className="content-image"
+              />
             ))}
-          </Col>
-        </Row>
+          </div>
+        </div>
       )}
     </Container>
   );

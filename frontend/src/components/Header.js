@@ -92,34 +92,29 @@ const Header = () => {
   return (
     <>
       <header className="bg-light header">
-        <Container>
-          <Row className="align-items-center">
-            <Col md={4} className="text-left">
-              <div className="current-channel">
-                <div className="channel-label">chaine actuel:</div>
-                <div className="channel-number">
-                  <div className="channel-display">
-                    <strong>{inputValue || channelNumber}</strong>
-                  </div>
-                </div>
+        <Container fluid>
+          <Row className="header-row">
+            <Col className="current-channel">
+              <div className="channel-number">
+                <strong>{inputValue || channelNumber}</strong>
               </div>
             </Col>
-            <Col md={4} className="text-center">
-              <div className="tv-info">
-                <div className="time-date">
-                  <div className="date">{formatDate(currentTime)}</div>
-                  <div className="time">{formatTime(currentTime)}</div>
-                </div>
+            <Col className="tv-info text-center">
+              <div className="time-date">
+                <div className="time">{formatTime(currentTime)}</div>
               </div>
             </Col>
-            <Col md={4} className="text-right">
-              <div className="help-text">
+            <Col className="help-text text-right">
+              <div className="help-text-content">
                 <p>00 + [ENTER] pour l’acuelle</p>
                 <p>01 + [ENTER] pour les chaines</p>
               </div>
             </Col>
           </Row>
         </Container>
+        {/* Add channel-label and date back on top with absolute positioning */}
+        <div className="channel-label">chaine actuel:</div>
+        <div className="date">{formatDate(currentTime)}</div>
       </header>
       <input
         type="text"
