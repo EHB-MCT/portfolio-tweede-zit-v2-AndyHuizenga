@@ -30,7 +30,6 @@ const getAllRecallItems = async () => {
     });
 
     if (entries.items.length > 0) {
-      // Return the list of recall items
       return entries.items.map(item => item.fields);
     } else {
       throw new Error('No recall items found');
