@@ -1,6 +1,3 @@
-
-/*Header.css*/
-
 .current-channel {
   display: flex;
   flex-direction: column; /* Stack vertically */
@@ -34,8 +31,6 @@
 .help-text {
   font-size: 16px;
   color: #333;
-
-float: right;
 }
 
 .help-text p {
@@ -43,11 +38,29 @@ float: right;
 }
 
 .header {
-  height: 20vh; /* 25% of the viewport height */
+  height: 20vh; /* 20% of the viewport height */
   width: 100%;
+  display: flex;
+  align-items: center; /* Center content vertically */
 }
 
 .header .container {
   height: 100%;
+  display: flex;
+  align-items: center; /* Center content vertically within the container */
 }
 
+/* Transparent input field overlay */
+.transparent-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20vh; /* Match the header height */
+  z-index: 1000; /* High z-index to ensure it overlays the header */
+  background: transparent;
+  border: none;
+  outline: none;
+  color: transparent; /* Hide the text cursor */
+  font-size: 16px;
+}

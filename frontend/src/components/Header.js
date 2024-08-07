@@ -90,54 +90,46 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-light header">
-      <Container>
-        <Row className="align-items-center">
-          <Col md={4} className="text-left">
-            <div className="current-channel">
-              <div className="channel-label">chaine actuel:</div>
-              <div className="channel-number">
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Type channel number and press Enter"
-                  style={{
-                    padding: '10px',
-                    fontSize: '16px',
-                    width: '100%',
-                    border: 'none',
-                    outline: 'none',
-                    backgroundColor: 'transparent',
-                    color: 'black',
-                  }}
-                  ref={inputRef}
-                />
-                <div className="channel-display">
-                  <strong>{inputValue || channelNumber}</strong>
+    <>
+      <header className="bg-light header">
+        <Container>
+          <Row className="align-items-center">
+            <Col md={4} className="text-left">
+              <div className="current-channel">
+                <div className="channel-label">chaine actuel:</div>
+                <div className="channel-number">
+                  <div className="channel-display">
+                    <strong>{inputValue || channelNumber}</strong>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Col>
-
-          <Col md={4} className="text-center">
-            <div className="tv-info">
-              <div className="time-date">
-                <div className="date">{formatDate(currentTime)}</div>
-                <div className="time">{formatTime(currentTime)}</div>
+            </Col>
+            <Col md={4} className="text-center">
+              <div className="tv-info">
+                <div className="time-date">
+                  <div className="date">{formatDate(currentTime)}</div>
+                  <div className="time">{formatTime(currentTime)}</div>
+                </div>
               </div>
-            </div>
-          </Col>
-
-          <Col md={4} className="text-right">
-            <div className="help-text">
-              <p>00 + [ENTER] pour l’acuelle</p>
-            </div>
-          </Col>
-        </Row>
-      </Container>
-    </header>
+            </Col>
+            <Col md={4} className="text-right">
+              <div className="help-text">
+                <p>00 + [ENTER] pour l’acuelle</p>
+                <p>01 + [ENTER] pour les chaines</p>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </header>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyPress={handleKeyPress}
+        className="transparent-input"
+        ref={inputRef}
+      />
+    </>
   );
 };
 
