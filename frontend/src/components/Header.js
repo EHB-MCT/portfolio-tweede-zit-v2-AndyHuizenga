@@ -110,7 +110,7 @@ const Header = () => {
           </div>
         </div>
         {/* Add channel-label and date back on top with absolute positioning */}
-        <div className="channel-label">chaine actuel:</div>
+        <div className="channel-label">chaine</div>
         <div className="date">{formatDate(currentTime)}</div>
       </header>
       <input

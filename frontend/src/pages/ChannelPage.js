@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap'; // Only Spinner from React Bootstrap
 import ChannelContent from '../components/ChannelContent'; // Import the updated component
+import ImageGallery from 'react-image-gallery';
 import '../css/ChannelPage.css'; // Add this for custom styling
+import 'react-image-gallery/styles/css/image-gallery.css'; // Import styles for react-image-gallery
 
 const ChannelPage = () => {
   const { channelNumber } = useParams();
@@ -28,6 +30,12 @@ const ChannelPage = () => {
     fetchContent();
   }, [channelNumber]);
 
+  const images = channelContent?.content?.map((asset) => ({
+    original: asset.fields.file.url,
+    thumbnail: asset.fields.file.url,
+    description: asset.fields.title,
+  })) || [];
+
   return (
     <div className="channel-page">
       {loading ? (
@@ -39,14 +47,9 @@ const ChannelPage = () => {
             <ChannelContent content={channelContent} />
           </div>
           <div className="image-section">
-            {channelContent.content && channelContent.content.map((asset, index) => (
-              <img
-                key={index}
-                src={asset.fields.file.url}
-                alt={asset.fields.title}
-                className="content-image"
-              />
-            ))}
+            {images.length > 0 && (
+              <ImageGallery items={images} showThumbnails={true} />
+            )}
           </div>
         </div>
       )}

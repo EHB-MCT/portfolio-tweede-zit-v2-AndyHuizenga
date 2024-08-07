@@ -1,5 +1,4 @@
-/* ChannelPage.css */
-
+/* General styles for the entire page */
 .channel-page {
   height: 100vh; /* Full viewport height */
   display: flex;
@@ -8,33 +7,41 @@
   padding: 0; /* Remove default padding */
   margin: 0; /* Remove default margin */
   overflow: hidden; /* Prevent overflow */
+  
 }
 
+/* Container for text and images */
 .channel-content {
   display: flex;
   height: 100%;
   width: 100%;
 }
 
+/* Styles for the text section */
 .text-section {
   flex: 0 0 40%; /* Fixed width for text section */
   background-color: transparent; /* Remove background color */
   overflow-y: auto;
-  padding: 20px; /* Add some padding */
   border: none; /* Remove any border */
+  display: flex;
+  flex-direction: column; /* Align children vertically */
+  align-items: flex-start; /* Align text to the left */
+  padding-right: 60px;
 }
 
+/* Styles for the image section */
 .image-section {
   flex: 0 0 60%; /* Fixed width for image section */
   background-color: transparent; /* Remove background color */
   overflow-y: auto;
-  display: flex; /* Enable flexbox layout */
+  display: flex;
   justify-content: flex-end; /* Align content to the right */
   align-items: flex-start; /* Align content to the top */
   position: relative; /* Enable absolute positioning for child elements */
   padding: 0; /* Remove any default padding */
 }
 
+/* Styles for the images */
 .content-image {
   position: absolute; /* Position the image absolutely */
   top: 0; /* Align to the top */
@@ -46,30 +53,75 @@
 
 /* Styling for ChannelContent component */
 .channel-content-container {
-  padding: 20px; /* Add some padding */
+  padding-right: 20px; /* Reduced padding */
   background-color: transparent; /* Remove background color */
   border: none; /* Remove border */
   font-family: Arial, sans-serif; /* Use a clean, readable font */
+  display: flex;
+  flex-direction: column; /* Align children vertically */
+  align-items: flex-start; /* Align text to the left */
+  justify-content: flex-start; /* Align text to the top */
+
 }
 
+/* Styling for different text elements */
 .content-type {
   color: #6c757d; /* Muted text color for subtitle */
-  font-size: 1.25rem; /* Adjust as needed */
-  margin-bottom: 10px;
+  font-size: 1.2rem; /* Adjust as needed */
+  margin-bottom: 10px; /* Reduced margin */
 }
 
 .content-title {
-  font-size: 2rem; /* Larger font size for title */
-  margin-bottom: 10px;
+  font-size: 2rem; /* Adjusted font size for title */
+  margin-bottom: 20px; /* Reduced margin */
+  text-transform: uppercase; 
+  font-weight: bold;
+
 }
 
 .content-date {
-  font-size: 1rem; /* Standard font size for date */
+  font-size: 0.9rem; /* Adjusted font size for date */
   color: #495057; /* Slightly muted color for the date */
-  margin-bottom: 20px;
+  margin-bottom: 20px; /* Reduced margin */
+  font-style: italic;
+
 }
 
 .content-description {
-  font-size: 1rem; /* Standard font size for content */
-  line-height: 1.6; /* Increase line height for readability */
+  font-size: 0.9rem; /* Adjusted font size for content */
+  line-height: 1.4; /* Reduced line height for a more compact look */
+  margin: 0; /* Remove default margin */
+}
+
+
+
+/* Styling for author section */
+.author-section {
+  display: flex;
+  align-items: center;
+  margin-top: 40px; /* Space above the author section */
+}
+
+.author-image {
+  width: 50px; /* Fixed size for author image */
+  height: 50px; /* Fixed size for author image */
+  border-radius: 50%; /* Make image round */
+  margin-right: 10px; /* Space between image and name */
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+
+.author-name {
+  font-size: 0.8rem; /* Font size for author name */
+  color: #333; /* Text color for author name */
+}
+
+.content-type {
+  font-size: 0.8rem; /* Font size for content type */
+  color: #333; /* Text color for content type */
+  margin-top: 5px; /* Space above the content type */
 }

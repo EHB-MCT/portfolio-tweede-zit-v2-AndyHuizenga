@@ -3,9 +3,9 @@
   width: 100%;
   display: flex;
   align-items: center; /* Center content vertically within the header */
-  padding: 0 60px; /* Adjust padding as needed */
+  padding: 0 100px; /* Adjust padding as needed */
   position: relative; /* Position relative for absolute children */
-  background-color: #f8f9fa; /* Light background for the header */
+ /* Light background for the header */
 }
 
 .header-row {
@@ -19,11 +19,12 @@
   align-items: center; /* Center content vertically */
   justify-content: flex-start; /* Align content to the left */
   width: 33.33%; /* Each section takes up exactly 1/3 of the header width */
+  font-weight: 100;
 }
 
 .channel-number {
   font-size: 60px; /* Larger font size for the channel number */
-  font-weight: bold;
+font-style: italic;
 }
 
 .tv-info {
@@ -40,6 +41,7 @@
   align-items: flex-end; /* Align text to the right */
   text-align: right; /* Align text to the right */
   width: 33.33%; /* Each section takes up exactly 1/3 of the header width */
+  font-family: 'Roboto Mono', monospace; 
 }
 
 .help-text-content {
@@ -64,7 +66,7 @@
   color: #333;
   position: absolute; /* Absolutely position the label */
   top: 30px; /* Position it near the top */
-  left: 25px; /* Position it with some space from the left edge */
+  left: 100px; /* Position it with some space from the left edge */
   z-index: 2000; /* Ensure it spans above other content */
   background: none; /* Background to ensure readability */
   padding: 5px; /* Add some padding for better readability */
@@ -73,24 +75,26 @@
 .time-date {
   display: flex;
   flex-direction: column; /* Stack date and time vertically */
-  align-items: center; /* Center horizontally within the parent */
+  align-items: center;
+  font-family: 'Roboto Mono', monospace;  /* Center horizontally within the parent */
 }
 
 .date {
-  font-size: 18px;
+  font-size: 12px;
   color: #888;
   position: absolute; /* Absolutely position the date */
-  top: 30px; /* Position it below the label */
+  top: 35px; /* Position it below the label */
   left: 50%; /* Center it horizontally */
   transform: translateX(-50%); /* Adjust for centering */
   z-index: 2000; /* Ensure it spans above other content */
   background: none; /* Background to ensure readability */
   padding: 5px; /* Add some padding for better readability */
+  font-family: 'Roboto Mono', monospace; 
 }
 
 .time {
-  font-size: 45px;
-  font-weight: bold;
+  font-size: 40px;
+
 }
 
 .transparent-input {
@@ -105,4 +109,5 @@
   outline: none;
   color: transparent; /* Hide the text cursor */
   font-size: 16px;
+  
 }
