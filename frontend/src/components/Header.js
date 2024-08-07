@@ -45,17 +45,25 @@ const Header = () => {
   };
 
   const handleInputChange = (event) => {
-    // Filter out non-numeric characters
-    const value = event.target.value.replace(/\D/g, '');
+    const value = event.target.value.replace(/\D/g, '').slice(0, 2); // Limit to 2 digits
     setInputValue(value);
   };
-
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
+      console.log(`Input value on Enter: ${inputValue}`); // Log the input value
+  
       if (inputValue === '00') {
         // Navigate to Home when '00' + [Enter] is pressed
         navigate('/');
+        setInputValue(''); // Clear the input value
+        console.log('Navigating to Home');
+      } else if (inputValue === '99') {
+        // Navigate to Overview when '99' + [Enter] is pressed
+        navigate('/overview');
+        setInputValue(''); // Clear the input value
+        console.log('Navigating to Overview');
       } else {
+        // Navigate to the specific channel for other inputs
         setChannelNumber(inputValue);
         setInputValue('');
         console.log(`Channel changed to: ${inputValue}`);
@@ -112,7 +120,7 @@ const Header = () => {
           <div className="help-text">
             <div className="help-text-content">
               <p>00 + [ENTER] pour l’acuelle</p>
-              <p>01 + [ENTER] pour les chaines</p>
+              <p>99 + [ENTER] pour les chaines</p>
             </div>
           </div>
         </div>

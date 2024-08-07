@@ -17,6 +17,8 @@ const OverviewPage = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+        // Sort recalls by channel number (assuming channel is numeric)
+        data.sort((a, b) => a.channel - b.channel);
         setRecalls(data);
       } catch (error) {
         console.error('Error fetching recalls:', error);
