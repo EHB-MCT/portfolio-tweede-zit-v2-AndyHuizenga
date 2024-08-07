@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
 import ChannelContent from '../components/ChannelContent';
@@ -10,6 +10,8 @@ const ChannelPage = () => {
   const { channelNumber } = useParams();
   const [channelContent, setChannelContent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false); // New state for video playback
+  const videoRef = useRef(null); // Reference to the video element
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -30,6 +32,27 @@ const ChannelPage = () => {
     fetchContent();
   }, [channelNumber]);
 
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === '.') {
+        if (videoRef.current) {
+          if (isPlaying) {
+            videoRef.current.pause();
+          } else {
+            videoRef.current.play();
+          }
+          setIsPlaying(prevIsPlaying => !prevIsPlaying); // Toggle playback state
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [isPlaying]);
+
   if (loading) {
     return <Spinner animation="border" className="spinner" />;
   }
@@ -46,7 +69,7 @@ const ChannelPage = () => {
       const videoUrl = channelContent.content[0].fields.file.url; // Assuming there's a single video file
 
       return (
-        <video controls className="content-video">
+        <video ref={videoRef} controls className="content-video">
           <source src={videoUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
