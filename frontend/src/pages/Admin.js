@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Button, Spinner, Alert, Row, Col, Dropdown } from 'react-bootstrap';
-import '../css/Admin.css'; // Import custom CSS for better styling
+import { Form, Button, Spinner, Alert, Row, Col } from 'react-bootstrap';
+import '../css/Admin.css'; // Ensure the updated CSS is imported
 
 const AdminForm = () => {
   const [channels, setChannels] = useState([]);
   const [authors, setAuthors] = useState([]);
-  const [contentTypes] = useState(['video', 'album']); // Updated content types
+  const [contentTypes] = useState(['video', 'album']);
   const [formData, setFormData] = useState({
     channel: '',
     title: '',
@@ -14,7 +14,7 @@ const AdminForm = () => {
     content: '',
     contentType: '',
     description: '',
-    authorId: '', // Updated to authorId
+    authorId: '',
     thumbnailId: ''
   });
   const [loading, setLoading] = useState(false);
@@ -45,10 +45,10 @@ const AdminForm = () => {
     }));
   };
 
-  const handleDropdownSelect = (authorId) => {
+  const handleAuthorSelect = (authorId) => {
     setFormData(prevState => ({
       ...prevState,
-      authorId // Update authorId directly
+      authorId
     }));
   };
 
@@ -61,12 +61,11 @@ const AdminForm = () => {
     try {
       const data = {
         ...formData,
-        channel: parseInt(formData.channel, 10), // Convert channel to integer
-        content: [formData.content], // Ensure content is an array
-        contentType: formData.contentType // Use contentType directly
+        channel: parseInt(formData.channel, 10),
+        content: [formData.content],
+        contentType: formData.contentType
       };
 
-      // Validate contentType value
       if (!contentTypes.includes(data.contentType)) {
         setError('Invalid content type.');
         setLoading(false);
@@ -87,8 +86,8 @@ const AdminForm = () => {
         content: '',
         contentType: '',
         description: '',
-        authorId: '', // Reset authorId
-        thumbnailId: '' // Reset thumbnailId
+        authorId: '',
+        thumbnailId: ''
       });
     } catch (error) {
       setError('Failed to create recall item.');
@@ -97,7 +96,6 @@ const AdminForm = () => {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="admin-form">
@@ -106,8 +104,26 @@ const AdminForm = () => {
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">{success}</Alert>}
       <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="formAuthor">
+          <Form.Label>Author</Form.Label>
+          <div className="author-select">
+    {authors.map(author => (
+      <div
+        key={author.id}
+        className={`author-option ${formData.authorId === author.id ? 'selected' : ''}`}
+        onClick={() => handleAuthorSelect(author.id)}
+      >
+        <div className="author-wrapper">
+          <img src={author.profilePicture} alt={author.name} className="author-image" />
+        </div>
+        <div className="author-name">{author.name}</div>
+      </div>
+    ))}
+  </div>
+
+        </Form.Group>
         <Row>
-          <Col md={6}>
+          <Col md={3}>
             <Form.Group controlId="formChannel">
               <Form.Label>Channel</Form.Label>
               <Form.Control
@@ -126,7 +142,7 @@ const AdminForm = () => {
               </Form.Control>
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={3}>
             <Form.Group controlId="formTitle">
               <Form.Label>Title</Form.Label>
               <Form.Control
@@ -138,9 +154,7 @@ const AdminForm = () => {
               />
             </Form.Group>
           </Col>
-        </Row>
-        <Row>
-          <Col md={6}>
+          <Col md={3}>
             <Form.Group controlId="formDate">
               <Form.Label>Date</Form.Label>
               <Form.Control
@@ -152,7 +166,7 @@ const AdminForm = () => {
               />
             </Form.Group>
           </Col>
-          <Col md={6}>
+          <Col md={3}>
             <Form.Group controlId="formContentType">
               <Form.Label>Content Type</Form.Label>
               <Form.Control
@@ -183,41 +197,19 @@ const AdminForm = () => {
             required
           />
         </Form.Group>
-
+  
         <Form.Group controlId="formDescription">
           <Form.Label>Description</Form.Label>
           <Form.Control
             as="textarea"
             name="description"
-            rows={3}
+            rows={2} // Adjusted size
             value={formData.description}
             onChange={handleInputChange}
             required
           />
         </Form.Group>
-
-        <Form.Group controlId="formAuthor">
-          <Form.Label>Author</Form.Label>
-          <Dropdown onSelect={handleDropdownSelect}>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
-              {formData.authorId 
-                ? authors.find(author => author.id === formData.authorId)?.name || 'Select Author'
-                : 'Select Author'}
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu>
-              {authors.map(author => (
-                <Dropdown.Item
-                  key={author.id} // Use the author ID as the key
-                  eventKey={author.id} // Use author ID as the eventKey
-                >
-                  {author.name}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-        </Form.Group>
-
+  
         <Form.Group controlId="formThumbnail">
           <Form.Label>Thumbnail ID (Optional)</Form.Label>
           <Form.Control
@@ -228,13 +220,16 @@ const AdminForm = () => {
             placeholder="Enter thumbnail ID"
           />
         </Form.Group>
-
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
+  
+        <div className="button-container">
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </div>
       </Form>
     </div>
   );
+  
 };
 
 export default AdminForm;

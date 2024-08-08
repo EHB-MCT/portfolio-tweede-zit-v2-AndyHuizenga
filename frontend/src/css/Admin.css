@@ -1,8 +1,73 @@
-.author-profile-picture {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-    object-fit: cover;
+.admin-form {
+    max-width: 900px; /* Adjust as needed */
+    margin: auto;
+  }
+  
+  .author-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Space between author options */
+    margin-bottom: 15px; /* Space beneath the author images */
+  }
+  
+  .author-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid transparent;
     border-radius: 50%;
+    padding: 2px; /* Slightly reduce padding to fit the border around the image */
+    position: relative; /* For absolute positioning of the image */
+    width: 64px; /* Make sure to match the size of the circle border */
+    height: 64px; /* Make sure to match the size of the circle border */
+    margin-bottom: 50px;
+  }
+  
+  .author-option.selected {
+    border-color: #007bff; /* Highlight color */
+  }
+  
+  .author-image {
+    border-radius: 50%;
+    width: 60px; /* Image size */
+    height: 60px; /* Image size */
+    object-fit: cover;
+    position: absolute; /* Positioning the image inside the circle */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the image */
+  }
+  
+  .author-wrapper {
+    display: flex;
+    justify-content: center; /* Center the image horizontally */
+    align-items: center; /* Center the image vertically */
+    width: 64px; /* Adjust to match the size of the circle border */
+    height: 64px; /* Adjust to match the size of the circle border */
+    margin-bottom: 5px; /* Space between the image and the name */
+  }
+  
+  .author-name {
+
+    text-align: center; /* Center-align the author name */
+    margin-top: 60px; /* Space between the image and the name */
+  }
+  
+  
+  textarea.form-control {
+    resize: none; /* Prevents resizing */
+  }
+  
+  @media (max-width: 768px) {
+    .admin-form {
+      width: 100%;
+    }
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: flex-end; /* Align the button to the right */
+    margin-top: 20px; /* Add space above the submit button */
   }
   

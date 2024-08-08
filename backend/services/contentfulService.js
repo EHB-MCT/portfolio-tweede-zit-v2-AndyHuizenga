@@ -49,8 +49,6 @@ const getAllRecallItems = async () => {
   }
 };
 
-
-// Function to fetch all authors
 const getAllAuthors = async () => {
   try {
     // Fetch recall items
@@ -64,9 +62,14 @@ const getAllAuthors = async () => {
     recallItems.forEach(item => {
       const author = item.author;
       if (author && !uniqueAuthors.has(author.sys.id)) {
+        const profilePictureUrl = author.fields.profilePicture
+          ? `https:${author.fields.profilePicture.fields.file.url}`
+          : ''; // Add default or empty URL if profile picture is not available
+
         uniqueAuthors.set(author.sys.id, {
           name: author.fields.name,
-          id: author.sys.id
+          id: author.sys.id,
+          profilePicture: profilePictureUrl // Include the profile picture URL
         });
       }
     });
@@ -81,6 +84,7 @@ const getAllAuthors = async () => {
     throw error; // Rethrow the error to be handled by the route
   }
 };
+
 
 
 
