@@ -17,7 +17,7 @@ const ChannelPage = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/content/${channelNumber}`);
+        const response = await fetch(`http://localhost:3001/api/content/recall/${channelNumber}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -26,7 +26,7 @@ const ChannelPage = () => {
       } catch (error) {
         console.error('Error fetching content:', error);
       } finally {
-        setLoading(false);
+        setLoading(false); 
       }
     };
 
@@ -61,18 +61,22 @@ const ChannelPage = () => {
   }
 
   const renderContent = () => {
+    if (!channelContent) {
+      return <div>No content available</div>;  // Handle case where channelContent is null or undefined
+    }
+  
     if (channelContent.contentType === 'album') {
       const images = channelContent.content.map((asset) => ({
         original: asset.fields.file.url,
         thumbnail: asset.fields.file.url,
       }));
-
+  
       return (
         <ImageGallery ref={galleryRef} items={images} showThumbnails={true} showPlayButton={false} showFullscreenButton={false} />
       );
     } else if (channelContent.contentType === 'video') {
-      const videoUrl = channelContent.content[0].fields.file.url; // Assuming there's a single video file
-
+      const videoUrl = channelContent.content[0].fields.file.url;
+  
       return (
         <video ref={videoRef} controls className="content-video">
           <source src={videoUrl} type="video/mp4" />

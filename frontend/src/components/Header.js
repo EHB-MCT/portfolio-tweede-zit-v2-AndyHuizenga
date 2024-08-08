@@ -50,32 +50,28 @@ const Header = () => {
   };
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      console.log(`Input value on Enter: ${inputValue}`); // Log the input value
+      console.log(`Input value on Enter: ${inputValue}`);  // Fixed syntax
   
       if (inputValue === '00') {
-        // Navigate to Home when '00' + [Enter] is pressed
         navigate('/');
-        setChannelNumber(inputValue);
-        setInputValue(''); // Clear the input value
+        setChannelNumber(inputValue); 
+        setInputValue(''); 
         console.log('Navigating to Home');
       } else if (inputValue === '99') {
-        // Navigate to Overview when '99' + [Enter] is pressed
         navigate('/overview');
         setChannelNumber(inputValue);
-        setInputValue(''); // Clear the input value
+        setInputValue(''); 
         console.log('Navigating to Overview');
       } else if (inputValue === '98') {
-        // Navigate to Overview when '99' + [Enter] is pressed
         navigate('/admin');
         setChannelNumber(inputValue);
-        setInputValue(''); // Clear the input value
-        console.log('Navigating to Overview');
+        setInputValue(''); 
+        console.log('Navigating to Admin');
       } else {
-        // Navigate to the specific channel for other inputs
         setChannelNumber(inputValue);
         setInputValue('');
-        console.log(`Channel changed to: ${inputValue}`);
-        navigate(`/channel/${inputValue}`);
+        console.log(`Channel changed to: ${inputValue}`);  // Fixed syntax
+        navigate(`/channel/${inputValue}`);  // Fixed syntax
       }
     }
   };

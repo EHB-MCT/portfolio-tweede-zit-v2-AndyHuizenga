@@ -10,9 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.7.2",
+    "axios": "^1.7.3",
     "bcryptjs": "^2.4.3",
     "contentful": "^10.13.1",
+    "contentful-management": "^11.31.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
