@@ -50,22 +50,17 @@ const getAllRecallItems = async () => {
 
 
 // Fetch existing authors
-const getExistingAuthors = async () => {
+const getAllAuthors = async () => {
   try {
-    const space = await managementClient.getSpace(process.env.CONTENTFUL_SPACE_ID);
-    const environment = await space.getEnvironment('master');
-
-    // Fetch authors
-    const entries = await environment.getEntries({
-      content_type: 'author' // Adjust based on your actual content type ID for authors
+    const entries = await client.getEntries({
+      content_type: 'author', // Assuming 'author' is the content type ID for authors
     });
-
-    return entries.items;
+    return entries.items.map(item => item.fields);
   } catch (error) {
-    console.error('Error fetching authors:', error);
     throw error;
   }
 };
+
 
 // Fetch existing assets
 const getExistingAssets = async () => {
@@ -194,6 +189,20 @@ const publishEntry = async (entryId) => {
   }
 };
 
+const getUsedChannelNumbers = async () => {
+  try {
+    const entries = await client.getEntries({
+      content_type: 'recallItem',
+      select: 'fields.channel'
+    });
+
+    const usedChannels = entries.items.map(item => item.fields.channel);
+    return usedChannels;
+  } catch (error) {
+    console.error('Error fetching used channel numbers:', error);
+    throw error;
+  }
+};
 
 
 
@@ -207,7 +216,8 @@ module.exports = {
   getContentByChannel,
   getAllRecallItems,
   addRecallItem,
-  getExistingAuthors,
+  getAllAuthors,
   getExistingAssets,
+  getUsedChannelNumbers,
 };
 
