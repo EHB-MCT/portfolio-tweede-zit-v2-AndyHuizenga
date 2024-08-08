@@ -1,6 +1,9 @@
 // services/contentfulService.js
 const contentful = require('contentful');
 const contentfulManagement = require('contentful-management'); 
+const fs = require('fs');
+const path = require('path');
+
 
 const client = contentful.createClient({
   space: process.env.CONTENTFUL_SPACE_ID,
@@ -45,34 +48,158 @@ const getAllRecallItems = async () => {
   }
 };
 
+
+// Fetch existing authors
+const getExistingAuthors = async () => {
+  try {
+    const space = await managementClient.getSpace(process.env.CONTENTFUL_SPACE_ID);
+    const environment = await space.getEnvironment('master');
+
+    // Fetch authors
+    const entries = await environment.getEntries({
+      content_type: 'author' // Adjust based on your actual content type ID for authors
+    });
+
+    return entries.items;
+  } catch (error) {
+    console.error('Error fetching authors:', error);
+    throw error;
+  }
+};
+
+// Fetch existing assets
+const getExistingAssets = async () => {
+  try {
+    const space = await managementClient.getSpace(process.env.CONTENTFUL_SPACE_ID);
+    const environment = await space.getEnvironment('master');
+
+    // Fetch assets
+    const entries = await environment.getAssets();
+
+    return entries.items;
+  } catch (error) {
+    console.error('Error fetching assets:', error);
+    throw error;
+  }
+};
+
+const testFetchingData = async () => {
+  try {
+    const authors = await getExistingAuthors();
+    console.log('Existing Authors:', authors);
+
+    const assets = await getExistingAssets();
+    console.log('Existing Assets:', assets);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+// Function to upload a thumbnail and return its asset ID
+const uploadThumbnail = async () => {
+  try {
+    const space = await managementClient.getSpace(process.env.CONTENTFUL_SPACE_ID);
+    const environment = await space.getEnvironment('master');
+
+    // Path to the thumbnail file
+    const filePath = path.join(__dirname, '../assets/thumbnail.jpeg');
+    const file = fs.readFileSync(filePath);
+
+    // Create a new asset
+    const asset = await environment.createAsset({
+      fields: {
+        title: { 'en-US': 'Thumbnail Image' },
+        description: { 'en-US': 'A thumbnail image for the recall item' },
+        file: {
+          'en-US': {
+            contentType: 'image/jpeg',
+            fileName: 'thumbnail.jpeg',
+            upload: file,
+          },
+        },
+      },
+    });
+
+    // Process and publish the asset
+    await asset.processForAllLocales();
+    const publishedAsset = await asset.publish();
+    console.log('Thumbnail uploaded and published successfully:', publishedAsset.sys.id);
+    return publishedAsset.sys.id;
+  } catch (error) {
+    console.error('Error uploading thumbnail:', error);
+    throw error;
+  }
+};
+
 const addRecallItem = async (data) => {
   try {
-    // Get the space and environment
     const space = await managementClient.getSpace(process.env.CONTENTFUL_SPACE_ID);
-    const environment = await space.getEnvironment('master'); // or any other environment name
+    const environment = await space.getEnvironment('master');
+
+    // Fetch existing assets to validate content
+    const existingAssets = await getExistingAssets();
+    const contentAssetsExist = data.content.every(assetId => existingAssets.some(asset => asset.sys.id === assetId));
+
+    if (!contentAssetsExist) {
+      throw new Error('One or more Content Asset IDs do not exist');
+    }
+
+    // Handle the thumbnail field
+    let thumbnailAssetId;
+    if (data.thumbnailId) {
+      // Ensure thumbnailId is a single ID, not an array
+      thumbnailAssetId = Array.isArray(data.thumbnailId) ? data.thumbnailId[0] : data.thumbnailId;
+    } else {
+      // If thumbnailId is not provided, upload a new thumbnail
+      thumbnailAssetId = await uploadThumbnail();
+    }
 
     // Create a new entry
     const entry = await environment.createEntry('recallItem', {
       fields: {
-        channel: { 'en-US': data.channel }, // Integer
-        title: { 'en-US': data.title }, // Symbol
-        date: { 'en-US': data.date }, // Date
-        content: { 'en-US': data.content }, // Array of asset links
-        contentType: { 'en-US': data.contentType }, // Symbol
-        description: { 'en-US': data.description }, // Text
-        author: { 'en-US': { sys: { id: data.author } } }, // Link to an entry
-        thumbnail: { 'en-US': { sys: { id: data.thumbnail } } }, // Link to an asset
+        channel: { 'en-US': data.channel },
+        title: { 'en-US': data.title },
+        date: { 'en-US': data.date },
+        content: { 'en-US': data.content.map(assetId => ({ sys: { type: "Link", linkType: "Asset", id: assetId } })) },
+        contentType: { 'en-US': data.contentType },
+        description: { 'en-US': data.description },
+        author: { 'en-US': { sys: { type: "Link", linkType: "Entry", id: data.authorId } } },
+        thumbnail: { 'en-US': { sys: { type: "Link", linkType: "Asset", id: thumbnailAssetId } } },
       },
     });
 
-    // Publish the entry
-    await entry.publish();
-    return entry;
+    const publishedEntry = await publishEntry(entry.sys.id);
+    return publishedEntry;
   } catch (error) {
     console.error('Error adding recall item:', error);
     throw error;
   }
 };
+
+const publishEntry = async (entryId) => {
+  try {
+    const space = await managementClient.getSpace(process.env.CONTENTFUL_SPACE_ID);
+    const environment = await space.getEnvironment('master');
+
+    // Fetch the entry
+    const entry = await environment.getEntry(entryId);
+
+    // Publish the entry
+    const publishedEntry = await entry.publish();
+    console.log('Entry published successfully:', publishedEntry.sys.id);
+    return publishedEntry;
+  } catch (error) {
+    console.error('Error publishing entry:', error);
+    throw error;
+  }
+};
+
+
+
+
+
+
+
 
 
 
@@ -80,5 +207,7 @@ module.exports = {
   getContentByChannel,
   getAllRecallItems,
   addRecallItem,
+  getExistingAuthors,
+  getExistingAssets,
 };
 

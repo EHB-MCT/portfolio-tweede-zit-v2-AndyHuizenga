@@ -35,76 +35,26 @@ router.get('/recall/:channel', async (req, res) => {
 });
 
 
-// POST /api/content/createEntry - Create and publish entry
 router.post('/createEntry', async (req, res) => {
   console.log("Received POST request to /createEntry");
   console.log("Request body:", req.body);
 
   try {
-    // Step 1: Create the entry
-    const createResponse = await axios.post(
-      `https://api.contentful.com/spaces/${process.env.CONTENTFUL_SPACE_ID}/environments/master/entries`,
-      {
-        fields: {
-          channel: { "en-US": req.body.channel },
-          title: { "en-US": req.body.title },
-          date: { "en-US": req.body.date },
-          content: { "en-US": req.body.content.map(assetId => ({ sys: { type: "Link", linkType: "Asset", id: assetId } })) },
-          contentType: { "en-US": req.body.contentType },
-          description: { "en-US": req.body.description },
-          author: { "en-US": { sys: { type: "Link", linkType: "Entry", id: req.body.authorId } } },
-          thumbnail: { "en-US": { sys: { type: "Link", linkType: "Asset", id: req.body.thumbnailId } } }
-        }
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN}`,
-          'Content-Type': 'application/vnd.contentful.management.v1+json',
-          'X-Contentful-Content-Type': 'recallItem' // Ensure this is the correct content type ID
-        }
-      }
-    );
+    // Create and publish the entry
+    const publishedEntry = await contentfulService.addRecallItem(req.body);
+    console.log('Entry created and published:', publishedEntry);
 
-    const entryId = createResponse.data.sys.id;
-    console.log('Entry created with ID:', entryId);
-
-    // Step 2: Publish the entry
-    const publishResponse = await axios.post(
-      `https://api.contentful.com/spaces/${process.env.CONTENTFUL_SPACE_ID}/environments/master/entries/${entryId}/publish`,
-      {},
-      {
-        headers: {
-          'Authorization': `Bearer ${process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN}`,
-          'Content-Type': 'application/vnd.contentful.management.v1+json'
-        }
-      }
-    );
-
-    console.log('Entry published:', publishResponse.data);
-
-    // Verify entry status after publishing
-    const entryStatusResponse = await axios.get(
-      `https://api.contentful.com/spaces/${process.env.CONTENTFUL_SPACE_ID}/environments/master/entries/${entryId}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN}`,
-          'Content-Type': 'application/vnd.contentful.management.v1+json'
-        }
-      }
-    );
-    console.log('Entry status:', entryStatusResponse.data);
-
-    res.status(201).json(publishResponse.data); // Respond with the published entry data
+    res.status(201).json(publishedEntry); // Respond with the published entry data
   } catch (error) {
-    console.error('Error occurred:', error.response ? error.response.data : error.message);
+    console.error('Error occurred:', error.response ? {
+      status: error.response.status,
+      data: error.response.data,
+      headers: error.response.headers
+    } : error.message);
     res.status(error.response ? error.response.status : 500).json({
       error: error.message,
       details: error.response ? error.response.data : {}
     });
   }
 });
-
 module.exports = router;
-
-
-
