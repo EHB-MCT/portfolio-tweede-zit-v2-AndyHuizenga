@@ -1,35 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Form, Button, Spinner, Alert, Row, Col } from 'react-bootstrap';
+import { Form, Button, Spinner, Alert, Row, Col, Dropdown } from 'react-bootstrap';
+import '../css/Admin.css'; // Import custom CSS for better styling
 
 const AdminForm = () => {
   const [channels, setChannels] = useState([]);
   const [authors, setAuthors] = useState([]);
-  const [contentTypes, setContentTypes] = useState(['video', 'image']); // Assuming these types
+  const [contentTypes, setContentTypes] = useState(['video', 'image']);
   const [formData, setFormData] = useState({
     channel: '',
     title: '',
     date: '',
-    content: null,
+    content: '',
     contentType: '',
     description: '',
-    author: '',
-    thumbnail: null
+    authorId: '', // Updated to authorId
+    thumbnailId: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    // Fetch available channels and authors from your API
     const fetchChannelsAndAuthors = async () => {
       try {
-        const availableChannelsResponse = await axios.get('http://localhost:3001/api/availableChannels');
-        const authorsResponse = await axios.get('http://localhost:3001/api/authors');
+        const availableChannelsResponse = await axios.get('http://localhost:3001/api/content/availableChannels');
+        const authorsResponse = await axios.get('http://localhost:3001/api/content/authors');
         setChannels(availableChannelsResponse.data);
         setAuthors(authorsResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
+        setError('Failed to fetch data.');
       }
     };
 
@@ -44,11 +45,10 @@ const AdminForm = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
+  const handleDropdownSelect = (authorId) => {
     setFormData(prevState => ({
       ...prevState,
-      [name]: files[0] || null
+      authorId // Update authorId directly
     }));
   };
 
@@ -57,33 +57,29 @@ const AdminForm = () => {
     setLoading(true);
     setError('');
     setSuccess('');
-
+  
     try {
-      const data = new FormData();
-      for (const key in formData) {
-        if (formData[key] instanceof File) {
-          data.append(key, formData[key]);
-        } else {
-          data.append(key, formData[key]);
-        }
-      }
-
+      const data = {
+        ...formData,
+        content: [formData.content], // Ensure content is an array
+      };
+  
       const response = await axios.post('http://localhost:3001/api/content/createEntry', data, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
-
+  
       setSuccess('Recall item successfully created!');
       setFormData({
         channel: '',
         title: '',
         date: '',
-        content: null,
+        content: '',
         contentType: '',
         description: '',
-        author: '',
-        thumbnail: null
+        authorId: '', // Reset authorId
+        thumbnailId: '' // Reset thumbnailId
       });
     } catch (error) {
       setError('Failed to create recall item.');
@@ -167,12 +163,13 @@ const AdminForm = () => {
           </Col>
         </Row>
         <Form.Group controlId="formContent">
-          <Form.Label>Content (Video/Image)</Form.Label>
+          <Form.Label>Content ID (Video/Image)</Form.Label>
           <Form.Control
-            type="file"
+            type="text"
             name="content"
-            accept={formData.contentType === 'video' ? 'video/*' : 'image/*'}
-            onChange={handleFileChange}
+            value={formData.content}
+            onChange={handleInputChange}
+            placeholder="Enter content ID"
             required
           />
         </Form.Group>
@@ -191,29 +188,39 @@ const AdminForm = () => {
 
         <Form.Group controlId="formAuthor">
           <Form.Label>Author</Form.Label>
-          <Form.Control
-            as="select"
-            name="author"
-            value={formData.author}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Select Author</option>
-            {authors.map(author => (
-              <option key={author.id} value={author.id}>
-                {author.name}
-              </option>
-            ))}
-          </Form.Control>
+          <Dropdown onSelect={handleDropdownSelect}>
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+              {formData.authorId ? 
+                authors.find(author => author.profilePicture?.sys?.id === formData.authorId)?.name || 'Select Author' 
+                : 'Select Author'}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              {authors.map(author => (
+                <Dropdown.Item
+                  key={author.profilePicture?.sys?.id} // Use a unique identifier
+                  eventKey={author.profilePicture?.sys?.id} // Use author ID as the eventKey
+                >
+                  <img 
+                    src={`//images.ctfassets.net/${author.profilePicture?.sys?.space?.sys?.id}/${author.profilePicture?.sys?.id}/${author.profilePicture?.fields?.file?.url}`}
+                    alt={author.name}
+                    className="author-profile-picture"
+                  />
+                  {author.name}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
         </Form.Group>
 
         <Form.Group controlId="formThumbnail">
-          <Form.Label>Thumbnail (Optional)</Form.Label>
+          <Form.Label>Thumbnail ID (Optional)</Form.Label>
           <Form.Control
-            type="file"
-            name="thumbnail"
-            accept="image/*"
-            onChange={handleFileChange}
+            type="text"
+            name="thumbnailId"
+            value={formData.thumbnailId}
+            onChange={handleInputChange}
+            placeholder="Enter thumbnail ID"
           />
         </Form.Group>
 

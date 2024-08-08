@@ -15,6 +15,7 @@ const managementClient = contentfulManagement.createClient({
 });
 
 
+
 const getContentByChannel = async (channel) => {
   try {
     const entries = await client.getEntries({
@@ -49,17 +50,42 @@ const getAllRecallItems = async () => {
 };
 
 
-// Fetch existing authors
+// Function to fetch all authors
 const getAllAuthors = async () => {
   try {
-    const entries = await client.getEntries({
-      content_type: 'author', // Assuming 'author' is the content type ID for authors
+    // Fetch recall items
+    const recallItems = await getAllRecallItems();
+    console.log('Recall items fetched successfully:', recallItems);
+
+    // Create a Map to track unique authors by ID
+    const uniqueAuthors = new Map();
+
+    // Iterate over recall items and add unique authors to the Map
+    recallItems.forEach(item => {
+      const author = item.author;
+      if (author && !uniqueAuthors.has(author.sys.id)) {
+        uniqueAuthors.set(author.sys.id, {
+          name: author.fields.name,
+          id: author.sys.id
+        });
+      }
     });
-    return entries.items.map(item => item.fields);
+
+    // Convert the Map values to an array
+    const authors = Array.from(uniqueAuthors.values());
+
+    console.log('Authors extracted successfully:', authors);
+    return authors;
   } catch (error) {
-    throw error;
+    console.error('Error extracting authors:', error.message);
+    throw error; // Rethrow the error to be handled by the route
   }
 };
+
+
+
+
+
 
 
 // Fetch existing assets
@@ -131,45 +157,54 @@ const addRecallItem = async (data) => {
     const space = await managementClient.getSpace(process.env.CONTENTFUL_SPACE_ID);
     const environment = await space.getEnvironment('master');
 
-    // Fetch existing assets to validate content
-    const existingAssets = await getExistingAssets();
-    const contentAssetsExist = data.content.every(assetId => existingAssets.some(asset => asset.sys.id === assetId));
+    // Check if data.content is an array of objects or IDs
+    if (Array.isArray(data.content)) {
+      // Extract IDs if content is an array of objects
+      const contentAssetIds = data.content.every(item => typeof item === 'string')
+        ? data.content
+        : data.content.map(item => item.sys.id);
+      
+      // Validate that IDs exist
+      const existingAssets = await getExistingAssets();
+      const contentAssetsExist = contentAssetIds.every(assetId => existingAssets.some(asset => asset.sys.id === assetId));
 
-    if (!contentAssetsExist) {
-      throw new Error('One or more Content Asset IDs do not exist');
-    }
+      if (!contentAssetsExist) {
+        throw new Error('One or more Content Asset IDs do not exist');
+      }
 
-    // Handle the thumbnail field
-    let thumbnailAssetId;
-    if (data.thumbnailId) {
-      // Ensure thumbnailId is a single ID, not an array
-      thumbnailAssetId = Array.isArray(data.thumbnailId) ? data.thumbnailId[0] : data.thumbnailId;
+      // Handle the thumbnail field
+      let thumbnailAssetId;
+      if (data.thumbnailId) {
+        thumbnailAssetId = Array.isArray(data.thumbnailId) ? data.thumbnailId[0] : data.thumbnailId;
+      } else {
+        thumbnailAssetId = await uploadThumbnail();
+      }
+
+      // Create a new entry
+      const entry = await environment.createEntry('recallItem', {
+        fields: {
+          channel: { 'en-US': data.channel },
+          title: { 'en-US': data.title },
+          date: { 'en-US': data.date },
+          content: { 'en-US': contentAssetIds.map(assetId => ({ sys: { type: "Link", linkType: "Asset", id: assetId } })) },
+          contentType: { 'en-US': data.contentType },
+          description: { 'en-US': data.description },
+          author: { 'en-US': { sys: { type: "Link", linkType: "Entry", id: data.authorId } } },
+          thumbnail: { 'en-US': { sys: { type: "Link", linkType: "Asset", id: thumbnailAssetId } } },
+        },
+      });
+
+      const publishedEntry = await publishEntry(entry.sys.id);
+      return publishedEntry;
     } else {
-      // If thumbnailId is not provided, upload a new thumbnail
-      thumbnailAssetId = await uploadThumbnail();
+      throw new TypeError('data.content must be an array');
     }
-
-    // Create a new entry
-    const entry = await environment.createEntry('recallItem', {
-      fields: {
-        channel: { 'en-US': data.channel },
-        title: { 'en-US': data.title },
-        date: { 'en-US': data.date },
-        content: { 'en-US': data.content.map(assetId => ({ sys: { type: "Link", linkType: "Asset", id: assetId } })) },
-        contentType: { 'en-US': data.contentType },
-        description: { 'en-US': data.description },
-        author: { 'en-US': { sys: { type: "Link", linkType: "Entry", id: data.authorId } } },
-        thumbnail: { 'en-US': { sys: { type: "Link", linkType: "Asset", id: thumbnailAssetId } } },
-      },
-    });
-
-    const publishedEntry = await publishEntry(entry.sys.id);
-    return publishedEntry;
   } catch (error) {
     console.error('Error adding recall item:', error);
     throw error;
   }
 };
+
 
 const publishEntry = async (entryId) => {
   try {

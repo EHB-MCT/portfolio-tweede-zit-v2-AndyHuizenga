@@ -58,27 +58,19 @@ router.post('/createEntry', async (req, res) => {
   }
 });
 
-
 // GET /api/authors - Fetch all authors
-router.get('/authors', async (req, res) => {
-  try {
-    const authors = await contentfulService.getAllAuthors();
-    res.status(200).json(authors);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});;
+
+
 
 // GET /api/availableChannels - Fetch available channel numbers
-router.get('/availableChannels', async (req, res) => {
+router.get('/authors', async (req, res) => {
   try {
-    const usedChannels = await contentfulService.getUsedChannelNumbers();
-    const allPossibleChannels = Array.from({ length: 50 }, (_, i) => i + 1); // Channel numbers from 1 to 50
-    const availableChannels = allPossibleChannels.filter(channel => !usedChannels.includes(channel));
-
-    res.status(200).json(availableChannels);
+    // Fetch authors using the service
+    const authors = await contentfulService.getAllAuthors();
+    console.log('Authors fetched and sent successfully:', authors);
+    res.status(200).json(authors);
   } catch (error) {
-    console.error('Error fetching available channel numbers:', error.message);
+    console.error('Error fetching authors:', error.message);
     res.status(500).json({ error: error.message });
   }
 });

@@ -96,14 +96,14 @@ const Header = () => {
 
   const formatTime = (date) => {
     const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    console.log(`Formatted time: ${time}`);
+
     return time;
   };
 
   const formatDate = (date) => {
     const options = { weekday: 'long', day: 'numeric', month: 'long' };
     const formattedDate = date.toLocaleDateString('en-GB', options);
-    console.log(`Formatted date: ${formattedDate}`);
+
     return formattedDate;
   };
 
