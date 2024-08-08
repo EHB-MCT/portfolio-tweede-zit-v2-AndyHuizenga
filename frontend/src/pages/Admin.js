@@ -6,7 +6,7 @@ import '../css/Admin.css'; // Import custom CSS for better styling
 const AdminForm = () => {
   const [channels, setChannels] = useState([]);
   const [authors, setAuthors] = useState([]);
-  const [contentTypes, setContentTypes] = useState(['video', 'image']);
+  const [contentTypes] = useState(['video', 'album']); // Updated content types
   const [formData, setFormData] = useState({
     channel: '',
     title: '',
@@ -61,9 +61,18 @@ const AdminForm = () => {
     try {
       const data = {
         ...formData,
+        channel: parseInt(formData.channel, 10), // Convert channel to integer
         content: [formData.content], // Ensure content is an array
+        contentType: formData.contentType // Use contentType directly
       };
-  
+
+      // Validate contentType value
+      if (!contentTypes.includes(data.contentType)) {
+        setError('Invalid content type.');
+        setLoading(false);
+        return;
+      }
+
       const response = await axios.post('http://localhost:3001/api/content/createEntry', data, {
         headers: {
           'Content-Type': 'application/json',
@@ -88,6 +97,7 @@ const AdminForm = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="admin-form">
@@ -190,8 +200,8 @@ const AdminForm = () => {
           <Form.Label>Author</Form.Label>
           <Dropdown onSelect={handleDropdownSelect}>
             <Dropdown.Toggle variant="success" id="dropdown-basic">
-              {formData.authorId ? 
-                authors.find(author => author.id === formData.authorId)?.name || 'Select Author' 
+              {formData.authorId 
+                ? authors.find(author => author.id === formData.authorId)?.name || 'Select Author'
                 : 'Select Author'}
             </Dropdown.Toggle>
 
