@@ -191,21 +191,16 @@ const AdminForm = () => {
           <Dropdown onSelect={handleDropdownSelect}>
             <Dropdown.Toggle variant="success" id="dropdown-basic">
               {formData.authorId ? 
-                authors.find(author => author.profilePicture?.sys?.id === formData.authorId)?.name || 'Select Author' 
+                authors.find(author => author.id === formData.authorId)?.name || 'Select Author' 
                 : 'Select Author'}
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
               {authors.map(author => (
                 <Dropdown.Item
-                  key={author.profilePicture?.sys?.id} // Use a unique identifier
-                  eventKey={author.profilePicture?.sys?.id} // Use author ID as the eventKey
+                  key={author.id} // Use the author ID as the key
+                  eventKey={author.id} // Use author ID as the eventKey
                 >
-                  <img 
-                    src={`//images.ctfassets.net/${author.profilePicture?.sys?.space?.sys?.id}/${author.profilePicture?.sys?.id}/${author.profilePicture?.fields?.file?.url}`}
-                    alt={author.name}
-                    className="author-profile-picture"
-                  />
                   {author.name}
                 </Dropdown.Item>
               ))}

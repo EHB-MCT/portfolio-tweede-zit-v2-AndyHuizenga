@@ -75,4 +75,18 @@ router.get('/authors', async (req, res) => {
   }
 });
 
+// GET /api/availableChannels - Fetch available channel numbers
+router.get('/availableChannels', async (req, res) => {
+  try {
+    const usedChannels = await contentfulService.getUsedChannelNumbers();
+    const allPossibleChannels = Array.from({ length: 50 }, (_, i) => i + 1); // Channel numbers from 1 to 50
+    const availableChannels = allPossibleChannels.filter(channel => !usedChannels.includes(channel));
+
+    res.status(200).json(availableChannels);
+  } catch (error) {
+    console.error('Error fetching available channel numbers:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;
