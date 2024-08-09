@@ -156,11 +156,9 @@ const handleSubmit = async (e) => {
 
   const channelInt = parseInt(formData.channel, 10);
 
-  // Determine the content to send based on the content type
   let contentToSend = formData.content;
 
   if (formData.contentType === 'video') {
-    // Filter out the image file (thumbnail) from the content array
     contentToSend = formData.content.filter(file => !file.name.match(/\.(jpg|jpeg|png|gif)$/i));
   }
 
@@ -168,7 +166,7 @@ const handleSubmit = async (e) => {
     channel: channelInt,
     title: formData.title,
     date: formData.date,
-    content: contentToSend, // Use the filtered content array
+    content: contentToSend,
     contentType: formData.contentType,
     description: formData.description,
     author: { sys: { id: formData.authorId } },
@@ -178,7 +176,7 @@ const handleSubmit = async (e) => {
         linkType: "Asset",
         id: formData.thumbnailId
       }
-    } // Send thumbnailId as an object with sys type
+    }
   };
 
   console.log('Submitting Form Data:', requestData);
@@ -193,6 +191,8 @@ const handleSubmit = async (e) => {
 
     console.log('Response received:', response.data);
     setSuccess('Recall item successfully created!');
+
+    // Clear the form state and file input field
     setFormData({
       channel: '',
       title: '',
@@ -200,9 +200,15 @@ const handleSubmit = async (e) => {
       content: [], // Reset content to an empty array
       contentType: '',
       description: '',
-      authorId: '',
+      authorId: authors.length > 0 ? authors[0].id : '', // Reset to the first author
       thumbnailId: ''
     });
+    setUploadedFileNames([]); // Clear uploaded file names
+    setIsUploaded(false);
+
+    // Clear the file input field
+    document.getElementById('formContentFile').value = '';
+
   } catch (error) {
     console.error('Error submitting form:', error);
     setError('Failed to create recall item.');
@@ -210,6 +216,7 @@ const handleSubmit = async (e) => {
     setLoading(false);
   }
 };
+
 
 
   return (
