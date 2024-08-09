@@ -11,12 +11,11 @@ const AdminForm = () => {
     channel: '',
     title: '',
     date: '',
-    content: null,
+    content: [], // Initialize as an array to hold file objects
     contentType: '',
     description: '',
     authorId: '',
     thumbnailId: '',
-    contentId: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -26,9 +25,11 @@ const AdminForm = () => {
   useEffect(() => {
     const fetchChannelsAndAuthors = async () => {
       try {
-        const availableChannelsResponse = await axios.get('http://localhost:3001/api/content/availableChannels');
-        const authorsResponse = await axios.get('http://localhost:3001/api/content/authors');
-        setChannels(availableChannelsResponse.data);
+        const [channelsResponse, authorsResponse] = await Promise.all([
+          axios.get('http://localhost:3001/api/content/availableChannels'),
+          axios.get('http://localhost:3001/api/content/authors')
+        ]);
+        setChannels(channelsResponse.data);
         setAuthors(authorsResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -48,10 +49,10 @@ const AdminForm = () => {
   };
 
   const handleFileChange = (e) => {
-    const { name, files } = e.target;
+    const files = Array.from(e.target.files); // Convert FileList to Array
     setFormData(prevState => ({
       ...prevState,
-      [name]: files[0] // Handle file input for content
+      content: files
     }));
   };
 
@@ -63,40 +64,39 @@ const AdminForm = () => {
   };
 
   const uploadContent = async () => {
-    if (!formData.content) {
-      setError('Please select a file to upload.');
+    if (!formData.content.length) {
+      setError('Please select files to upload.');
       return;
     }
-  
+
     setUploading(true);
     setError('');
     setSuccess('');
-  
-    const file = formData.content;
-    const formDataForUpload = new FormData();
-    formDataForUpload.append('file', file);
-    formDataForUpload.append('title', formData.title); // Add title and description
-    formDataForUpload.append('description', formData.description);
-  
+
     try {
+      const formDataForUpload = new FormData();
+      formData.content.forEach(file => {
+        formDataForUpload.append('content', file); // Use 'content' to match backend field name
+      });
+
       const uploadResponse = await axios.post('http://localhost:3001/api/content/upload', formDataForUpload, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-  
-      const { id, file: uploadedFile } = uploadResponse.data;
-      console.log('File uploaded successfully. Content ID:', id, 'Filename:', uploadedFile.fileName);
-  
-      setFormData(prevState => ({
-        ...prevState,
-        contentId: id
-      }));
-  
-      setSuccess('File uploaded and processed successfully!');
+
+      if (uploadResponse.data.success) {
+        setFormData(prevState => ({
+          ...prevState,
+          content: uploadResponse.data.fileIds.map(id => ({ sys: { id } })) // Format content array with IDs
+        }));
+        setSuccess('Files uploaded and processed successfully!');
+      } else {
+        setError('Failed to upload files.');
+      }
     } catch (uploadError) {
-      console.error('Error uploading file:', uploadError);
-      setError('Failed to upload file.');
+      console.error('Error uploading files:', uploadError);
+      setError('Failed to upload files.');
     } finally {
       setUploading(false);
     }
@@ -107,47 +107,20 @@ const AdminForm = () => {
     setLoading(true);
     setError('');
     setSuccess('');
-  
-    // Convert channel to integer
-    const channelInt = parseInt(formData.channel, 10);
-  
-    // Use a hard-coded reference ID for content
-    const contentArray = [
-      {
-        metadata: {}, // Placeholder for metadata if needed
-        sys: { id: '7C5h7G9UrvICDI1MJRS3OY' }, // Hard-coded reference ID
-        fields: {} // Placeholder for fields if needed
-      }
-    ];
 
-  
-  
-    // Build request data structure
+    const channelInt = parseInt(formData.channel, 10);
+
     const requestData = {
-      channel: channelInt, // Ensure channel is an integer
+      channel: channelInt,
       title: formData.title,
       date: formData.date,
-      content: [
-        {
-          sys: { id: formData.contentId } // Use the dynamically retrieved Contentful asset ID
-        }
-      ],
+      content: formData.content, // Use the formatted content array
       contentType: formData.contentType,
       description: formData.description,
-      author: {
-        sys: {
-          id: formData.authorId
-        }
-      }, // Assuming author ID is correct
-      thumbnail: {
-        sys: {
-          id: formData.thumbnailId // Ensure thumbnail ID is included
-        }
-      } // Ensure thumbnail ID is included
+      author: { sys: { id: formData.authorId } },
+      thumbnail: { sys: { id: formData.thumbnailId } }
     };
 
-
-  
     try {
       console.log('Submitting form data:', requestData);
       const response = await axios.post('http://localhost:3001/api/content/createEntry', requestData, {
@@ -155,38 +128,27 @@ const AdminForm = () => {
           'Content-Type': 'application/json',
         }
       });
-  
+
       console.log('Response received:', response.data);
       setSuccess('Recall item successfully created!');
       setFormData({
         channel: '',
         title: '',
         date: '',
-        content: null,
+        content: [], // Reset content to an empty array
         contentType: '',
         description: '',
         authorId: '',
-        thumbnailId: '',
-        contentId: ''
+        thumbnailId: ''
       });
     } catch (error) {
       console.error('Error submitting form:', error);
-      if (error.response) {
-        console.error('Error response data:', error.response.data);
-      } else {
-        console.error('Error message:', error.message);
-      }
       setError('Failed to create recall item.');
     } finally {
       setLoading(false);
     }
   };
-  
-  
-  
-  
-  
-  
+
   return (
     <div className="admin-form">
       <h2>Create New Recall Item</h2>
@@ -280,11 +242,13 @@ const AdminForm = () => {
           <Form.Label>Upload Content File</Form.Label>
           <Form.Control
             type="file"
-            name="content"
+            name="content" // This should match the field name in Multer
             onChange={handleFileChange}
+            multiple={formData.contentType === 'album'} // Allow multiple files only for albums
             required
           />
         </Form.Group>
+
         <Button variant="primary" onClick={uploadContent} disabled={uploading}>
           Upload Content
         </Button>
@@ -308,7 +272,7 @@ const AdminForm = () => {
             onChange={handleInputChange}
           />
         </Form.Group>
-        <Button variant="success" type="submit" disabled={loading}>
+        <Button variant="success" type="submit" disabled={loading || uploading}>
           Submit
         </Button>
       </Form>

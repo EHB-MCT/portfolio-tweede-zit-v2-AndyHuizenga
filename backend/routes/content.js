@@ -4,7 +4,8 @@ const router = express.Router();
 const contentfulService = require('../services/contentfulService');
 const multer = require('multer');
 const mime = require('mime-types');
-
+const fs = require('fs');
+const path = require('path');
 
 // GET /api/recall/:channel - Fetch content based on channel number
 router.get('/recall/:channel', async (req, res) => {
@@ -94,22 +95,38 @@ router.get('/availableChannels', async (req, res) => {
   }
 });
 
+// If handling multiple fields, use `upload.fields` instead of `upload.array`
 
-const upload = multer({ dest: 'uploads/' }); // Define a destination folder
 
-router.post('/upload', upload.single('file'), async (req, res) => {
+
+
+
+// Configure multer to handle file uploads
+const upload = multer({ dest: 'uploads/' });
+
+
+
+router.post('/upload', upload.fields([{ name: 'content', maxCount: 10 }]), async (req, res) => {
   try {
-    console.log('Received file upload request:', req.file, req.body);
-
-    const contentfulAsset = await contentfulService.uploadFileToContentful(req.file, req.body.title, req.body.description);
-
-    if (!contentfulAsset || !contentfulAsset.fields || !contentfulAsset.fields.file || !contentfulAsset.fields.file['en-US']) {
-      throw new Error('Uploaded asset is not structured as expected');
+    if (!req.files['content'] || req.files['content'].length === 0) {
+      return res.status(400).json({ success: false, message: 'No files uploaded under "content".' });
     }
 
-    res.json({ success: true, file: contentfulAsset.fields.file['en-US'], id: contentfulAsset.sys.id });
+    const filePromises = req.files['content'].map(async (file) => {
+      try {
+        const contentfulAsset = await contentfulService.uploadFileToContentful(file);
+        fs.unlinkSync(file.path); // Clean up file
+        return contentfulAsset.sys.id;
+      } catch (fileError) {
+        console.error('Error processing file:', fileError.message);
+        throw fileError;
+      }
+    });
+
+    const fileIds = await Promise.all(filePromises);
+    res.json({ success: true, fileIds });
   } catch (error) {
-    console.error('Error during file upload:', error);
+    console.error('Error during file upload:', error.message);
     res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
   }
 });

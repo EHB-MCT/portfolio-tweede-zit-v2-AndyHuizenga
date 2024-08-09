@@ -103,10 +103,12 @@ const addRecallItem = async (data) => {
       throw new TypeError('data.content must be an array');
     }
 
+    // Extract asset IDs from content field if not already in string format
     const contentAssetIds = data.content.every(item => typeof item === 'string')
       ? data.content
       : data.content.map(item => item.sys.id);
 
+    // Fetch existing assets
     const existingAssets = await getExistingAssets();
     const contentAssetsExist = contentAssetIds.every(assetId => existingAssets.some(asset => asset.sys.id === assetId));
 
@@ -115,7 +117,6 @@ const addRecallItem = async (data) => {
     }
 
     const environment = await getEnvironment();
-
     const entry = await environment.createEntry('recallItem', {
       fields: {
         channel: { 'en-US': data.channel },
@@ -129,12 +130,15 @@ const addRecallItem = async (data) => {
       },
     });
 
-    return publishEntry(entry.sys.id);
+    return await publishEntry(entry.sys.id);
   } catch (error) {
     console.error('Error adding recall item:', error.message);
     throw error;
   }
 };
+
+
+
 
 // Publish an entry
 async function publishEntry(entryId) {
@@ -169,7 +173,6 @@ const getUsedChannelNumbers = async () => {
     throw error;
   }
 };
-
 
 
 
