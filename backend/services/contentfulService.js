@@ -173,7 +173,7 @@ const getUsedChannelNumbers = async () => {
 
 
 
-const uploadFileToContentful = async (file, title, description) => {
+const uploadFileToContentful = async (file) => {
   try {
     const environment = await getEnvironment();
 
@@ -184,10 +184,10 @@ const uploadFileToContentful = async (file, title, description) => {
     let asset = await environment.createAsset({
       fields: {
         title: {
-          'en-US': title,
+          'en-US': file.originalname, // Use the original file name as the title
         },
         description: {
-          'en-US': description,
+          'en-US': 'recall media content', // Automatically add description
         },
         file: {
           'en-US': {
