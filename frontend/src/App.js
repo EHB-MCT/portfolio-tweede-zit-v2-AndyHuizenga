@@ -3,12 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ChannelPage from './pages/ChannelPage';
 import Header from './components/Header';
-import Admin from './pages/adminPages/AdminUpload';
 import PageWrapper from './components/PageWrapper';
 import OverviewPage from './pages/OverviewPage'; 
 import AdminPage from './pages/adminPages/AdminPage';
 import CreateAuthorPage from './pages/adminPages/CreateAuthorPage';
-import CreateEntryPage from './pages/adminPages/CreateEntryPage';
+import CreateEntryPage from './pages/adminPages/AdminUpload';
 import SettingsPage from './pages/adminPages/SettingsPage';
 
 
