@@ -77,52 +77,68 @@ const AdminForm = () => {
 
   const uploadContent = async () => {
     if (!formData.content.length) {
-        setError('Please select files to upload.');
-        return;
+      setError('Please select files to upload.');
+      return;
     }
-
+  
+    // Check if the selected content type is 'video' and ensure two files are selected
+    if (formData.contentType === 'video' && formData.content.length !== 2) {
+      setError('Please upload exactly one video file and one image file for the thumbnail.');
+      return;
+    }
+  
     setUploading(true);
     setError('');
     setSuccess('');
-
+  
     try {
-        const formDataForUpload = new FormData();
-        formData.content.forEach(file => {
-            formDataForUpload.append('content', file);
-        });
-
-        const uploadResponse = await axios.post('http://localhost:3001/api/content/upload', formDataForUpload, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-
-        console.log('Upload response:', uploadResponse.data);
-
-        if (uploadResponse.data.success && Array.isArray(uploadResponse.data.fileIds)) {
-            const uploadedFiles = uploadResponse.data.fileIds.map((id, index) => ({
-                id: id,
-                name: formData.content[index].name // Assuming the file order is maintained
-            }));
-
-            setUploadedFileNames(uploadedFiles.map(file => file.name)); // Display file names
-            setFormData(prevState => ({
-                ...prevState,
-                content: uploadedFiles, // Store uploaded file details in the content array
-                thumbnailId: uploadedFiles[0].id // Automatically set the first file as the default thumbnail
-            }));
-            setSuccess('Files uploaded and processed successfully!');
-            setIsUploaded(true);
-        } else {
-            setError('Failed to upload files or unexpected response structure.');
+      const formDataForUpload = new FormData();
+      formData.content.forEach(file => {
+        formDataForUpload.append('content', file);
+      });
+  
+      const uploadResponse = await axios.post('http://localhost:3001/api/content/upload', formDataForUpload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
+      });
+  
+      console.log('Upload response:', uploadResponse.data);
+  
+      if (uploadResponse.data.success && Array.isArray(uploadResponse.data.fileIds)) {
+        const uploadedFiles = uploadResponse.data.fileIds.map((id, index) => ({
+          id: id,
+          name: formData.content[index].name // Assuming the file order is maintained
+        }));
+  
+        setUploadedFileNames(uploadedFiles.map(file => file.name)); // Display file names
+  
+        // Automatically set the thumbnail to the image file if video is selected
+        let thumbnailId = uploadedFiles[0].id; // Default to the first file
+        if (formData.contentType === 'video') {
+          const imageFile = uploadedFiles.find(file => file.name.match(/\.(jpg|jpeg|png|gif)$/i));
+          thumbnailId = imageFile ? imageFile.id : thumbnailId;
+        }
+  
+        setFormData(prevState => ({
+          ...prevState,
+          content: uploadedFiles, // Store uploaded file details in the content array
+          thumbnailId: thumbnailId // Automatically set the correct thumbnail
+        }));
+        setSuccess('Files uploaded and processed successfully!');
+        setIsUploaded(true);
+      } else {
+        setError('Failed to upload files or unexpected response structure.');
+      }
     } catch (uploadError) {
-        console.error('Error uploading files:', uploadError);
-        setError('Failed to upload files.');
+      console.error('Error uploading files:', uploadError);
+      setError('Failed to upload files.');
     } finally {
-        setUploading(false);
+      setUploading(false);
     }
-};
+  };
+  
+  
 
 const handleThumbnailSelect = (e) => {
   const selectedFileId = e.target.value;
@@ -140,20 +156,28 @@ const handleSubmit = async (e) => {
 
   const channelInt = parseInt(formData.channel, 10);
 
+  // Determine the content to send based on the content type
+  let contentToSend = formData.content;
+
+  if (formData.contentType === 'video') {
+    // Filter out the image file (thumbnail) from the content array
+    contentToSend = formData.content.filter(file => !file.name.match(/\.(jpg|jpeg|png|gif)$/i));
+  }
+
   const requestData = {
     channel: channelInt,
     title: formData.title,
     date: formData.date,
-    content: formData.content, // Use the formatted content array
+    content: contentToSend, // Use the filtered content array
     contentType: formData.contentType,
     description: formData.description,
     author: { sys: { id: formData.authorId } },
     thumbnail: {
-        sys: {
-            type: "Link",
-            linkType: "Asset",
-            id: formData.thumbnailId
-        }
+      sys: {
+        type: "Link",
+        linkType: "Asset",
+        id: formData.thumbnailId
+      }
     } // Send thumbnailId as an object with sys type
   };
 
@@ -186,6 +210,7 @@ const handleSubmit = async (e) => {
     setLoading(false);
   }
 };
+
 
   return (
     <div className="admin-form">
@@ -294,7 +319,7 @@ const handleSubmit = async (e) => {
               type="file"
               name="content" // This should match the field name in Multer
               onChange={handleFileChange}
-              multiple={formData.contentType === 'album'} // Allow multiple files only for albums
+              multiple// Allow multiple files only for albums
               required
             />
           </Form.Group>
