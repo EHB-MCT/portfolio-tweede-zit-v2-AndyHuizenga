@@ -1,36 +1,61 @@
+.admin-page {
+  padding: 50px 0; /* Add padding to the top and bottom to give more space */
+}
+
 .admin-card {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: transform 0.3s;
-    height: 250px; /* Ensure all cards have the same height */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  .admin-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .admin-card-icon {
-    font-size: 50px;
-    color: #007bff; /* Bootstrap's primary color */
-    margin-bottom: 20px;
-  }
-  
-  .card-link {
-    text-decoration: none;
-  }
-  
-  .admin-page h1 {
-    margin-bottom: 40px;
-  }
-  
-  .admin-card-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-  }
-  
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s;
+  height: 500px; /* Increase the height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  color: white; /* Set the text and icon color to white */
+}
+
+/* Specific background colors for each card */
+.admin-card.light-blue-card {
+  background-color: #87CEFA; /* Light blue */
+}
+
+.admin-card.purple-card {
+  background-color: #9370DB; /* Purple */
+}
+
+.admin-card.light-grey-card {
+  background-color: #D3D3D3; /* Light grey */
+}
+
+.admin-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-card:hover {
+  transform: translateY(-5px);
+}
+
+.admin-card-icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+  color: white; /* Make the icon white */
+}
+
+.admin-card-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: white; /* Make the title text white */
+}
+
+.card-link {
+  text-decoration: none;
+}
+
+.admin-page h1 {
+  margin-bottom: 40px;
+  text-align: center;
+}
