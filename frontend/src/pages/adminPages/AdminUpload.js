@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Button, Spinner, Alert, Row, Col } from 'react-bootstrap';
-import '../css/Admin.css';
+import '../../css/AdminUpload.css';
 
 const AdminForm = () => {
   const [channels, setChannels] = useState([]);
@@ -280,7 +280,7 @@ const handleSubmit = async (e) => {
             <Form.Group controlId="formDate">
               <Form.Label>Date</Form.Label>
               <Form.Control
-                type="datetime-local"
+                type="date"
                 name="date"
                 value={formData.date}
                 onChange={handleInputChange}
