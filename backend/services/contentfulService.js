@@ -65,15 +65,23 @@ const getAllAuthors = async () => {
       const fields = entry.fields;
 
       const name = fields.name ? fields.name['en-US'] : null;
-      const profilePictureId = fields.profilePicture ? fields.profilePicture['en-US'].sys.id : null;
+      const profilePicture = fields.profilePicture ? fields.profilePicture['en-US'].sys.id : null;
       const relationship = fields.relationship ? fields.relationship['en-US'] : null;
       const code = fields.code ? fields.code['en-US'] : null;
+      const email = fields.email ? fields.email['en-US'] : null;
+      const contactnumber = fields.contactnumber ? fields.contactnumber['en-US'] : null;
+      const description = fields.description ? fields.description['en-US'] : null;
+      const bday = fields.bday ? fields.bday['en-US'] : null;
 
       return {
         name,
-        profilePicture: profilePictureId, // Return only the profile picture ID
+        profilePicture, // Return only the profile picture ID
         relationship,
-        code
+        code,
+        email,
+        contactnumber,
+        description,
+        bday
       };
     });
 
@@ -83,6 +91,7 @@ const getAllAuthors = async () => {
     throw error;
   }
 };
+
 
 
 
@@ -247,11 +256,17 @@ const uploadFileToContentful = async (file) => {
     throw error;
   }
 };
-const createAuthor = async (name, relationship, profilePicture) => {
+const createAuthor = async (name, relationship, profilePicture, email, contactnumber, description, bday) => {
   try {
     // Generate a random 10-digit code
     const code = Math.floor(1000000000 + Math.random() * 9000000000);
     console.log('Generated code:', code);
+
+    // Validate and prepare contactnumber
+    const contactNumberAsInteger = parseInt(contactnumber, 10);
+    if (isNaN(contactNumberAsInteger)) {
+      throw new Error('Invalid contact number format. It should be an integer.');
+    }
 
     // Prepare the data for creating the author entry
     const authorData = {
@@ -261,7 +276,11 @@ const createAuthor = async (name, relationship, profilePicture) => {
         code: { 'en-US': code },
         profilePicture: profilePicture
           ? { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id: profilePicture } } }
-          : undefined
+          : undefined,
+        email: { 'en-US': email },
+        contactnumber: { 'en-US': contactNumberAsInteger },
+        description: { 'en-US': description },
+        bday: { 'en-US': bday }
       }
     };
 
@@ -278,9 +297,12 @@ const createAuthor = async (name, relationship, profilePicture) => {
     return { author: publishedEntry.fields, code };
   } catch (error) {
     console.error('Error creating author entry:', error.message);
+    // Detailed error logging
+    console.error('Error details:', error.response ? error.response.data : error.stack);
     throw error; // Rethrow the error to be handled by the route
   }
 };
+
 
 
 

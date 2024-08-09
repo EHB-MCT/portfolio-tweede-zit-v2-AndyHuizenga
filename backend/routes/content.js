@@ -134,25 +134,25 @@ router.post('/upload', upload.fields([{ name: 'content', maxCount: 10 }]), async
 
 
 // POST /api/content/createAuthor - Create and publish a new author
+// POST /api/content/createAuthor - Create and publish a new author
 router.post('/createAuthor', async (req, res) => {
-  const { name, relationship, profilePicture } = req.body;
+  // Destructure all required fields from the request body
+  const { name, relationship, profilePicture, email, contactnumber, description, bday } = req.body;
 
-  // Validate required fields
-  if (!name || !relationship || !profilePicture) {
-    return res.status(400).json({ success: false, message: 'Missing required fields.' });
-  }
 
   try {
-    // Call the service function to handle the creation and publishing
-    const result = await contentfulService.createAuthor(name, relationship, profilePicture); // Ensure the function name is correct
-
-    // Return the result from the service
-    res.json({ success: true, author: result.author, code: result.code });
+    // Call the createAuthor function with all necessary parameters
+    const result = await contentfulService.createAuthor(name, relationship, profilePicture, email, contactnumber, description, bday);
+    
+    // Respond with the success status and the result from the service
+    return res.status(200).json({ success: true, ...result });
   } catch (error) {
-    console.error('Error creating author:', error.message);
-    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+    // Log the error and respond with failure status
+    console.error('Error creating author:', error);
+    return res.status(500).json({ success: false, message: 'Failed to create author.' });
   }
 });
+
 
 module.exports = router;
 
