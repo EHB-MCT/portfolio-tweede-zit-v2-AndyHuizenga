@@ -119,13 +119,19 @@ const AdminForm = () => {
         fields: {} // Placeholder for fields if needed
       }
     ];
+
+  
   
     // Build request data structure
     const requestData = {
       channel: channelInt, // Ensure channel is an integer
       title: formData.title,
       date: formData.date,
-      content: contentArray,
+      content: [
+        {
+          sys: { id: formData.contentId } // Use the dynamically retrieved Contentful asset ID
+        }
+      ],
       contentType: formData.contentType,
       description: formData.description,
       author: {
@@ -139,6 +145,8 @@ const AdminForm = () => {
         }
       } // Ensure thumbnail ID is included
     };
+
+
   
     try {
       console.log('Submitting form data:', requestData);
