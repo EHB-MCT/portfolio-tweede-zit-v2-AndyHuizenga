@@ -1,9 +1,11 @@
+// app.js
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
-const nfc = require('nfc-pcsc'); // Ensure this is the correct NFC library
-require('dotenv').config(); // For environment variables
+const nfc = require('nfc-pcsc');
+require('dotenv').config(); 
+
 
 // Initialize Express application
 const app = express();
@@ -22,14 +24,16 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Define your API routes (adjust paths as needed)
-app.use('/api/content', require('./routes/content')); // Example route
+// Set up multer for file uploads
+
+
+// Use the routes defined in routes/content.js
+app.use('/api/content', require('./routes/content'));
 
 // Initialize NFC reader
 const nfcReader = new nfc.NFC();
 
-// Handle NFC reader events
-function handleNfcReader(reader) {
+nfcReader.on('reader', (reader) => {
   console.log(`${reader.reader.name} device attached`);
 
   reader.on('card', async (card) => {
@@ -54,9 +58,7 @@ function handleNfcReader(reader) {
   reader.on('end', () => {
     console.log(`${reader.reader.name} device removed`);
   });
-}
-
-nfcReader.on('reader', handleNfcReader);
+});
 
 nfcReader.on('error', (err) => {
   console.log('NFC error:', err);
