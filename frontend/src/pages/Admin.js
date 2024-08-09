@@ -21,6 +21,8 @@ const AdminForm = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [uploadedFileNames, setUploadedFileNames] = useState([]);
+  const [isUploaded, setIsUploaded] = useState(false);
 
   useEffect(() => {
     const fetchChannelsAndAuthors = async () => {
@@ -49,11 +51,13 @@ const AdminForm = () => {
   };
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files); // Convert FileList to Array
+    const files = Array.from(e.target.files);
     setFormData(prevState => ({
       ...prevState,
       content: files
     }));
+    setUploadedFileNames(files.map(file => file.name)); // Update the file names
+    setIsUploaded(false); // Reset the uploaded status when files are selected
   };
 
   const handleAuthorSelect = (authorId) => {
@@ -76,7 +80,7 @@ const AdminForm = () => {
     try {
       const formDataForUpload = new FormData();
       formData.content.forEach(file => {
-        formDataForUpload.append('content', file); // Use 'content' to match backend field name
+        formDataForUpload.append('content', file);
       });
 
       const uploadResponse = await axios.post('http://localhost:3001/api/content/upload', formDataForUpload, {
@@ -88,9 +92,10 @@ const AdminForm = () => {
       if (uploadResponse.data.success) {
         setFormData(prevState => ({
           ...prevState,
-          content: uploadResponse.data.fileIds.map(id => ({ sys: { id } })) // Format content array with IDs
+          content: uploadResponse.data.fileIds.map(id => ({ sys: { id } }))
         }));
         setSuccess('Files uploaded and processed successfully!');
+        setIsUploaded(true);
       } else {
         setError('Failed to upload files.');
       }
@@ -238,20 +243,6 @@ const AdminForm = () => {
             </Form.Group>
           </Col>
         </Row>
-        <Form.Group controlId="formContentFile">
-          <Form.Label>Upload Content File</Form.Label>
-          <Form.Control
-            type="file"
-            name="content" // This should match the field name in Multer
-            onChange={handleFileChange}
-            multiple={formData.contentType === 'album'} // Allow multiple files only for albums
-            required
-          />
-        </Form.Group>
-
-        <Button variant="primary" onClick={uploadContent} disabled={uploading}>
-          Upload Content
-        </Button>
         <Form.Group controlId="formDescription">
           <Form.Label>Description</Form.Label>
           <Form.Control
@@ -272,8 +263,28 @@ const AdminForm = () => {
             onChange={handleInputChange}
           />
         </Form.Group>
-        <Button variant="success" type="submit" disabled={loading || uploading}>
-          Submit
+        <div className="file-upload-container">
+          <Form.Group controlId="formContentFile" className="file-input">
+            <Form.Label>Upload Content File</Form.Label>
+            <Form.Control
+              type="file"
+              name="content" // This should match the field name in Multer
+              onChange={handleFileChange}
+              multiple={formData.contentType === 'album'} // Allow multiple files only for albums
+              required
+            />
+          </Form.Group>
+          <div className="file-names">
+            {uploadedFileNames.join(', ')}
+          </div>
+        </div>
+        <Button
+          variant={isUploaded ? 'success' : 'primary'}
+          onClick={isUploaded ? handleSubmit : uploadContent}
+          disabled={loading || uploading || (!isUploaded && !formData.content.length)}
+          className="upload-button"
+        >
+          {isUploaded ? 'Confirm' : 'Upload Content'}
         </Button>
       </Form>
     </div>

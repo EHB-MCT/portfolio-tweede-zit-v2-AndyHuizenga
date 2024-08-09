@@ -1,73 +1,93 @@
 .admin-form {
-    max-width: 900px; /* Adjust as needed */
-    margin: auto;
-  }
-  
-  .author-select {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px; /* Space between author options */
-    margin-bottom: 15px; /* Space beneath the author images */
-  }
-  
-  .author-option {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    border: 2px solid transparent;
-    border-radius: 50%;
-    padding: 2px; /* Slightly reduce padding to fit the border around the image */
-    position: relative; /* For absolute positioning of the image */
-    width: 64px; /* Make sure to match the size of the circle border */
-    height: 64px; /* Make sure to match the size of the circle border */
-    margin-bottom: 50px;
-  }
-  
-  .author-option.selected {
-    border-color: #007bff; /* Highlight color */
-  }
-  
-  .author-image {
-    border-radius: 50%;
-    width: 60px; /* Image size */
-    height: 60px; /* Image size */
-    object-fit: cover;
-    position: absolute; /* Positioning the image inside the circle */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Center the image */
-  }
-  
-  .author-wrapper {
-    display: flex;
-    justify-content: center; /* Center the image horizontally */
-    align-items: center; /* Center the image vertically */
-    width: 64px; /* Adjust to match the size of the circle border */
-    height: 64px; /* Adjust to match the size of the circle border */
-    margin-bottom: 5px; /* Space between the image and the name */
-  }
-  
-  .author-name {
+  max-width: 900px; /* Adjust as needed */
+  margin: auto;
+}
 
-    text-align: center; /* Center-align the author name */
-    margin-top: 60px; /* Space between the image and the name */
+.author-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between author options */
+  margin-bottom: 15px; /* Space beneath the author images */
+}
+
+.author-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  padding: 2px; /* Slightly reduce padding to fit the border around the image */
+  position: relative; /* For absolute positioning of the image */
+  width: 64px; /* Make sure to match the size of the circle border */
+  height: 64px; /* Make sure to match the size of the circle border */
+  margin-bottom: 50px;
+}
+
+.author-option.selected {
+  border-color: #007bff; /* Highlight color */
+}
+
+.author-image {
+  border-radius: 50%;
+  width: 60px; /* Image size */
+  height: 60px; /* Image size */
+  object-fit: cover;
+  position: absolute; /* Positioning the image inside the circle */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the image */
+}
+
+.author-wrapper {
+  display: flex;
+  justify-content: center; /* Center the image horizontally */
+  align-items: center; /* Center the image vertically */
+  width: 64px; /* Adjust to match the size of the circle border */
+  height: 64px; /* Adjust to match the size of the circle border */
+  margin-bottom: 5px; /* Space between the image and the name */
+}
+
+.author-name {
+  text-align: center; /* Center-align the author name */
+  margin-top: 60px; /* Space between the image and the name */
+}
+
+textarea.form-control {
+  resize: none; /* Prevents resizing */
+}
+
+@media (max-width: 768px) {
+  .admin-form {
+    width: 100%;
   }
-  
-  
-  textarea.form-control {
-    resize: none; /* Prevents resizing */
-  }
-  
-  @media (max-width: 768px) {
-    .admin-form {
-      width: 100%;
-    }
-  }
-  
-  .button-container {
-    display: flex;
-    justify-content: flex-end; /* Align the button to the right */
-    margin-top: 20px; /* Add space above the submit button */
-  }
-  
+}
+
+/* Style for file upload section */
+.file-upload-container {
+  display: flex;
+  align-items: center; /* Vertically align items in the center */
+  gap: 10px; /* Space between file input and filenames */
+}
+
+.file-upload-container .file-input {
+  flex: 1; /* Take up remaining space */
+  margin-right: 10px; /* Space between input and filename display */
+}
+
+.file-upload-container .file-names {
+  color: #6c757d; /* Muted text color */
+  font-size: 0.9em; /* Slightly smaller text size */
+  overflow: hidden; /* Hide overflowing text */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  text-overflow: ellipsis; /* Show ellipsis if text overflows */
+}
+
+.upload-button {
+  margin-top: 20px; /* Space above the upload button */
+}
+
+/* Ensure proper alignment for all form elements */
+.form-group {
+  margin-bottom: 1rem;
+}
