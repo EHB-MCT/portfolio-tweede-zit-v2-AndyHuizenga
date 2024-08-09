@@ -99,43 +99,55 @@ const getExistingAssets = async () => {
 // Add and publish a recall item
 const addRecallItem = async (data) => {
   try {
+    // Ensure content is an array and extract asset IDs
     if (!Array.isArray(data.content)) {
       throw new TypeError('data.content must be an array');
     }
 
-    // Extract asset IDs from content field if not already in string format
-    const contentAssetIds = data.content.every(item => typeof item === 'string')
-      ? data.content
-      : data.content.map(item => item.sys.id);
+    const contentAssetIds = data.content.map(item => ({
+      sys: { type: "Link", linkType: "Asset", id: item.id }
+    }));
 
-    // Fetch existing assets
-    const existingAssets = await getExistingAssets();
-    const contentAssetsExist = contentAssetIds.every(assetId => existingAssets.some(asset => asset.sys.id === assetId));
-
-    if (!contentAssetsExist) {
-      throw new Error('One or more Content Asset IDs do not exist');
-    }
-
-    const environment = await getEnvironment();
-    const entry = await environment.createEntry('recallItem', {
+    // Prepare the data for creating the entry
+    const entryData = {
       fields: {
         channel: { 'en-US': data.channel },
         title: { 'en-US': data.title },
         date: { 'en-US': data.date },
-        content: { 'en-US': contentAssetIds.map(assetId => ({ sys: { type: "Link", linkType: "Asset", id: assetId } })) },
+        content: { 
+          'en-US': contentAssetIds 
+        },
         contentType: { 'en-US': data.contentType },
         description: { 'en-US': data.description },
-        author: { 'en-US': { sys: { type: "Link", linkType: "Entry", id: data.authorId } } },
-        thumbnail: data.thumbnailId ? { 'en-US': { sys: { type: "Link", linkType: "Asset", id: data.thumbnailId } } } : undefined,
-      },
-    });
+        author: { 
+          'en-US': { 
+            sys: { type: "Link", linkType: "Entry", id: data.author.sys.id } 
+          } 
+        },
+        thumbnail: {
+          'en-US': {
+            sys: { 
+              type: "Link", linkType: "Asset", id: data.thumbnail.sys.id 
+            }
+          }
+        }
+      }
+    };
 
+    // Create the entry in Contentful
+    const environment = await getEnvironment();
+    const entry = await environment.createEntry('recallItem', entryData);
+    
+    // Publish the entry
     return await publishEntry(entry.sys.id);
   } catch (error) {
     console.error('Error adding recall item:', error.message);
     throw error;
   }
 };
+
+
+
 
 
 

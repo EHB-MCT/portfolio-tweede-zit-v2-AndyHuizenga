@@ -6,7 +6,7 @@ import '../css/Admin.css';
 const AdminForm = () => {
   const [channels, setChannels] = useState([]);
   const [authors, setAuthors] = useState([]);
-  const [contentTypes] = useState(['video', 'album']);
+  const [contentTypes] = useState(['video', 'album']); 
   const [formData, setFormData] = useState({
     channel: '',
     title: '',
@@ -33,6 +33,14 @@ const AdminForm = () => {
         ]);
         setChannels(channelsResponse.data);
         setAuthors(authorsResponse.data);
+        
+        // Automatically set the first author as the default author
+        if (authorsResponse.data.length > 0) {
+          setFormData(prevState => ({
+            ...prevState,
+            authorId: authorsResponse.data[0].id
+          }));
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Failed to fetch data.');
@@ -69,8 +77,8 @@ const AdminForm = () => {
 
   const uploadContent = async () => {
     if (!formData.content.length) {
-      setError('Please select files to upload.');
-      return;
+        setError('Please select files to upload.');
+        return;
     }
 
     setUploading(true);
@@ -78,81 +86,106 @@ const AdminForm = () => {
     setSuccess('');
 
     try {
-      const formDataForUpload = new FormData();
-      formData.content.forEach(file => {
-        formDataForUpload.append('content', file);
-      });
+        const formDataForUpload = new FormData();
+        formData.content.forEach(file => {
+            formDataForUpload.append('content', file);
+        });
 
-      const uploadResponse = await axios.post('http://localhost:3001/api/content/upload', formDataForUpload, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+        const uploadResponse = await axios.post('http://localhost:3001/api/content/upload', formDataForUpload, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        console.log('Upload response:', uploadResponse.data);
+
+        if (uploadResponse.data.success && Array.isArray(uploadResponse.data.fileIds)) {
+            const uploadedFiles = uploadResponse.data.fileIds.map((id, index) => ({
+                id: id,
+                name: formData.content[index].name // Assuming the file order is maintained
+            }));
+
+            setUploadedFileNames(uploadedFiles.map(file => file.name)); // Display file names
+            setFormData(prevState => ({
+                ...prevState,
+                content: uploadedFiles, // Store uploaded file details in the content array
+                thumbnailId: uploadedFiles[0].id // Automatically set the first file as the default thumbnail
+            }));
+            setSuccess('Files uploaded and processed successfully!');
+            setIsUploaded(true);
+        } else {
+            setError('Failed to upload files or unexpected response structure.');
         }
-      });
-
-      if (uploadResponse.data.success) {
-        setFormData(prevState => ({
-          ...prevState,
-          content: uploadResponse.data.fileIds.map(id => ({ sys: { id } }))
-        }));
-        setSuccess('Files uploaded and processed successfully!');
-        setIsUploaded(true);
-      } else {
-        setError('Failed to upload files.');
-      }
     } catch (uploadError) {
-      console.error('Error uploading files:', uploadError);
-      setError('Failed to upload files.');
+        console.error('Error uploading files:', uploadError);
+        setError('Failed to upload files.');
     } finally {
-      setUploading(false);
+        setUploading(false);
     }
-  };
+};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
+const handleThumbnailSelect = (e) => {
+  const selectedFileId = e.target.value;
+  setFormData(prevState => ({
+      ...prevState,
+      thumbnailId: selectedFileId // Set the selected file's ID as the thumbnailId
+  }));
+};
 
-    const channelInt = parseInt(formData.channel, 10);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
+  setSuccess('');
 
-    const requestData = {
-      channel: channelInt,
-      title: formData.title,
-      date: formData.date,
-      content: formData.content, // Use the formatted content array
-      contentType: formData.contentType,
-      description: formData.description,
-      author: { sys: { id: formData.authorId } },
-      thumbnail: { sys: { id: formData.thumbnailId } }
-    };
+  const channelInt = parseInt(formData.channel, 10);
 
-    try {
-      console.log('Submitting form data:', requestData);
-      const response = await axios.post('http://localhost:3001/api/content/createEntry', requestData, {
-        headers: {
-          'Content-Type': 'application/json',
+  const requestData = {
+    channel: channelInt,
+    title: formData.title,
+    date: formData.date,
+    content: formData.content, // Use the formatted content array
+    contentType: formData.contentType,
+    description: formData.description,
+    author: { sys: { id: formData.authorId } },
+    thumbnail: {
+        sys: {
+            type: "Link",
+            linkType: "Asset",
+            id: formData.thumbnailId
         }
-      });
-
-      console.log('Response received:', response.data);
-      setSuccess('Recall item successfully created!');
-      setFormData({
-        channel: '',
-        title: '',
-        date: '',
-        content: [], // Reset content to an empty array
-        contentType: '',
-        description: '',
-        authorId: '',
-        thumbnailId: ''
-      });
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setError('Failed to create recall item.');
-    } finally {
-      setLoading(false);
-    }
+    } // Send thumbnailId as an object with sys type
   };
+
+  console.log('Submitting Form Data:', requestData);
+
+  try {
+    console.log('Submitting form data:', requestData);
+    const response = await axios.post('http://localhost:3001/api/content/createEntry', requestData, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    console.log('Response received:', response.data);
+    setSuccess('Recall item successfully created!');
+    setFormData({
+      channel: '',
+      title: '',
+      date: '',
+      content: [], // Reset content to an empty array
+      contentType: '',
+      description: '',
+      authorId: '',
+      thumbnailId: ''
+    });
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    setError('Failed to create recall item.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="admin-form">
@@ -254,15 +287,6 @@ const AdminForm = () => {
             required
           />
         </Form.Group>
-        <Form.Group controlId="formThumbnailId">
-          <Form.Label>Thumbnail ID</Form.Label>
-          <Form.Control
-            type="text"
-            name="thumbnailId"
-            value={formData.thumbnailId}
-            onChange={handleInputChange}
-          />
-        </Form.Group>
         <div className="file-upload-container">
           <Form.Group controlId="formContentFile" className="file-input">
             <Form.Label>Upload Content File</Form.Label>
@@ -276,8 +300,28 @@ const AdminForm = () => {
           </Form.Group>
           <div className="file-names">
             {uploadedFileNames.join(', ')}
-          </div>
+          </div> 
         </div>
+        {isUploaded && formData.content.length > 0 && (
+                <Form.Group controlId="formThumbnailSelect">
+                    <Form.Label>Select Thumbnail</Form.Label>
+                    <Form.Control
+                        as="select"
+                        name="thumbnail"
+                        value={formData.thumbnailId}
+                        onChange={handleThumbnailSelect}
+                        required
+                    >
+                        <option value="">Select Thumbnail</option>
+                        {formData.content.map((file) => (
+                            <option key={file.id} value={file.id}>
+                                {file.name}
+                            </option>
+                        ))}
+                    </Form.Control>
+                </Form.Group>
+        )}
+        
         <Button
           variant={isUploaded ? 'success' : 'primary'}
           onClick={isUploaded ? handleSubmit : uploadContent}
