@@ -58,29 +58,37 @@ const getAllRecallItems = async () => {
 // Fetch all authors
 const getAllAuthors = async () => {
   try {
-    const recallItems = await getAllRecallItems();
-    const uniqueAuthors = new Map();
+    const environment = await getEnvironment();
+    const entries = await environment.getEntries({ content_type: 'author' });
 
-    recallItems.forEach(item => {
-      const author = item.author;
-      if (author && !uniqueAuthors.has(author.sys.id)) {
-        const profilePictureUrl = author.fields.profilePicture
-          ? `https:${author.fields.profilePicture.fields.file.url}`
-          : '';
+    const authors = entries.items.map(entry => {
+      const fields = entry.fields;
 
-        uniqueAuthors.set(author.sys.id, {
-          name: author.fields.name,
-          id: author.sys.id,
-          profilePicture: profilePictureUrl,
-        });
-      }
+      const name = fields.name ? fields.name['en-US'] : null;
+      const profilePictureId = fields.profilePicture ? fields.profilePicture['en-US'].sys.id : null;
+      const relationship = fields.relationship ? fields.relationship['en-US'] : null;
+      const code = fields.code ? fields.code['en-US'] : null;
+
+      return {
+        name,
+        profilePicture: profilePictureId, // Return only the profile picture ID
+        relationship,
+        code
+      };
     });
 
-    return Array.from(uniqueAuthors.values());
+    return authors;
   } catch (error) {
+    console.error('Error fetching authors:', error.message);
     throw error;
   }
 };
+
+
+
+
+
+
 
 // Fetch existing assets
 const getExistingAssets = async () => {
@@ -239,6 +247,42 @@ const uploadFileToContentful = async (file) => {
     throw error;
   }
 };
+const createAuthor = async (name, relationship, profilePicture) => {
+  try {
+    // Generate a random 10-digit code
+    const code = Math.floor(1000000000 + Math.random() * 9000000000);
+    console.log('Generated code:', code);
+
+    // Prepare the data for creating the author entry
+    const authorData = {
+      fields: {
+        name: { 'en-US': name },
+        relationship: { 'en-US': relationship },
+        code: { 'en-US': code },
+        profilePicture: profilePicture
+          ? { 'en-US': { sys: { type: 'Link', linkType: 'Asset', id: profilePicture } } }
+          : undefined
+      }
+    };
+
+    // Get the environment and create the entry
+    const environment = await getEnvironment(); 
+    const entry = await environment.createEntry('author', authorData);
+    console.log('Author entry created:', entry.sys.id);
+
+    // Publish the entry
+    const publishedEntry = await entry.publish();
+    console.log('Author entry published successfully:', publishedEntry.sys.id);
+
+    // Return the published entry fields and the generated code
+    return { author: publishedEntry.fields, code };
+  } catch (error) {
+    console.error('Error creating author entry:', error.message);
+    throw error; // Rethrow the error to be handled by the route
+  }
+};
+
+
 
 
 
@@ -255,4 +299,5 @@ module.exports = {
   getExistingAssets,
   getUsedChannelNumbers,
   uploadFileToContentful,
+  createAuthor,
 };

@@ -6,6 +6,7 @@ const multer = require('multer');
 const mime = require('mime-types');
 const fs = require('fs');
 const path = require('path');
+const { log } = require('console');
 
 // GET /api/recall/:channel - Fetch content based on channel number
 router.get('/recall/:channel', async (req, res) => {
@@ -132,5 +133,30 @@ router.post('/upload', upload.fields([{ name: 'content', maxCount: 10 }]), async
 });
 
 
+// POST /api/content/createAuthor - Create and publish a new author
+router.post('/createAuthor', async (req, res) => {
+  const { name, relationship, profilePicture } = req.body;
+
+  // Validate required fields
+  if (!name || !relationship || !profilePicture) {
+    return res.status(400).json({ success: false, message: 'Missing required fields.' });
+  }
+
+  try {
+    // Call the service function to handle the creation and publishing
+    const result = await contentfulService.createAuthor(name, relationship, profilePicture); // Ensure the function name is correct
+
+    // Return the result from the service
+    res.json({ success: true, author: result.author, code: result.code });
+  } catch (error) {
+    console.error('Error creating author:', error.message);
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
+  }
+});
 
 module.exports = router;
+
+
+
+
+
