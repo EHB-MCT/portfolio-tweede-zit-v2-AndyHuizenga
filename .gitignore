@@ -69,3 +69,5 @@ lerna-debug.log*
 # Local env files
 .env.local
 .env.*.local
+
+uploads/
