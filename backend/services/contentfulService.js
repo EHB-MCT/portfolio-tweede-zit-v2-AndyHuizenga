@@ -102,15 +102,15 @@ const getAllAuthors = async () => {
 };
 
 // Fetch existing assets
-const getExistingAssets = async () => {
+const getExistingAssets = async (assetNames = []) => {
   try {
     const environment = await getEnvironment();
     const entries = await environment.getAssets();
 
-    // Filter assets based on their title
+    // Filter assets based on the provided names in the query
     const filteredAssets = entries.items.filter(item => {
       const title = item.fields.title['en-US'];
-      return title === 'option1' || title === 'option2';
+      return assetNames.includes(title);
     });
 
     return filteredAssets.map(item => ({
@@ -123,6 +123,7 @@ const getExistingAssets = async () => {
     throw error;
   }
 };
+
 
 
 const findAuthorByName = async (name) => {

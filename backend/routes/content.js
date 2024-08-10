@@ -134,15 +134,25 @@ router.get('/availableChannels', async (req, res) => {
 // If handling multiple fields, use `upload.fields` instead of `upload.array`
 
 // In your backend service or API
-router.get('/assets', async (req, res) => {
+router.post('/assets', async (req, res) => {
   try {
-    const assets = await contentfulService.getExistingAssets();
+    const assetNames = req.body.names; // Expecting an array of names in the body
+
+    if (!Array.isArray(assetNames)) {
+      return res.status(400).json({ error: 'Invalid request format. Expected an array of names.' });
+    }
+
+    // Fetch assets using the provided names
+    const assets = await contentfulService.getExistingAssets(assetNames);
+    
     res.status(200).json(assets);
   } catch (error) {
     console.error('Error fetching assets:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
+
+
 
 
 

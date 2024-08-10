@@ -6,31 +6,32 @@ import '../css/HomePage.css';
 const HomePage = () => {
   const [images, setImages] = useState({ option1: '', option2: '' });
 
+  const fetchImages = async () => {
+    try {
+      // Define the asset names you want to fetch
+      const assetNames = ['option1', 'option2'];
+
+      // Send a POST request with the array of names
+      const response = await axios.post('http://localhost:3001/api/content/assets', {
+        names: assetNames,
+      });
+      
+      const assets = response.data;
+
+      // Map the assets to their corresponding options dynamically
+      const imageMap = assetNames.reduce((acc, name) => {
+        const asset = assets.find(asset => asset.title === name);
+        acc[name] = asset ? asset.url : ''; // If asset is not found, set an empty string or a placeholder
+        return acc;
+      }, {});
+
+      setImages(imageMap);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/content/assets');
-        const assets = response.data;
-
-        const imageMap = {
-          option1: '',
-          option2: ''
-        };
-
-        assets.forEach(asset => {
-          if (asset.title === 'option1') {
-            imageMap.option1 = asset.url;
-          } else if (asset.title === 'option2') {
-            imageMap.option2 = asset.url;
-          }
-        });
-
-        setImages(imageMap);
-      } catch (error) {
-        console.error('Error fetching images:', error);
-      }
-    };
-
     fetchImages();
   }, []);
 
@@ -38,7 +39,6 @@ const HomePage = () => {
     <Container fluid className="home-page">
       <Row className="welcome-section text-center">
         <Col>
-        
           <h1 className="welcome-title">Bienvenue à Recall</h1>
           <p className="welcome-subtitle">
             Vous pouvez explorer les éléments de rappel, qui sont des fragments précieux de votre vie, de différentes manières. Découvrez les options ci-dessous :
