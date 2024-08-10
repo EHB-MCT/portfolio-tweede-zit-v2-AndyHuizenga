@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import '../../css/CreateAuthorPage.css';
@@ -7,7 +7,7 @@ const CreateAuthorPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     relationship: '',
-    profilePicture: '',
+    profilePicture: '', // This should be an ID
     email: '',
     contactnumber: '',
     description: '',
@@ -18,6 +18,20 @@ const CreateAuthorPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [uploadedFileNames, setUploadedFileNames] = useState([]);
+  const [thumbnails, setThumbnails] = useState([]);
+
+  useEffect(() => {
+    const fetchThumbnails = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/content/assets');
+        setThumbnails(response.data);
+      } catch (error) {
+        console.error('Error fetching thumbnails:', error);
+      }
+    };
+
+    fetchThumbnails();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -60,7 +74,7 @@ const CreateAuthorPage = () => {
       if (response.data.success && response.data.fileIds && response.data.fileIds.length > 0) {
         setFormData(prevState => ({
           ...prevState,
-          profilePicture: response.data.fileIds
+          profilePicture: response.data.fileIds[0] // Assuming a single file is uploaded
         }));
         setSuccess('Profile picture uploaded successfully!');
       } else {
@@ -86,7 +100,7 @@ const CreateAuthorPage = () => {
       const response = await axios.post('http://localhost:3001/api/content/createAuthor', {
         name,
         relationship,
-        profilePicture,
+        profilePicture, // Should be the ID of the uploaded file
         email,
         contactnumber,
         description,
@@ -225,7 +239,6 @@ const CreateAuthorPage = () => {
               name="bday"
               value={formData.bday}
               onChange={handleInputChange}
-              required
               className="form-control"
             />
           </Form.Group>
