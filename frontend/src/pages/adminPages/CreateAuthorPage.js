@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
+import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import { Form, Button, Spinner, Alert } from 'react-bootstrap';
-import '../../css/CreateAuthorPage.css'; // Ensure this path is correct for your project
+import '../../css/CreateAuthorPage.css';
 
 const CreateAuthorPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     relationship: '',
-    profilePicture: '', // This should hold the profile picture ID
+    profilePicture: '',
     email: '',
     contactnumber: '',
     description: '',
-    bday: '' // Add field for birthdate
+    bday: ''
   });
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [uploadedFileName, setUploadedFileName] = useState('');
+  const [uploadedFileNames, setUploadedFileNames] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,16 +28,17 @@ const CreateAuthorPage = () => {
   };
 
   const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
     setFormData(prevState => ({
       ...prevState,
-      profilePicture: e.target.files[0]
+      profilePicture: files
     }));
-    setUploadedFileName(e.target.files[0].name); // Display the selected file name
+    setUploadedFileNames(files.map(file => file.name));
   };
 
   const handleProfilePictureUpload = async () => {
-    const file = formData.profilePicture;
-    if (!file) {
+    const files = formData.profilePicture;
+    if (!files.length) {
       setError('Please select a profile picture to upload.');
       return;
     }
@@ -47,7 +48,7 @@ const CreateAuthorPage = () => {
     setSuccess('');
 
     const uploadData = new FormData();
-    uploadData.append('content', file);
+    files.forEach(file => uploadData.append('content', file));
 
     try {
       const response = await axios.post('http://localhost:3001/api/content/upload', uploadData, {
@@ -59,7 +60,7 @@ const CreateAuthorPage = () => {
       if (response.data.success && response.data.fileIds && response.data.fileIds.length > 0) {
         setFormData(prevState => ({
           ...prevState,
-          profilePicture: response.data.fileIds[0] // Store the profile picture ID
+          profilePicture: response.data.fileIds
         }));
         setSuccess('Profile picture uploaded successfully!');
       } else {
@@ -85,27 +86,25 @@ const CreateAuthorPage = () => {
       const response = await axios.post('http://localhost:3001/api/content/createAuthor', {
         name,
         relationship,
-        profilePicture, // Use profilePicture ID
+        profilePicture,
         email,
         contactnumber,
         description,
-        bday // Include birthdate field
+        bday
       });
 
       if (response.data.success) {
         setSuccess(`Author created successfully! Code: ${response.data.code}`);
-        // Reset form fields
         setFormData({
           name: '',
           relationship: '',
-          profilePicture: '', // Reset profilePicture to an empty string
+          profilePicture: '',
           email: '',
           contactnumber: '',
           description: '',
-          bday: '' // Reset birthdate field
+          bday: ''
         });
-        setUploadedFileName('');
-        // Clear any previous error messages
+        setUploadedFileNames([]);
         setError('');
       } else {
         setError('Failed to create author.');
@@ -127,103 +126,118 @@ const CreateAuthorPage = () => {
       {success && !uploading && <Alert variant="success">{success}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
 
-      <Form>
-        <Form.Group controlId="formProfilePicture">
-          <Form.Label>Profile Picture</Form.Label>
-          <Form.Control
-            type="file"
-            onChange={handleFileChange}
-            accept="image/*"
-          />
-          {uploadedFileName && <p>Selected file: {uploadedFileName}</p>}
-        </Form.Group>
-
-        <Button
-          type="button"
-          onClick={handleProfilePictureUpload}
-          variant="primary"
-          disabled={uploading}
-        >
-          {uploading ? 'Uploading...' : 'Upload Profile Picture'}
-        </Button>
-
-        <Form.Group controlId="formName">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group controlId="formRelationship">
-          <Form.Label>Relationship</Form.Label>
-          <Form.Control
-            as="select"
-            name="relationship"
-            value={formData.relationship}
-            onChange={handleInputChange}
-            required
+      <Form className="create-author-form">
+        <div className="file-upload-container">
+          <Form.Group controlId="formContentFile" className="file-input">
+            <Form.Label className="sr-only">Upload Content File</Form.Label>
+            <Form.Control
+              type="file"
+              name="content"
+              onChange={handleFileChange}
+              multiple
+              required
+              className="file-input-control"
+            />
+          </Form.Group>
+          <div className="file-names">
+            {uploadedFileNames.join(', ')}
+          </div> 
+          <Button
+            type="button"
+            onClick={handleProfilePictureUpload}
+            disabled={uploading}
+            className="upload-button"
           >
-            <option value="">Select Relationship</option>
-            <option value="Family">Family</option>
-            <option value="Doctor">Doctor</option>
-            <option value="Friends">Friends</option>
-          </Form.Control>
-        </Form.Group>
+            {uploading ? 'Uploading...' : 'Upload File'}
+          </Button>
+        </div>
 
-        <Form.Group controlId="formEmail">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-          />
-        </Form.Group>
+        <div className="form-fields">
+          <Form.Group controlId="formName" className="form-group">
+            <Form.Label className="form-label">Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              required
+              className="form-control"
+            />
+          </Form.Group>
 
-        <Form.Group controlId="formContactNumber">
-          <Form.Label>Contact Number</Form.Label>
-          <Form.Control
-            type="text"
-            name="contactnumber"
-            value={formData.contactnumber}
-            onChange={handleInputChange}
-          />
-        </Form.Group>
+          <Form.Group controlId="formRelationship" className="form-group">
+            <Form.Label className="form-label">Relationship</Form.Label>
+            <Form.Control
+              as="select"
+              name="relationship"
+              value={formData.relationship}
+              onChange={handleInputChange}
+              required
+              className="form-control"
+            >
+              <option value="">Select Relationship</option>
+              <option value="Family">Family</option>
+              <option value="Doctor">Doctor</option>
+              <option value="Friends">Friends</option>
+            </Form.Control>
+          </Form.Group>
 
-        <Form.Group controlId="formDescription">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="formEmail" className="form-group">
+            <Form.Label className="form-label">Email</Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+              className="form-control"
+            />
+          </Form.Group>
 
-        <Form.Group controlId="formBday">
-          <Form.Label>Birthdate</Form.Label>
-          <Form.Control
-            type="date"
-            name="bday"
-            value={formData.bday}
-            onChange={handleInputChange}
-          />
-        </Form.Group>
+          <Form.Group controlId="formContactNumber" className="form-group">
+            <Form.Label className="form-label">Contact Number</Form.Label>
+            <Form.Control
+              type="text"
+              name="contactnumber"
+              value={formData.contactnumber}
+              onChange={handleInputChange}
+              className="form-control"
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formDescription" className="form-group">
+            <Form.Label className="form-label">Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={5}
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              required
+              className="description-textarea"
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formBday" className="form-group">
+            <Form.Label className="form-label">Birthday</Form.Label>
+            <Form.Control
+              type="date"
+              name="bday"
+              value={formData.bday}
+              onChange={handleInputChange}
+              required
+              className="form-control"
+            />
+          </Form.Group>
+        </div>
 
         <Button
           type="submit"
           onClick={handleSubmit}
-          variant="primary"
-          disabled={loading || !formData.profilePicture}
+          disabled={loading}
+          className="submit-button"
         >
-          {loading ? 'Submitting...' : 'Create Author'}
+          {loading ? 'Creating...' : 'Create Author'}
         </Button>
       </Form>
     </div>

@@ -1,0 +1,104 @@
+.create-author-page {
+    max-width: 900px; /* Maintain the max-width for the page */
+    margin: auto;
+    padding: 20px; /* Add padding around the page content */
+  }
+  
+  .create-author-form {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    gap: 20px; /* Space between form elements */
+  }
+  
+  /* Profile Picture section */
+  .profile-picture-section {
+    display: flex;
+    align-items: center; /* Vertically center items */
+    gap: 15px; /* Space between the file input and the upload button */
+  }
+  
+  .file-upload-container {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    gap: 10px; /* Space between the file input and the filename */
+  }
+  
+  .file-input {
+    width: auto; /* Adjust width to fit content */
+  }
+  
+  .file-names {
+    color: #6c757d; /* Muted text color */
+    font-size: 0.875em; /* Slightly smaller text size */
+    overflow: hidden; /* Hide overflow text */
+    white-space: nowrap; /* Prevent text wrapping */
+    text-overflow: ellipsis; /* Show ellipsis for overflow text */
+  }
+  
+  .upload-button {
+    padding: 0.5rem 1rem; /* Adjust padding */
+    font-size: 0.875rem; /* Slightly smaller font size */
+  }
+  
+  /* Form fields layout */
+  .form-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns for form fields */
+    gap: 20px; /* Space between columns */
+  }
+  
+  .form-group {
+    margin-bottom: 0; /* Remove bottom margin */
+  }
+  
+  .description-textarea {
+    resize: vertical; /* Allow vertical resizing only */
+    height: 150px; /* Increased height for the description textarea */
+  }
+  
+  /* "Create Author" button styling */
+  .submit-button {
+    padding: 0.75rem 1.5rem; /* Larger padding for the button */
+    font-size: 1rem; /* Regular font size */
+    align-self: flex-end; /* Align button to the right */
+  }
+  
+  @media (max-width: 768px) {
+    .create-author-form {
+      flex-direction: column; /* Stack elements vertically on small screens */
+    }
+  
+    .form-fields {
+      grid-template-columns: 1fr; /* Single column layout for smaller screens */
+    }
+  }
+  
+  /* Style for the file upload container */
+.file-upload-container {
+    display: flex;
+    align-items: center; /* Vertically align items in the center */
+    gap: 10px; /* Space between file input and filenames */
+    margin-top: 15px; /* Space above the container */
+  }
+  
+  /* Ensure the file input is styled as part of the form */
+  .file-input {
+    flex: 1; /* Allow the input to take the available width */
+  }
+  
+  /* Style for file names display */
+  .file-names {
+    color: #6c757d; /* Muted text color */
+    font-size: 0.9em; /* Slightly smaller text size */
+    overflow: hidden; /* Hide overflowing text */
+    white-space: nowrap; /* Prevent text from wrapping to the next line */
+    text-overflow: ellipsis; /* Show ellipsis if text overflows */
+    margin-top: 10px; /* Space between file input and filenames */
+  }
+  
+  .upload-button {
+    margin-top: 35px; /* Space above the upload button */
+    padding: 8px 16px; /* Adjust padding for the button */
+    font-size: 0.9em; /* Adjust font size */
+  }
+  
