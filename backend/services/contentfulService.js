@@ -106,17 +106,24 @@ const getExistingAssets = async () => {
   try {
     const environment = await getEnvironment();
     const entries = await environment.getAssets();
-    console.log("First entry:", entries.items[0]);
-    console.log('Existing assets:', entries.items.map(item => ({
+
+    // Filter assets based on their title
+    const filteredAssets = entries.items.filter(item => {
+      const title = item.fields.title['en-US'];
+      return title === 'option1' || title === 'option2';
+    });
+
+    return filteredAssets.map(item => ({
       id: item.sys.id,
-      title: item.fields.title['en-US']
-    }))); // Log all existing asset details
-    return entries.items;
+      title: item.fields.title['en-US'],
+      url: item.fields.file['en-US'].url, // Include the URL for easy access
+    }));
   } catch (error) {
     console.error('Error fetching assets:', error.message);
     throw error;
   }
 };
+
 
 const findAuthorByName = async (name) => {
   try {

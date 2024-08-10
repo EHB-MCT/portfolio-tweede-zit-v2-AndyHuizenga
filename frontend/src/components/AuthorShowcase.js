@@ -21,10 +21,7 @@ const AuthorShowcase = () => {
 
   return (
     <Container fluid className="AuthorShowcase">
-      <Row className="text-center mb-4">
-        <Col>
-          <h2>Meet the Authors</h2>
-        </Col>
+      <Row className="text-center mb-4"> yeah
       </Row>
 
       <Carousel
@@ -37,15 +34,15 @@ const AuthorShowcase = () => {
         {authors.map((author, index) => (
           <Carousel.Item key={index}>
             <Card className="mx-auto author-card">
-              <Row>
-                <Col md={4} className="d-flex align-items-center">
+              <Row noGutters>
+                <Col md={4} className="image-col"> {/* 2/5 of 12 columns is 4 */}
                   <Card.Img
                     src={author.profilePictureUrl}
                     alt={`${author.name}'s picture`}
                     className="img-fluid"
                   />
                 </Col>
-                <Col md={8}>
+                <Col md={8} className="text-col"> {/* 3/5 of 12 columns is 8 */}
                   <Card.Body>
                     <Card.Text className="text-muted fst-italic">
                       {author.relationship}
