@@ -13,7 +13,7 @@ const AuthorSelector = ({ authors, onSelectAuthor, selectedAuthorIndex }) => {
           onClick={() => onSelectAuthor(author, index)}
         >
           <div className="author-wrapper">
-            <img src={author.profilePicture} alt={author.name} className="author-image" />
+            <img src={author.profilePictureUrl} alt={author.name} className="author-image" />
           </div>
           <div className="author-name">{author.name}</div>
         </div>

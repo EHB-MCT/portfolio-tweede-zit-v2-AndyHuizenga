@@ -67,6 +67,11 @@ const Header = () => {
         setChannelNumber(inputValue);
         setInputValue(''); 
         console.log('Navigating to Admin');
+      } else if (inputValue === '97') {
+        navigate('/social');
+        setChannelNumber(inputValue);
+        setInputValue(''); 
+        console.log('Navigating to social');
       } else {
         setChannelNumber(inputValue);
         setInputValue('');

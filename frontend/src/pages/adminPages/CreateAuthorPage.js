@@ -19,6 +19,7 @@ const CreateAuthorPage = () => {
   const [success, setSuccess] = useState('');
   const [uploadedFileNames, setUploadedFileNames] = useState([]);
   const [thumbnails, setThumbnails] = useState([]);
+  const [isUploaded, setIsUploaded] = useState(false); // New state to track if content is uploaded
 
   useEffect(() => {
     const fetchThumbnails = async () => {
@@ -77,6 +78,7 @@ const CreateAuthorPage = () => {
           profilePicture: response.data.fileIds[0] // Assuming a single file is uploaded
         }));
         setSuccess('Profile picture uploaded successfully!');
+        setIsUploaded(true); // Mark as uploaded
       } else {
         setError('Failed to upload profile picture.');
       }
@@ -119,6 +121,7 @@ const CreateAuthorPage = () => {
           bday: ''
         });
         setUploadedFileNames([]);
+        setIsUploaded(false); // Reset the upload state after submission
         setError('');
       } else {
         setError('Failed to create author.');
@@ -156,14 +159,7 @@ const CreateAuthorPage = () => {
           <div className="file-names">
             {uploadedFileNames.join(', ')}
           </div> 
-          <Button
-            type="button"
-            onClick={handleProfilePictureUpload}
-            disabled={uploading}
-            className="upload-button"
-          >
-            {uploading ? 'Uploading...' : 'Upload File'}
-          </Button>
+
         </div>
 
         <div className="form-fields">
@@ -245,12 +241,12 @@ const CreateAuthorPage = () => {
         </div>
 
         <Button
-          type="submit"
-          onClick={handleSubmit}
-          disabled={loading}
-          className="submit-button"
+          variant={isUploaded ? 'success' : 'primary'}
+          onClick={isUploaded ? handleSubmit : handleProfilePictureUpload}
+          disabled={loading || uploading || (!isUploaded && !formData.profilePicture.length)}
+          className="upload-button"
         >
-          {loading ? 'Creating...' : 'Create Author'}
+          {isUploaded ? 'Submit' : 'Upload Content'}
         </Button>
       </Form>
     </div>

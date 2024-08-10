@@ -1,20 +1,38 @@
 .admin-card {
-  border-radius: 10px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 15px; /* Slightly larger rounded corners */
+  border: 300px solid transparent; /* Start with a transparent border */
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); /* Softer shadow */
   text-align: center;
-  transition: transform 0.3s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
   height: 60vw; /* Adjust height to 60% of the viewport width */
   max-height: 400px; /* Set a max height to avoid cards getting too large */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: white; /* Keep the card background white */
+  color: #333; /* Default text color */
   position: relative;
+  background-color: white; /* Keep the card background white */
 }
 
-.admin-page {
+.admin-card.light-blue-card {
+  border-color: #87CEFA !important; /* Light blue border */
+  color: #87CEFA !important; /* Light blue text and icon */
 
-  height: 100%;
+}
+
+.admin-card.purple-card {
+  border-color: #9370DB !important; /* Purple border */
+  color: #9370DB !important; /* Purple text and icon */
+}
+
+.admin-card.light-grey-card {
+  border-color: #D3D3D3 !important; /* Light grey border */
+  color: #D3D3D3 !important; /* Light grey text and icon */
+}
+
+.admin-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover */
 }
 
 .admin-card-body {
@@ -22,52 +40,23 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 300px;
-}
-
-.admin-card:hover {
-  transform: translateY(-5px);
+  padding: 20px;
+  height: 350px;
 }
 
 .admin-card-icon {
-  font-size: 50px;
+  font-size: 60px; /* Larger icon size */
   margin-bottom: 20px;
+  transition: color 0.3s ease; /* Smooth transition for icon color */
+}
+
+.admin-card-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 .card-link {
   text-decoration: none;
 }
 
-.admin-page h1 {
-  margin-bottom: 40px;
-}
-
-/* Specific icon and text colors */
-.light-blue-card .admin-card-icon, 
-.light-blue-card .admin-card-title {
-  color: #87CEFA; /* Light blue */
-}
-
-.purple-card .admin-card-icon, 
-.purple-card .admin-card-title {
-  color: #9370DB; /* Purple */
-}
-
-.light-grey-card .admin-card-icon, 
-.light-grey-card .admin-card-title {
-  color: #D3D3D3; /* Light grey */
-}
-
-/* Card title style */
-.admin-card-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.profile-picture {
-  width: 80px; /* Adjust width as needed */
-  height: 80px; /* Adjust height to match width */
-  border-radius: 50%; /* Make the image circular */
-  object-fit: cover; /* Ensure the image covers the area */
-  margin-bottom: 10px; /* Space below the image */
-}

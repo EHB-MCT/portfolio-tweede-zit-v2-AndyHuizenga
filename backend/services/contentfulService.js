@@ -63,11 +63,11 @@ const getAllAuthors = async () => {
     const environment = await getEnvironment();
     const entries = await environment.getEntries({ content_type: 'author' });
 
-    const authors = entries.items.map(entry => {
+    const authors = await Promise.all(entries.items.map(async entry => {
       const fields = entry.fields;
 
       const name = fields.name ? fields.name['en-US'] : null;
-      const profilePicture = fields.profilePicture ? fields.profilePicture['en-US'].sys.id : null;
+      const profilePictureId = fields.profilePicture ? fields.profilePicture['en-US'].sys.id : null;
       const relationship = fields.relationship ? fields.relationship['en-US'] : null;
       const code = fields.code ? fields.code['en-US'] : null;
       const email = fields.email ? fields.email['en-US'] : null;
@@ -75,9 +75,16 @@ const getAllAuthors = async () => {
       const description = fields.description ? fields.description['en-US'] : null;
       const bday = fields.bday ? fields.bday['en-US'] : null;
 
+      // Fetch the asset URL using the profilePictureId
+      let profilePictureUrl = null;
+      if (profilePictureId) {
+        const asset = await environment.getAsset(profilePictureId);
+        profilePictureUrl = asset.fields.file['en-US'].url;
+      }
+
       return {
         name,
-        profilePicture, // Return only the profile picture ID
+        profilePictureUrl: profilePictureUrl ? `https:${profilePictureUrl}` : null, // Prepend https: to the URL
         relationship,
         code,
         email,
@@ -85,7 +92,7 @@ const getAllAuthors = async () => {
         description,
         bday
       };
-    });
+    }));
 
     return authors;
   } catch (error) {

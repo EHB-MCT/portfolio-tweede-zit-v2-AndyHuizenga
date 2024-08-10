@@ -1,0 +1,16 @@
+/* AuthorShowcase.css */
+
+.author-carousel .carousel-item {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .author-card {
+    width: 60%;
+  }
+  
+  .author-card .card-img {
+    border-radius: 10px;
+    object-fit: cover;
+  }
+  

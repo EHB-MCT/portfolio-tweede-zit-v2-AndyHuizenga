@@ -9,6 +9,7 @@ import AdminPage from './pages/adminPages/AdminPage';
 import CreateAuthorPage from './pages/adminPages/CreateAuthorPage';
 import CreateEntryPage from './pages/adminPages/AdminUpload';
 import SettingsPage from './pages/adminPages/SettingsPage';
+import SocialPage from './pages/SocialPage';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/admin/settings" element={<PageWrapper><SettingsPage /></PageWrapper>} />
         <Route path="/channel/:channelNumber" element={<PageWrapper><ChannelPage /></PageWrapper>} />
         <Route path="/overview" element={<PageWrapper><OverviewPage /></PageWrapper>} /> 
+        <Route path="/social" element={<PageWrapper><SocialPage /></PageWrapper>} /> 
       </Routes>
     </Router>
   );
