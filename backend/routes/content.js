@@ -45,30 +45,65 @@ router.post('/createEntry', async (req, res) => {
   console.log("Received POST request to /createEntry");
   console.log("Request body:", req.body);
 
-  // Validation: Check if the content field is an array
-  if (!Array.isArray(req.body.content)) {
+  // Validate the request body
+  if (!req.body || typeof req.body !== 'object') {
     return res.status(400).json({
+      success: false,
+      error: 'Invalid request format',
+      details: 'Request body must be an object'
+    });
+  }
+
+  const { content, channel, title, date, contentType, description, authorName, thumbnail } = req.body;
+
+  if (!Array.isArray(content)) {
+    return res.status(400).json({
+      success: false,
       error: 'Invalid request format',
       details: 'data.content must be an array'
     });
   }
 
+  if (!channel || !title || !date || !contentType || !authorName) {
+    return res.status(400).json({
+      success: false,
+      error: 'Missing required fields',
+      details: 'channel, title, date, contentType, and authorName are required'
+    });
+  }
+
   try {
     // Call service to handle Contentful entry creation
-    const publishedEntry = await contentfulService.addRecallItem(req.body);
+    const publishedEntry = await contentfulService.addRecallItem({
+      content,
+      channel,
+      title,
+      date,
+      contentType,
+      description,
+      authorName, // Pass the author name instead of author object
+      thumbnail
+    });
 
-    res.status(201).json(publishedEntry); // Respond with the published entry data
+    res.status(201).json({
+      success: true,
+      message: 'Recall item created successfully',
+      data: publishedEntry
+    }); // Respond with the published entry data
   } catch (error) {
     // Improved error handling
     console.error('Error occurred:', error.message);
     console.error('Error details:', error.response ? error.response.data : error.stack);
-    
+
     res.status(error.response ? error.response.status : 500).json({
+      success: false,
       error: error.message,
       details: error.response ? error.response.data : {}
     });
   }
 });
+
+
 
 // GET /api/authors - Fetch all authors
 router.get('/authors', async (req, res) => {

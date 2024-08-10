@@ -109,6 +109,27 @@ const getExistingAssets = async () => {
   }
 };
 
+const findAuthorByName = async (name) => {
+  try {
+    const environment = await getEnvironment();
+    const entries = await environment.getEntries({
+      content_type: 'author',
+      'fields.name[match]': name
+    });
+
+    if (entries.items.length === 0) {
+      throw new Error('No author found with the given name');
+    }
+
+    // Assuming the name is unique, return the first match
+    return entries.items[0];
+  } catch (error) {
+    console.error('Error fetching author:', error.message);
+    throw error;
+  }
+};
+
+
 // Add and publish a recall item
 const addRecallItem = async (data) => {
   try {
@@ -116,12 +137,20 @@ const addRecallItem = async (data) => {
       throw new TypeError('data.content must be an array');
     }
 
+    // Map the content field to ensure it follows the required format
     const contentAssetIds = data.content.map(item => ({
-      sys: { type: "Link", linkType: "Asset", id: item.id }
+      sys: { type: 'Link', linkType: 'Asset', id: item.sys.id }
     }));
 
-    if (!data.author || !data.author.sys || !data.author.sys.id) {
-      throw new TypeError('Invalid author data');
+    if (!data.authorName) {
+      throw new TypeError('Author name is required');
+    }
+
+    // Fetch the author by name
+    const authorEntry = await findAuthorByName(data.authorName);
+
+    if (!authorEntry || !authorEntry.sys || !authorEntry.sys.id) {
+      throw new Error('Invalid author data');
     }
 
     const entryData = {
@@ -129,19 +158,19 @@ const addRecallItem = async (data) => {
         channel: { 'en-US': data.channel },
         title: { 'en-US': data.title },
         date: { 'en-US': data.date },
-        content: { 'en-US': contentAssetIds },
+        content: { 'en-US': contentAssetIds }, // Ensure this is an array of objects
         contentType: { 'en-US': data.contentType },
         description: { 'en-US': data.description },
         author: { 
           'en-US': { 
-            sys: { type: "Link", linkType: "Entry", id: data.author.sys.id } 
+            sys: { type: 'Link', linkType: 'Entry', id: authorEntry.sys.id } 
           } 
         },
         thumbnail: data.thumbnail 
           ? { 
               'en-US': { 
                 sys: { 
-                  type: "Link", linkType: "Asset", id: data.thumbnail.sys.id 
+                  type: 'Link', linkType: 'Asset', id: data.thumbnail.sys.id 
                 } 
               } 
             } 
@@ -149,44 +178,30 @@ const addRecallItem = async (data) => {
       }
     };
 
-    const response = await client.createEntry('recallItem', entryData);
+    const environment = await getEnvironment();
+    
+    // Create the entry
+    const response = await environment.createEntry('recallItem', entryData);
+    console.log('Recall item entry created:', response.sys.id);
 
-    if (data.thumbnail && data.thumbnail.sys && data.thumbnail.sys.id) {
-      const environment = await getEnvironment();
-      const thumbnailAsset = await environment.getAsset(data.thumbnail.sys.id);
-      await thumbnailAsset.processForAllLocales();
-      const processedAsset = await environment.getAsset(thumbnailAsset.sys.id);
-      await processedAsset.publish();
-    }
-
+    // Publish the recall item entry
     const publishedEntry = await response.publish();
     console.log('Recall item published successfully:', publishedEntry.sys.id);
 
     return publishedEntry;
   } catch (error) {
     console.error('Error adding recall item:', error.message);
+    if (error.response) {
+      console.error('Response status:', error.response.status);
+      console.error('Response data:', error.response.data);
+    }
     throw error;
   }
 };
 
 
-// Publish an entry
-async function publishEntry(entryId) {
-  try {
-    const environment = await getEnvironment();
-    const entry = await environment.getEntry(entryId);
 
-    // Ensure the entry has a thumbnail field before publishing
-    if (entry.fields.thumbnail) {
-      await entry.publish();
-      console.log('Entry published successfully');
-    } else {
-      throw new Error('Missing required field: thumbnail');
-    }
-  } catch (error) {
-    console.error('Error publishing entry:', error.message);
-  }
-}
+
 
 // Get used channel numbers
 const getUsedChannelNumbers = async () => {
@@ -254,6 +269,7 @@ const uploadFileToContentful = async (file) => {
     throw error;
   }
 };
+
 
 // Create an author
 const createAuthor = async (name, relationship, profilePicture, email, contactnumber, description, bday) => {

@@ -15,7 +15,7 @@ const AdminForm = () => {
     content: [],
     contentType: '',
     description: '',
-    author: null,
+    author: '',
     thumbnailId: '',
   });
   const [loading, setLoading] = useState(false);
@@ -82,16 +82,8 @@ const AdminForm = () => {
     }));
     setUploadedFileNames(files.map(file => file.name));
     setIsUploaded(false);
-  };
-
-  const handleAuthorSelect = (author, index) => {
-    console.log('Author clicked:', author); // Log the selected author object
-    setSelectedAuthorIndex(index); // Use index to track selected author
-    setFormData(prevState => ({
-      ...prevState,
-      author: author // Store the whole author object
-    }));
-    console.log('Updated FormData with Author:', author); // Log the updated form data
+  
+    console.log("Selected Files:", files); // Log the selected files
   };
 
   const uploadContent = async () => {
@@ -153,11 +145,21 @@ const AdminForm = () => {
     }
   };
 
+  const handleAuthorSelect = (author, index) => {
+    setSelectedAuthorIndex(index);
+    setFormData(prevState => ({
+        ...prevState,
+        author: author // Store the whole author object
+    }));
+  
+    console.log("Selected Author:", author); // Log selected author
+  };
+  
   const handleThumbnailSelect = (e) => {
     const selectedFileId = e.target.value;
     setFormData(prevState => ({
-      ...prevState,
-      thumbnailId: selectedFileId
+        ...prevState,
+        thumbnailId: selectedFileId
     }));
   };
 
@@ -166,78 +168,63 @@ const AdminForm = () => {
     setLoading(true);
     setError('');
     setSuccess('');
-
+  
     const channelInt = parseInt(formData.channel, 10);
-
     let contentToSend = formData.content;
-
+  
+    // Filter out non-video files if contentType is 'video'
     if (formData.contentType === 'video') {
       contentToSend = formData.content.filter(file => !file.name.match(/\.(jpg|jpeg|png|gif)$/i));
     }
-
+  
+    // Validate author and thumbnail selection
     if (selectedAuthorIndex === null || !formData.thumbnailId) {
       setError('Author and Thumbnail must be selected.');
       setLoading(false);
       return;
     }
-
+  
+    // Get the selected author from the list
     const selectedAuthor = authors[selectedAuthorIndex];
+    
+    // Ensure the selected author object has a name
+    if (!selectedAuthor || !selectedAuthor.name) {
+      setError('Invalid author selected.');
+      setLoading(false);
+      return;
+    }
+  
+    // Prepare the request data
     const requestData = {
       channel: channelInt,
       title: formData.title,
       date: formData.date,
-      content: contentToSend,
+      content: contentToSend.map(file => ({ sys: { type: "Link", linkType: "Asset", id: file.id } })),
       contentType: formData.contentType,
       description: formData.description,
-      author: {
-        sys: {
-          type: "Link",
-          linkType: "Entry",
-          id: selectedAuthor.code // Use unique code or identifier here
-        }
-      },
-      thumbnail: {
-        sys: {
-          type: "Link",
-          linkType: "Asset",
-          id: formData.thumbnailId
-        }
-      }
+      authorName: selectedAuthor.name, // Send author's name
+      thumbnail: { sys: { type: "Link", linkType: "Asset", id: formData.thumbnailId } }
     };
-
-    console.log('Submitting Form Data:', requestData);
-
+  
+    console.log("Form Data to Send:", requestData);
+  
     try {
+      // Send request to the backend
       const response = await axios.post('http://localhost:3001/api/content/createEntry', requestData, {
         headers: {
           'Content-Type': 'application/json',
         }
       });
-
-      console.log('Response received:', response.data);
       setSuccess('Recall item successfully created!');
-
-      setFormData({
-        channel: '',
-        title: '',
-        date: '',
-        content: [],
-        contentType: '',
-        description: '',
-        author: null,
-        thumbnailId: ''
-      });
-      setSelectedAuthorIndex(null);
-      setUploadedFileNames([]);
-      setIsUploaded(false);
-      document.getElementById('formContentFile').value = '';
+      // Reset form and states if needed
     } catch (error) {
-      console.error('Error submitting form:', error);
       setError('There was a problem creating the recall item. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+  
+  
 
   return (
     <div className="admin-form">
