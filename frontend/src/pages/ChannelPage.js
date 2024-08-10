@@ -17,14 +17,18 @@ const ChannelPage = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
+        console.log('Fetching content for channel:', channelNumber);
         const response = await fetch(`http://localhost:3001/api/content/recall/${channelNumber}`);
+        console.log('Fetch response status:', response.status);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const content = await response.json();
+        console.log('Content received from backend:', content);
         setChannelContent(content);
       } catch (error) {
         console.error('Error fetching content:', error);
+        setChannelContent(null); // Set content to null if there's an error
       } finally {
         setLoading(false); 
       }
@@ -36,14 +40,14 @@ const ChannelPage = () => {
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.key === '.') {
-        if (channelContent.contentType === 'video' && videoRef.current) {
+        if (channelContent?.contentType === 'video' && videoRef.current) {
           if (isPlaying) {
             videoRef.current.pause();
           } else {
             videoRef.current.play();
           }
           setIsPlaying(prevIsPlaying => !prevIsPlaying); // Toggle playback state
-        } else if (channelContent.contentType === 'album' && galleryRef.current) {
+        } else if (channelContent?.contentType === 'album' && galleryRef.current) {
           galleryRef.current.slideToIndex(galleryRef.current.getCurrentIndex() + 1);
         }
       }
@@ -61,27 +65,32 @@ const ChannelPage = () => {
   }
 
   const renderContent = () => {
+    console.log('Rendering content:', channelContent);
     if (!channelContent) {
       return <div>No content available</div>;  // Handle case where channelContent is null or undefined
     }
   
     if (channelContent.contentType === 'album') {
-      const images = channelContent.content.map((asset) => ({
-        original: asset.fields.file.url,
-        thumbnail: asset.fields.file.url,
+      const images = (channelContent.content?.filter(asset => asset.fields?.file?.url) || []).map((asset) => ({
+        original: asset.fields.file.url || 'default-thumbnail.jpg', // Fallback to default image if URL is missing
+        thumbnail: asset.fields.file.url || 'default-thumbnail.jpg',
       }));
   
       return (
         <ImageGallery ref={galleryRef} items={images} showThumbnails={true} showPlayButton={false} showFullscreenButton={false} />
       );
     } else if (channelContent.contentType === 'video') {
-      const videoUrl = channelContent.content[0].fields.file.url;
+      const videoUrl = channelContent.content?.[0]?.fields?.file?.url || ''; // Fallback to empty string if URL is missing
   
       return (
-        <video ref={videoRef} controls className="content-video">
-          <source src={videoUrl} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        videoUrl ? (
+          <video ref={videoRef} controls className="content-video">
+            <source src={videoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          <div>Video not available</div>
+        )
       );
     } else {
       return <div>Unsupported content type</div>;
@@ -98,9 +107,11 @@ const ChannelPage = () => {
           {renderContent()}
         </div>
       </div>
-      <span className="help-text-span">
-        <p>Press [.] to {channelContent.contentType === 'video' ? 'play/pause the video' : 'move ' +'to the next picture'}.</p>
-      </span>
+      {channelContent && (
+        <span className="help-text-span">
+          <p>Press [.] to {channelContent.contentType === 'video' ? 'play/pause the video' : 'move to the next picture'}.</p>
+        </span>
+      )}
     </div>
   );
 };

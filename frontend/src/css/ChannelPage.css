@@ -91,44 +91,34 @@
   margin: 0; /* Remove default margin */
 }
 
-/* Styling for author section */
+/* Author section: Flexbox for horizontal layout */
 .author-section {
   display: flex;
   align-items: center;
   margin-top: 40px; /* Space above the author section */
 }
 
+/* Author image: Positioned on the left */
 .author-image {
   width: 50px; /* Fixed size for author image */
   height: 50px; /* Fixed size for author image */
   border-radius: 50%; /* Make image round */
-  margin-right: 10px; /* Space between image and name */
+
 }
 
-.author-info {
-  display: flex;
-  flex-direction: column;
-  margin-left: 10px;
-}
+/* Author info: Text positioned on the right of the image */
 
-.author-name {
-  font-size: 0.8rem; /* Font size for author name */
-  color: #333; /* Text color for author name */
-}
-
+/* Content type: Style the text */
 .content-type {
-  font-size: 0.8rem; /* Font size for content type */
+  font-size: 0.9rem; /* Font size for content type */
   color: #333; /* Text color for content type */
-  margin-top: 5px; /* Space above the content type */
 }
+
 
 .image-gallery-left-nav,
 .image-gallery-right-nav {
   display: none;
-
-  
 }
-
 
 .image-section .image-gallery {
   width: 100%;
@@ -165,12 +155,11 @@
   height: auto; /* Maintain aspect ratio */
 }
 
-
-
 /* Hide the default image gallery description if needed */
 .image-gallery-description {
   display: none; /* Hide description */
 }
+
 .content-video {
   max-width: 100%;
   max-height: 60vh;
@@ -186,4 +175,32 @@
   font-size: 14px; /* Font size */
   z-index: 1000; /* Ensure it appears above other elements */
   text-align: center; /* Center the text */
+}
+
+/* Author section: Flexbox for horizontal alignment */
+.author-section {
+  display: flex;
+  align-items: center; /* Align items vertically center */
+  margin-top: 20px; /* Space above the author section */
+
+}
+
+/* Author image: Positioned on the left */
+#author-image { /* Targeting by ID */
+  width: 50px; /* Fixed size for the author image */
+  height: 50px; /* Fixed size for the author image */
+  border-radius: 50%; /* Make image round */
+  margin-right: 15px; /* Space between the image and text */
+}
+
+/* Author info: Text positioned on the right of the image */
+.author-info {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.content-type {
+  font-size: 1rem; /* Font size for content type */
+  color: #333; /* Text color */
 }

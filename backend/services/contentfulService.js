@@ -26,6 +26,7 @@ const getContentByChannel = async (channel) => {
     const entries = await client.getEntries({
       content_type: 'recallItem',
       'fields.channel': channel,
+      include: 2, // Include linked entries up to 2 levels deep
     });
 
     if (entries.items.length > 0) {
@@ -37,6 +38,7 @@ const getContentByChannel = async (channel) => {
     throw error;
   }
 };
+
 
 // Fetch all recall items
 const getAllRecallItems = async () => {
@@ -191,7 +193,7 @@ const addRecallItem = async (data) => {
     return publishedEntry;
   } catch (error) {
     console.error('Error adding recall item:', error.message);
-    if (error.response) {
+    if (error.response) {new
       console.error('Response status:', error.response.status);
       console.error('Response data:', error.response.data);
     }

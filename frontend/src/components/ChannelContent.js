@@ -1,35 +1,45 @@
 import React from 'react';
-// Ensure to include your CSS file
 
 function ChannelContent({ content }) {
+  console.log("Content object received in ChannelContent:", content);
+
+  if (!content) {
+    console.warn("No content available");
+    return <div>No content available</div>;
+  }
+
+  const author = content.author?.fields;
+  console.log("Author object:", author);
+
+  const profilePictureUrl = author?.profilePicture?.fields?.file?.url || 'default-profile-picture.jpg';
+  console.log("Profile Picture URL:", profilePictureUrl);
+
   return (
     <div className="channel-content-container">
-      {/* Render the title if it exists */}
       {content.title && <h1 className="content-title">{content.title}</h1>}
-      
-      {/* Render the date if it exists */}
       {content.date && <p className="content-date">{new Date(content.date).toLocaleString('default', { month: 'long', year: 'numeric' })}</p>}
-      
-      {/* Render the description if it exists */}
       {content.description && <p className="content-description">{content.description}</p>}
 
-      {/* Render the author and content type if they exist */}
-      {content.author && (
+      {author ? (
         <div className="author-section">
-          {content.author.fields.profilePicture && (
-            <img src={content.author.fields.profilePicture.fields.file.url} alt={content.author.fields.name} className="author-image" />
-          )}
+          <img 
+            src={profilePictureUrl} 
+            alt={author.name || "Unknown Author"} 
+            id="author-image" /* Use ID here */
+          />
           <div className="author-info">
-          
             {content.contentType && (
               <div className="content-type">
-                {content.contentType} creé par {content.author.fields.name}
+                {content.contentType} created by {author.name || "Unknown Author"}
               </div>
             )}
           </div>
         </div>
+      ) : (
+        <div>No author information available.</div>
       )}
     </div>
+
   );
 }
 

@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Form, Button, Spinner, Alert, Row, Col } from 'react-bootstrap';
 import AuthorSelector from '../../components/AuthorSelector'; // Import the AuthorSelector component
 import '../../css/AdminUpload.css';
+import VerificationModal from '../../components/VerificationModal'; // Import the VerificationModal
+
 
 const AdminForm = () => {
   const [channels, setChannels] = useState([]);
@@ -25,6 +27,9 @@ const AdminForm = () => {
   const [uploadedFileNames, setUploadedFileNames] = useState([]);
   const [isUploaded, setIsUploaded] = useState(false);
   const [selectedAuthorIndex, setSelectedAuthorIndex] = useState(null);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [pendingAuthor, setPendingAuthor] = useState(null);
+
 
   useEffect(() => {
     const fetchAuthorsAndAssets = async () => {
@@ -44,6 +49,8 @@ const AdminForm = () => {
           ...author,
           profilePicture: assetsMap[author.profilePicture]
         }));
+
+        console.log('Fetched authors:', authorsWithImages);
 
         setAuthors(authorsWithImages);
       } catch (error) {
@@ -146,14 +153,30 @@ const AdminForm = () => {
   };
 
   const handleAuthorSelect = (author, index) => {
-    setSelectedAuthorIndex(index);
-    setFormData(prevState => ({
-        ...prevState,
-        author: author // Store the whole author object
-    }));
-  
-    console.log("Selected Author:", author); // Log selected author
+    setPendingAuthor({ author, index });
+    console.log("Selected Author:", author); // Log the selected author
+    setShowVerificationModal(true);
   };
+  
+  const handleVerifyAuthor = () => {
+    if (pendingAuthor) {
+      console.log("Verifying Author:", pendingAuthor.author); // Log the author being verified
+      setSelectedAuthorIndex(pendingAuthor.index);
+      setFormData(prevState => ({
+        ...prevState,
+        author: pendingAuthor.author
+      }));
+    }
+    handleCloseModal();
+  };
+  
+
+  const handleCloseModal = () => {
+    setShowVerificationModal(false);
+    setPendingAuthor(null);
+  };
+
+
   
   const handleThumbnailSelect = (e) => {
     const selectedFileId = e.target.value;
@@ -355,6 +378,16 @@ const AdminForm = () => {
           {isUploaded ? 'Submit' : 'Upload Content'}
         </Button>
       </Form>
+      {showVerificationModal && (
+  <VerificationModal
+    show={showVerificationModal}
+    handleClose={handleCloseModal}
+    onVerify={handleVerifyAuthor}
+    author={pendingAuthor ? pendingAuthor.author : undefined} // Pass the author if available
+  />
+)}
+
+
     </div>
   );
 };
