@@ -98,6 +98,16 @@ router.get('/availableChannels', async (req, res) => {
 
 // If handling multiple fields, use `upload.fields` instead of `upload.array`
 
+// In your backend service or API
+router.get('/assets', async (req, res) => {
+  try {
+    const assets = await contentfulService.getExistingAssets();
+    res.status(200).json(assets);
+  } catch (error) {
+    console.error('Error fetching assets:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 
