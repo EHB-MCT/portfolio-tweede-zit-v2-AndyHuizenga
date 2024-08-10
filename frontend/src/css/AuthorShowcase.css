@@ -1,16 +1,34 @@
 /* AuthorShowcase.css */
-
 .author-carousel .carousel-item {
     display: flex;
     justify-content: center;
+    align-items: center;
   }
   
   .author-card {
-    width: 60%;
+    width: 80%;
+    max-width: 600px;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
   }
   
   .author-card .card-img {
+    height: 100%; /* Make the image take up the full height */
+    width: 100%;  /* Ensure the image also takes up the full width */
+    object-fit: cover; /* Scale the image to cover the entire area */
     border-radius: 10px;
-    object-fit: cover;
+  }
+  
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 5%;
+  }
+  
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    background-color: black;
+    border-radius: 50%;
+    padding: 5px;
   }
   

@@ -208,10 +208,6 @@ const addRecallItem = async (data) => {
   }
 };
 
-
-
-
-
 // Get used channel numbers
 const getUsedChannelNumbers = async () => {
   try {

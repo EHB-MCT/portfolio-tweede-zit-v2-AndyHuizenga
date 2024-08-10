@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Carousel } from 'react-bootstrap';
 import axios from 'axios';
+import '../css/AuthorShowcase.css';
 
 const AuthorShowcase = () => {
   const [authors, setAuthors] = useState([]);
 
   useEffect(() => {
-    // Fetch authors from the API
     const fetchAuthors = async () => {
       try {
         const response = await axios.get('http://localhost:3001/api/content/authors');
@@ -27,14 +27,20 @@ const AuthorShowcase = () => {
         </Col>
       </Row>
 
-      <Carousel indicators={false} interval={null} className="author-carousel">
+      <Carousel
+        indicators={false}
+        interval={null}
+        controls={true}
+        slide={true}
+        wrap={false}
+      >
         {authors.map((author, index) => (
           <Carousel.Item key={index}>
             <Card className="mx-auto author-card">
               <Row>
                 <Col md={4} className="d-flex align-items-center">
                   <Card.Img
-                    src={author.profilePictureUrl}  // Use the correct URL for the image
+                    src={author.profilePictureUrl}
                     alt={`${author.name}'s picture`}
                     className="img-fluid"
                   />
