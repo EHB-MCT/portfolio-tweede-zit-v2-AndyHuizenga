@@ -92,31 +92,26 @@ const getAllAuthors = async () => {
   }
 };
 
-
-
-
-
-
-
-
 // Fetch existing assets
 const getExistingAssets = async () => {
   try {
     const environment = await getEnvironment();
     const entries = await environment.getAssets();
-    console.log('Existing assets:', entries.items.map(item => item.sys.id)); // Log all existing asset IDs
+    console.log("First entry:", entries.items[0]);
+    console.log('Existing assets:', entries.items.map(item => ({
+      id: item.sys.id,
+      title: item.fields.title['en-US']
+    }))); // Log all existing asset details
     return entries.items;
   } catch (error) {
+    console.error('Error fetching assets:', error.message);
     throw error;
   }
 };
 
-
-
 // Add and publish a recall item
 const addRecallItem = async (data) => {
   try {
-    // Ensure content is an array and extract asset IDs
     if (!Array.isArray(data.content)) {
       throw new TypeError('data.content must be an array');
     }
@@ -125,15 +120,16 @@ const addRecallItem = async (data) => {
       sys: { type: "Link", linkType: "Asset", id: item.id }
     }));
 
-    // Prepare the data for creating the entry
+    if (!data.author || !data.author.sys || !data.author.sys.id) {
+      throw new TypeError('Invalid author data');
+    }
+
     const entryData = {
       fields: {
         channel: { 'en-US': data.channel },
         title: { 'en-US': data.title },
         date: { 'en-US': data.date },
-        content: { 
-          'en-US': contentAssetIds 
-        },
+        content: { 'en-US': contentAssetIds },
         contentType: { 'en-US': data.contentType },
         description: { 'en-US': data.description },
         author: { 
@@ -141,32 +137,37 @@ const addRecallItem = async (data) => {
             sys: { type: "Link", linkType: "Entry", id: data.author.sys.id } 
           } 
         },
-        thumbnail: {
-          'en-US': {
-            sys: { 
-              type: "Link", linkType: "Asset", id: data.thumbnail.sys.id 
-            }
-          }
-        }
+        thumbnail: data.thumbnail 
+          ? { 
+              'en-US': { 
+                sys: { 
+                  type: "Link", linkType: "Asset", id: data.thumbnail.sys.id 
+                } 
+              } 
+            } 
+          : undefined
       }
     };
 
-    // Create the entry in Contentful
-    const environment = await getEnvironment();
-    const entry = await environment.createEntry('recallItem', entryData);
-    
-    // Publish the entry
-    return await publishEntry(entry.sys.id);
+    const response = await client.createEntry('recallItem', entryData);
+
+    if (data.thumbnail && data.thumbnail.sys && data.thumbnail.sys.id) {
+      const environment = await getEnvironment();
+      const thumbnailAsset = await environment.getAsset(data.thumbnail.sys.id);
+      await thumbnailAsset.processForAllLocales();
+      const processedAsset = await environment.getAsset(thumbnailAsset.sys.id);
+      await processedAsset.publish();
+    }
+
+    const publishedEntry = await response.publish();
+    console.log('Recall item published successfully:', publishedEntry.sys.id);
+
+    return publishedEntry;
   } catch (error) {
     console.error('Error adding recall item:', error.message);
     throw error;
   }
 };
-
-
-
-
-
 
 
 // Publish an entry
@@ -187,8 +188,6 @@ async function publishEntry(entryId) {
   }
 }
 
-
-
 // Get used channel numbers
 const getUsedChannelNumbers = async () => {
   try {
@@ -203,8 +202,7 @@ const getUsedChannelNumbers = async () => {
   }
 };
 
-
-
+// Upload file to Contentful
 const uploadFileToContentful = async (file) => {
   try {
     const environment = await getEnvironment();
@@ -256,19 +254,18 @@ const uploadFileToContentful = async (file) => {
     throw error;
   }
 };
+
+// Create an author
 const createAuthor = async (name, relationship, profilePicture, email, contactnumber, description, bday) => {
   try {
-    // Generate a random 10-digit code
-    const code = Math.floor(1000000000 + Math.random() * 9000000000);
+    const code = Math.floor(1000000000 + Math.random() * 9000000000); // Generate a unique code
     console.log('Generated code:', code);
 
-    // Validate and prepare contactnumber
     const contactNumberAsInteger = parseInt(contactnumber, 10);
     if (isNaN(contactNumberAsInteger)) {
       throw new Error('Invalid contact number format. It should be an integer.');
     }
 
-    // Prepare the data for creating the author entry
     const authorData = {
       fields: {
         name: { 'en-US': name },
@@ -284,33 +281,19 @@ const createAuthor = async (name, relationship, profilePicture, email, contactnu
       }
     };
 
-    // Get the environment and create the entry
-    const environment = await getEnvironment(); 
+    const environment = await getEnvironment();
     const entry = await environment.createEntry('author', authorData);
     console.log('Author entry created:', entry.sys.id);
 
-    // Publish the entry
     const publishedEntry = await entry.publish();
     console.log('Author entry published successfully:', publishedEntry.sys.id);
 
-    // Return the published entry fields and the generated code
-    return { author: publishedEntry.fields, code };
+    return { id: publishedEntry.sys.id, ...publishedEntry.fields, code };
   } catch (error) {
     console.error('Error creating author entry:', error.message);
-    // Detailed error logging
-    console.error('Error details:', error.response ? error.response.data : error.stack);
-    throw error; // Rethrow the error to be handled by the route
+    throw error;
   }
 };
-
-
-
-
-
-
-
-
-
 
 
 module.exports = {

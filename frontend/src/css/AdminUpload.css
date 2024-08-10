@@ -15,17 +15,18 @@
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  border: 2px solid transparent;
+  border: 2px solid transparent; /* Default border color is transparent */
   border-radius: 50%;
-  padding: 2px; /* Slightly reduce padding to fit the border around the image */
+  padding: 2px; /* Padding to fit the border around the image */
   position: relative; /* For absolute positioning of the image */
-  width: 64px; /* Make sure to match the size of the circle border */
-  height: 64px; /* Make sure to match the size of the circle border */
+  width: 64px; /* Circle width */
+  height: 64px; /* Circle height */
   margin-bottom: 50px;
 }
 
 .author-option.selected {
-  border-color: #007bff; /* Highlight color */
+  border-color: #007bff; /* Blue border for selected author */
+  border-width: 3px; /* Adjust border width as needed */
 }
 
 .author-image {
@@ -39,12 +40,13 @@
   transform: translate(-50%, -50%); /* Center the image */
 }
 
+
 .author-wrapper {
   display: flex;
   justify-content: center; /* Center the image horizontally */
   align-items: center; /* Center the image vertically */
-  width: 64px; /* Adjust to match the size of the circle border */
-  height: 64px; /* Adjust to match the size of the circle border */
+  width: 64px; /* Match the size of the circle border */
+  height: 64px; /* Match the size of the circle border */
   margin-bottom: 5px; /* Space between the image and the name */
 }
 
@@ -52,6 +54,7 @@
   text-align: center; /* Center-align the author name */
   margin-top: 60px; /* Space between the image and the name */
 }
+
 
 textarea.form-control {
   resize: none; /* Prevents resizing */
@@ -71,7 +74,7 @@ textarea.form-control {
   gap: 10px; /* Space between file input and filenames */
 }
 
-.file-upload-container .file-input {
+.file-upload-container .file-input and look{
   width: 50%; /* Make file input take 50% of the container width */
 }
 
@@ -96,3 +99,5 @@ margin-top: 30px ;
 .form-group {
   margin-bottom: 1rem;
 }
+
+

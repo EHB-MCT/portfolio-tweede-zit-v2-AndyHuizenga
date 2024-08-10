@@ -1,31 +1,20 @@
-.admin-page {
-  padding: 50px 0; /* Add padding to the top and bottom to give more space */
-}
-
 .admin-card {
   border-radius: 10px;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: transform 0.3s;
-  height: 500px; /* Increase the height */
+  height: 60vw; /* Adjust height to 60% of the viewport width */
+  max-height: 400px; /* Set a max height to avoid cards getting too large */
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background-color: white; /* Keep the card background white */
   position: relative;
-  color: white; /* Set the text and icon color to white */
 }
 
-/* Specific background colors for each card */
-.admin-card.light-blue-card {
-  background-color: #87CEFA; /* Light blue */
-}
+.admin-page {
 
-.admin-card.purple-card {
-  background-color: #9370DB; /* Purple */
-}
-
-.admin-card.light-grey-card {
-  background-color: #D3D3D3; /* Light grey */
+  height: 100%;
 }
 
 .admin-card-body {
@@ -33,6 +22,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 300px;
 }
 
 .admin-card:hover {
@@ -42,13 +32,6 @@
 .admin-card-icon {
   font-size: 50px;
   margin-bottom: 20px;
-  color: white; /* Make the icon white */
-}
-
-.admin-card-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: white; /* Make the title text white */
 }
 
 .card-link {
@@ -57,5 +40,34 @@
 
 .admin-page h1 {
   margin-bottom: 40px;
-  text-align: center;
+}
+
+/* Specific icon and text colors */
+.light-blue-card .admin-card-icon, 
+.light-blue-card .admin-card-title {
+  color: #87CEFA; /* Light blue */
+}
+
+.purple-card .admin-card-icon, 
+.purple-card .admin-card-title {
+  color: #9370DB; /* Purple */
+}
+
+.light-grey-card .admin-card-icon, 
+.light-grey-card .admin-card-title {
+  color: #D3D3D3; /* Light grey */
+}
+
+/* Card title style */
+.admin-card-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.profile-picture {
+  width: 80px; /* Adjust width as needed */
+  height: 80px; /* Adjust height to match width */
+  border-radius: 50%; /* Make the image circular */
+  object-fit: cover; /* Ensure the image covers the area */
+  margin-bottom: 10px; /* Space below the image */
 }

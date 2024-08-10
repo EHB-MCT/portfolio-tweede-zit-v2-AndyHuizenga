@@ -144,17 +144,14 @@ router.post('/upload', upload.fields([{ name: 'content', maxCount: 10 }]), async
 
 
 // POST /api/content/createAuthor - Create and publish a new author
-// POST /api/content/createAuthor - Create and publish a new author
 router.post('/createAuthor', async (req, res) => {
-  // Destructure all required fields from the request body
   const { name, relationship, profilePicture, email, contactnumber, description, bday } = req.body;
 
-
   try {
-    // Call the createAuthor function with all necessary parameters
+    // Create author entry in Contentful
     const result = await contentfulService.createAuthor(name, relationship, profilePicture, email, contactnumber, description, bday);
     
-    // Respond with the success status and the result from the service
+    // Respond with success status and the result from the service
     return res.status(200).json({ success: true, ...result });
   } catch (error) {
     // Log the error and respond with failure status

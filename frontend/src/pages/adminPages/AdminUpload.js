@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Button, Spinner, Alert, Row, Col } from 'react-bootstrap';
+import AuthorSelector from '../../components/AuthorSelector'; // Import the AuthorSelector component
 import '../../css/AdminUpload.css';
 
 const AdminForm = () => {
   const [channels, setChannels] = useState([]);
   const [authors, setAuthors] = useState([]);
-  const [contentTypes] = useState(['video', 'album']); 
+  const [contentTypes] = useState(['video', 'album']);
   const [formData, setFormData] = useState({
     channel: '',
     title: '',
     date: '',
-    content: [], // Initialize as an array to hold file objects
+    content: [],
     contentType: '',
     description: '',
-    authorId: '',
+    author: null,
     thumbnailId: '',
   });
   const [loading, setLoading] = useState(false);
@@ -23,31 +24,46 @@ const AdminForm = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadedFileNames, setUploadedFileNames] = useState([]);
   const [isUploaded, setIsUploaded] = useState(false);
+  const [selectedAuthorIndex, setSelectedAuthorIndex] = useState(null);
 
   useEffect(() => {
-    const fetchChannelsAndAuthors = async () => {
+    const fetchAuthorsAndAssets = async () => {
       try {
-        const [channelsResponse, authorsResponse] = await Promise.all([
-          axios.get('http://localhost:3001/api/content/availableChannels'),
-          axios.get('http://localhost:3001/api/content/authors')
-        ]);
-        setChannels(channelsResponse.data);
-        setAuthors(authorsResponse.data);
-        
-        // Automatically set the first author as the default author
-        if (authorsResponse.data.length > 0) {
-          setFormData(prevState => ({
-            ...prevState,
-            authorId: authorsResponse.data[0].id
-          }));
-        }
+        const authorsResponse = await axios.get('http://localhost:3001/api/content/authors');
+        const authorsData = authorsResponse.data;
+
+        const assetsResponse = await axios.get('http://localhost:3001/api/content/assets');
+        const assetsData = assetsResponse.data;
+
+        const assetsMap = assetsData.reduce((map, asset) => {
+          map[asset.sys.id] = asset.fields.file['en-US'].url;
+          return map;
+        }, {});
+
+        const authorsWithImages = authorsData.map(author => ({
+          ...author,
+          profilePicture: assetsMap[author.profilePicture]
+        }));
+
+        setAuthors(authorsWithImages);
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Failed to fetch data.');
+        console.error('Error fetching authors or assets:', error);
+        setError('Failed to fetch authors or assets.');
       }
     };
 
-    fetchChannelsAndAuthors();
+    const fetchChannels = async () => {
+      try {
+        const channelsResponse = await axios.get('http://localhost:3001/api/content/availableChannels');
+        setChannels(channelsResponse.data);
+      } catch (error) {
+        console.error('Error fetching channels:', error);
+        setError('Failed to fetch channels.');
+      }
+    };
+
+    fetchAuthorsAndAssets();
+    fetchChannels();
   }, []);
 
   const handleInputChange = (e) => {
@@ -64,15 +80,18 @@ const AdminForm = () => {
       ...prevState,
       content: files
     }));
-    setUploadedFileNames(files.map(file => file.name)); // Update the file names
-    setIsUploaded(false); // Reset the uploaded status when files are selected
+    setUploadedFileNames(files.map(file => file.name));
+    setIsUploaded(false);
   };
 
-  const handleAuthorSelect = (authorId) => {
+  const handleAuthorSelect = (author, index) => {
+    console.log('Author clicked:', author); // Log the selected author object
+    setSelectedAuthorIndex(index); // Use index to track selected author
     setFormData(prevState => ({
       ...prevState,
-      authorId
+      author: author // Store the whole author object
     }));
+    console.log('Updated FormData with Author:', author); // Log the updated form data
   };
 
   const uploadContent = async () => {
@@ -80,50 +99,46 @@ const AdminForm = () => {
       setError('Please select files to upload.');
       return;
     }
-  
-    // Check if the selected content type is 'video' and ensure two files are selected
+
     if (formData.contentType === 'video' && formData.content.length !== 2) {
       setError('Please upload exactly one video file and one image file for the thumbnail.');
       return;
     }
-  
+
     setUploading(true);
     setError('');
     setSuccess('');
-  
+
     try {
       const formDataForUpload = new FormData();
       formData.content.forEach(file => {
         formDataForUpload.append('content', file);
       });
-  
+
       const uploadResponse = await axios.post('http://localhost:3001/api/content/upload', formDataForUpload, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-  
-      console.log('Upload response:', uploadResponse.data);
-  
+
       if (uploadResponse.data.success && Array.isArray(uploadResponse.data.fileIds)) {
         const uploadedFiles = uploadResponse.data.fileIds.map((id, index) => ({
           id: id,
-          name: formData.content[index].name // Assuming the file order is maintained
+          name: formData.content[index].name
         }));
-  
-        setUploadedFileNames(uploadedFiles.map(file => file.name)); // Display file names
-  
-        // Automatically set the thumbnail to the image file if video is selected
-        let thumbnailId = uploadedFiles[0].id; // Default to the first file
+
+        setUploadedFileNames(uploadedFiles.map(file => file.name));
+
+        let thumbnailId = uploadedFiles[0].id;
         if (formData.contentType === 'video') {
           const imageFile = uploadedFiles.find(file => file.name.match(/\.(jpg|jpeg|png|gif)$/i));
           thumbnailId = imageFile ? imageFile.id : thumbnailId;
         }
-  
+
         setFormData(prevState => ({
           ...prevState,
-          content: uploadedFiles, // Store uploaded file details in the content array
-          thumbnailId: thumbnailId // Automatically set the correct thumbnail
+          content: uploadedFiles,
+          thumbnailId: thumbnailId
         }));
         setSuccess('Files uploaded and processed successfully!');
         setIsUploaded(true);
@@ -137,87 +152,92 @@ const AdminForm = () => {
       setUploading(false);
     }
   };
-  
-  
 
-const handleThumbnailSelect = (e) => {
-  const selectedFileId = e.target.value;
-  setFormData(prevState => ({
+  const handleThumbnailSelect = (e) => {
+    const selectedFileId = e.target.value;
+    setFormData(prevState => ({
       ...prevState,
-      thumbnailId: selectedFileId // Set the selected file's ID as the thumbnailId
-  }));
-};
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError('');
-  setSuccess('');
-
-  const channelInt = parseInt(formData.channel, 10);
-
-  let contentToSend = formData.content;
-
-  if (formData.contentType === 'video') {
-    contentToSend = formData.content.filter(file => !file.name.match(/\.(jpg|jpeg|png|gif)$/i));
-  }
-
-  const requestData = {
-    channel: channelInt,
-    title: formData.title,
-    date: formData.date,
-    content: contentToSend,
-    contentType: formData.contentType,
-    description: formData.description,
-    author: { sys: { id: formData.authorId } },
-    thumbnail: {
-      sys: {
-        type: "Link",
-        linkType: "Asset",
-        id: formData.thumbnailId
-      }
-    }
+      thumbnailId: selectedFileId
+    }));
   };
 
-  console.log('Submitting Form Data:', requestData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
 
-  try {
-    console.log('Submitting form data:', requestData);
-    const response = await axios.post('http://localhost:3001/api/content/createEntry', requestData, {
-      headers: {
-        'Content-Type': 'application/json',
+    const channelInt = parseInt(formData.channel, 10);
+
+    let contentToSend = formData.content;
+
+    if (formData.contentType === 'video') {
+      contentToSend = formData.content.filter(file => !file.name.match(/\.(jpg|jpeg|png|gif)$/i));
+    }
+
+    if (selectedAuthorIndex === null || !formData.thumbnailId) {
+      setError('Author and Thumbnail must be selected.');
+      setLoading(false);
+      return;
+    }
+
+    const selectedAuthor = authors[selectedAuthorIndex];
+    const requestData = {
+      channel: channelInt,
+      title: formData.title,
+      date: formData.date,
+      content: contentToSend,
+      contentType: formData.contentType,
+      description: formData.description,
+      author: {
+        sys: {
+          type: "Link",
+          linkType: "Entry",
+          id: selectedAuthor.code // Use unique code or identifier here
+        }
+      },
+      thumbnail: {
+        sys: {
+          type: "Link",
+          linkType: "Asset",
+          id: formData.thumbnailId
+        }
       }
-    });
+    };
 
-    console.log('Response received:', response.data);
-    setSuccess('Recall item successfully created!');
+    console.log('Submitting Form Data:', requestData);
 
-    // Clear the form state and file input field
-    setFormData({
-      channel: '',
-      title: '',
-      date: '',
-      content: [], // Reset content to an empty array
-      contentType: '',
-      description: '',
-      authorId: authors.length > 0 ? authors[0].id : '', // Reset to the first author
-      thumbnailId: ''
-    });
-    setUploadedFileNames([]); // Clear uploaded file names
-    setIsUploaded(false);
+    try {
+      const response = await axios.post('http://localhost:3001/api/content/createEntry', requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
 
-    // Clear the file input field
-    document.getElementById('formContentFile').value = '';
+      console.log('Response received:', response.data);
+      setSuccess('Recall item successfully created!');
 
-  } catch (error) {
-    console.error('Error submitting form:', error);
-    setError('Failed to create recall item.');
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+      setFormData({
+        channel: '',
+        title: '',
+        date: '',
+        content: [],
+        contentType: '',
+        description: '',
+        author: null,
+        thumbnailId: ''
+      });
+      setSelectedAuthorIndex(null);
+      setUploadedFileNames([]);
+      setIsUploaded(false);
+      document.getElementById('formContentFile').value = '';
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setError('There was a problem creating the recall item. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="admin-form">
@@ -229,32 +249,31 @@ const handleSubmit = async (e) => {
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formAuthor">
           <Form.Label>Author</Form.Label>
-          <div className="author-select">
-            {authors.map(author => (
-              <div
-                key={author.id}
-                className={`author-option ${formData.authorId === author.id ? 'selected' : ''}`}
-                onClick={() => handleAuthorSelect(author.id)}
-              >
-                <div className="author-wrapper">
-                  <img src={author.profilePicture} alt={author.name} className="author-image" />
-                </div>
-                <div className="author-name">{author.name}</div>
+          <AuthorSelector
+            authors={authors}
+            onSelectAuthor={handleAuthorSelect}
+            selectedAuthorIndex={selectedAuthorIndex}
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formSelectedAuthor">
+          <Form.Label>Selected Author</Form.Label>
+          <div>
+            {selectedAuthorIndex !== null ? (
+              <div>
+                {authors[selectedAuthorIndex]?.name || 'No author selected'}
               </div>
-            ))}
+            ) : (
+              <div>No author selected</div>
+            )}
           </div>
         </Form.Group>
+
         <Row>
           <Col md={3}>
             <Form.Group controlId="formChannel">
               <Form.Label>Channel</Form.Label>
-              <Form.Control
-                as="select"
-                name="channel"
-                value={formData.channel}
-                onChange={handleInputChange}
-                required
-              >
+              <Form.Control as="select" name="channel" value={formData.channel} onChange={handleInputChange}>
                 <option value="">Select Channel</option>
                 {channels.map(channel => (
                   <option key={channel} value={channel}>
@@ -291,13 +310,7 @@ const handleSubmit = async (e) => {
           <Col md={3}>
             <Form.Group controlId="formContentType">
               <Form.Label>Content Type</Form.Label>
-              <Form.Control
-                as="select"
-                name="contentType"
-                value={formData.contentType}
-                onChange={handleInputChange}
-                required
-              >
+              <Form.Control as="select" name="contentType" value={formData.contentType} onChange={handleInputChange}>
                 <option value="">Select Content Type</option>
                 {contentTypes.map(type => (
                   <option key={type} value={type}>
@@ -308,59 +321,51 @@ const handleSubmit = async (e) => {
             </Form.Group>
           </Col>
         </Row>
+
+        <Form.Group controlId="formContentFile">
+          <Form.Label>Upload Content</Form.Label>
+          <Form.Control type="file" multiple onChange={handleFileChange} />
+          {uploadedFileNames.length > 0 && (
+            <ul>
+              {uploadedFileNames.map((fileName, index) => (
+                <li key={index}>{fileName}</li>
+              ))}
+            </ul>
+          )}
+        </Form.Group>
+
         <Form.Group controlId="formDescription">
           <Form.Label>Description</Form.Label>
           <Form.Control
             as="textarea"
+            rows={3}
             name="description"
-            rows={2}
             value={formData.description}
             onChange={handleInputChange}
-            required
           />
         </Form.Group>
-        <div className="file-upload-container">
-          <Form.Group controlId="formContentFile" className="file-input">
-            <Form.Label>Upload Content File</Form.Label>
-            <Form.Control
-              type="file"
-              name="content" // This should match the field name in Multer
-              onChange={handleFileChange}
-              multiple// Allow multiple files only for albums
-              required
-            />
+
+        {isUploaded && (
+          <Form.Group controlId="formThumbnail">
+            <Form.Label>Thumbnail</Form.Label>
+            <Form.Control as="select" value={formData.thumbnailId} onChange={handleThumbnailSelect}>
+              <option value="">Select Thumbnail</option>
+              {formData.content.map(file => (
+                <option key={file.id} value={file.id}>
+                  {file.name}
+                </option>
+              ))}
+            </Form.Control>
           </Form.Group>
-          <div className="file-names">
-            {uploadedFileNames.join(', ')}
-          </div> 
-        </div>
-        {isUploaded && formData.content.length > 0 && (
-                <Form.Group controlId="formThumbnailSelect">
-                    <Form.Label>Select Thumbnail</Form.Label>
-                    <Form.Control
-                        as="select"
-                        name="thumbnail"
-                        value={formData.thumbnailId}
-                        onChange={handleThumbnailSelect}
-                        required
-                    >
-                        <option value="">Select Thumbnail</option>
-                        {formData.content.map((file) => (
-                            <option key={file.id} value={file.id}>
-                                {file.name}
-                            </option>
-                        ))}
-                    </Form.Control>
-                </Form.Group>
         )}
-        
+
         <Button
           variant={isUploaded ? 'success' : 'primary'}
           onClick={isUploaded ? handleSubmit : uploadContent}
           disabled={loading || uploading || (!isUploaded && !formData.content.length)}
           className="upload-button"
         >
-          {isUploaded ? 'Confirm' : 'Upload Content'}
+          {isUploaded ? 'Submit' : 'Upload Content'}
         </Button>
       </Form>
     </div>
