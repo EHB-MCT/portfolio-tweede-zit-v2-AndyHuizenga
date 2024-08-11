@@ -4,12 +4,12 @@
     "private": true,
     "scripts": {
         "backend": "cd backend && npm start",
-      "frontend": "cd frontend && npm start",
-      "start": "npm run backend && npm run frontend",
-      "heroku-postbuild": "npm run build",
-      "build": "cd frontend && npm install && npm run build && cd ../backend && npm install"
+        "frontend": "cd frontend && npm start",
+        "start": "npm run backend && npm run frontend",
+        "heroku-postbuild": "npm run build",
+        "build": "cd frontend && npm install && npm run build && cd ../backend && npm install"
     },
     "engines": {
-      "node": "14.x"
+        "node": "14.x"
     }
-  }
+}
