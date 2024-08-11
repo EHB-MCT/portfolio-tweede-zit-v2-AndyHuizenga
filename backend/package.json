@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pokusew/pcsclite": "^0.6.0",
     "axios": "^1.7.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
