@@ -1,6 +1,5 @@
-// services/webSocketHandler.js
-function initializeWebSocket(server) {
-    const io = require('socket.io')(server);
+function initializeWebSocket(io) {
+    console.log('Creating WebSocket instance');
   
     // Handle WebSocket connections
     io.on('connection', (socket) => {
@@ -10,9 +9,6 @@ function initializeWebSocket(server) {
         console.log('User disconnected');
       });
     });
-  
-    return io;
-  }
-  
-  module.exports = initializeWebSocket;
-  
+}
+
+module.exports = initializeWebSocket;

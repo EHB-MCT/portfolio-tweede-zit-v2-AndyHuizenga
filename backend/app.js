@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server); // Create the socket.io instance
 
 const corsOptions = {
   origin: '*', // Allow requests from any origin
@@ -28,8 +28,10 @@ if (process.env.NODE_ENV === 'development') {
   initializeNfc(io);
 }
 
+// Initialize WebSocket server with the existing io instance
 const initializeWebSocket = require('./services/webSocketHandler');
-initializeWebSocket(server);
+console.log('Initializing WebSocket server');
+initializeWebSocket(io); // Pass the existing io instance
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
