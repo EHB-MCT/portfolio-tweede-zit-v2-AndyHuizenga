@@ -11,33 +11,39 @@ const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const socket = io('http://localhost:3001', {
-      transports: ['websocket'],
-      withCredentials: true
-    });
+    let socket;
 
-    socket.on('connect', () => {
-      console.log('Socket connected successfully!');
-    });
+    // Check if we're running in a local environment
+    if (process.env.NODE_ENV !== 'production') {
+      socket = io('http://localhost:3001', {
+        transports: ['websocket'],
+        withCredentials: true
+      });
 
-    socket.on('tagNumber', (data) => {
-      console.log('Received tagNumber event:', data);
-      if (data) {
-        handleNfcRead(data);
-      } else {
-        console.error('Received empty data');
-      }
-    });
+      socket.on('connect', () => {
+        console.log('Socket connected successfully!');
+      });
 
-    socket.on('error', (error) => {
-      console.error('Socket error:', error);
-    });
+      socket.on('tagNumber', (data) => {
+        console.log('Received tagNumber event:', data);
+        if (data) {
+          handleNfcRead(data);
+        } else {
+          console.error('Received empty data');
+        }
+      });
+
+      socket.on('error', (error) => {
+        console.error('Socket error:', error);
+      });
+    }
 
     return () => {
-      socket.disconnect();
+      if (socket) {
+        socket.disconnect();
+      }
     };
   }, [navigate]);
-
   const handleNfcRead = (text) => {
     console.log('Handling NFC read text:', text);
     setChannelNumber(text);
