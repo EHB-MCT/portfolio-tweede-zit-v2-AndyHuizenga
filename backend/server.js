@@ -7,6 +7,8 @@ const path = require('path'); // Add this line
 
 dotenv.config();
 
+
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 const server = http.createServer(app);
@@ -20,15 +22,14 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'frontend/build')));
 
-// Serve the React frontend in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
+// Catch-all handler for all other routes
+app.get('/*', function(req, res) {
+    res.sendFile(path.join(__dirname, 'frontend/build/index.html'));
+});
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-  });
-}
+
 
 app.use('/api/content', require('./routes/content'));
 

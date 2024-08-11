@@ -1,2 +1,1 @@
-web: cd backend && npm start
-frontend: cd frontend && npm start
+web: cd backend && node app.js

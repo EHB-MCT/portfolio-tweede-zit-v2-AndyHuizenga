@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import '../css/Header.css';
@@ -10,15 +10,23 @@ const Header = () => {
   const inputRef = useRef(null);
   const navigate = useNavigate();
 
+  const handleNfcRead = useCallback(
+    (text) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Handling NFC read text:', text);
+        setChannelNumber(text);
+        navigate(`/channel/${text}`);
+      }
+    },
+    [navigate] // dependencies of handleNfcRead
+  );
+
   useEffect(() => {
     let socket;
 
-    // Check if we're running in a local environment
-    if (process.env.NODE_ENV !== 'production') {
-      socket = io('http://localhost:3001', {
-        transports: ['websocket'],
-        withCredentials: true
-      });
+    if (process.env.NODE_ENV === 'development') {
+      // Only run this code in development (local environment)
+      socket = io('http://localhost:3001'); // Use localhost during development
 
       socket.on('connect', () => {
         console.log('Socket connected successfully!');
@@ -43,46 +51,42 @@ const Header = () => {
         socket.disconnect();
       }
     };
-  }, [navigate]);
-  const handleNfcRead = (text) => {
-    console.log('Handling NFC read text:', text);
-    setChannelNumber(text);
-    navigate(`/channel/${text}`);
-  };
+  }, [handleNfcRead]);
 
   const handleInputChange = (event) => {
     const value = event.target.value.replace(/\D/g, '').slice(0, 2); // Limit to 2 digits
     setInputValue(value);
   };
+
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      console.log(`Input value on Enter: ${inputValue}`);  // Fixed syntax
-  
+      console.log(`Input value on Enter: ${inputValue}`);
+
       if (inputValue === '00') {
         navigate('/');
-        setChannelNumber(inputValue); 
-        setInputValue(''); 
+        setChannelNumber(inputValue);
+        setInputValue('');
         console.log('Navigating to Home');
       } else if (inputValue === '99') {
         navigate('/overview');
         setChannelNumber(inputValue);
-        setInputValue(''); 
+        setInputValue('');
         console.log('Navigating to Overview');
       } else if (inputValue === '98') {
         navigate('/admin');
         setChannelNumber(inputValue);
-        setInputValue(''); 
+        setInputValue('');
         console.log('Navigating to Admin');
       } else if (inputValue === '97') {
         navigate('/social');
         setChannelNumber(inputValue);
-        setInputValue(''); 
-        console.log('Navigating to social');
+        setInputValue('');
+        console.log('Navigating to Social');
       } else {
         setChannelNumber(inputValue);
         setInputValue('');
-        console.log(`Channel changed to: ${inputValue}`);  // Fixed syntax
-        navigate(`/channel/${inputValue}`);  // Fixed syntax
+        console.log(`Channel changed to: ${inputValue}`);
+        navigate(`/channel/${inputValue}`);
       }
     }
   };
@@ -107,14 +111,12 @@ const Header = () => {
 
   const formatTime = (date) => {
     const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
     return time;
   };
 
   const formatDate = (date) => {
     const options = { weekday: 'long', day: 'numeric', month: 'long' };
     const formattedDate = date.toLocaleDateString('en-GB', options);
-
     return formattedDate;
   };
 
@@ -136,8 +138,6 @@ const Header = () => {
             <div className="help-text-content">
               <p>00 + [ENTER] pour l’acuelle</p>
               <p>99 + [ENTER] pour les chaines</p>
-            
-
             </div>
           </div>
         </div>

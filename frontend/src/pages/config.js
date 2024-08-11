@@ -1,5 +1,3 @@
-// frontend/src/pages/config.js
-
 const API_BASE_URL =
   process.env.NODE_ENV === 'production'
     ? '/api/content' // relative URL for production (Heroku)

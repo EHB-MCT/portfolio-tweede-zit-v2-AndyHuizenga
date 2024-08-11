@@ -3,11 +3,9 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "backend": "cd backend && npm start",
-        "frontend": "cd frontend && npm start",
-        "start": "npm run backend && npm run frontend",
-        "heroku-postbuild": "npm run build",
-        "build": "npm install --prefix frontend && npm run build --prefix frontend && npm install --prefix backend"
+        "start": "cd backend && nodemon server.js",
+        "build": "cd frontend && npm install && npm run build",
+        "heroku-postbuild": "npm run build"
     },
     "engines": {
         "node": "14.x"
