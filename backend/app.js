@@ -24,8 +24,12 @@ app.use('/api/content', require('./routes/content'));
 
 // Conditionally initialize NFC functionality only in local environment
 if (process.env.NODE_ENV === 'development') {
-  const initializeNfc = require('./services/nfcHandler');
-  initializeNfc(io);
+  try {
+    const initializeNfc = require('./services/nfcHandler');
+    initializeNfc(io);
+  } catch (error) {
+    console.error('Failed to initialize NFC functionality:', error.message);
+  }
 }
 
 // Initialize WebSocket server with the existing io instance
