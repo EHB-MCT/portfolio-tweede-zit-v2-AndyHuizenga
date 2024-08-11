@@ -32,16 +32,28 @@ const AdminForm = () => {
   const [pendingAuthor, setPendingAuthor] = useState(null);
 
   useEffect(() => {
-    const fetchAuthors = async () => {
+    const fetchAuthorsAndAssets = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/authors`);
-        setAuthors(response.data);
+        const authorsResponse = await axios.get(`${API_BASE_URL}/authors`);
+        setAuthors(authorsResponse.data);
       } catch (error) {
         console.error('Error fetching authors:', error);
         setError('Failed to fetch authors.');
       }
     };
-    fetchAuthors();
+
+    const fetchChannels = async () => {
+      try {
+        const channelsResponse = await axios.get(`${API_BASE_URL}/availableChannels`);
+        setChannels(channelsResponse.data);
+      } catch (error) {
+        console.error('Error fetching channels:', error);
+        setError('Failed to fetch channels.');
+      }
+    };
+
+    fetchAuthorsAndAssets();
+    fetchChannels();
   }, []);
 
 
