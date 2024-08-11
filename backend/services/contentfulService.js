@@ -126,6 +126,21 @@ const getExistingAssets = async (assetNames = []) => {
     throw error;
   }
 };
+const getAllExistingAssets = async () => {
+  try {
+    const environment = await getEnvironment();
+    const entries = await environment.getAssets();
+
+    return entries.items.map(item => ({
+      id: item.sys.id,
+      title: item.fields.title['en-US'],
+      url: item.fields.file['en-US'].url, // Include the URL for easy access
+    }));
+  } catch (error) {
+    console.error('Error fetching all assets:', error.message);
+    throw error;
+  }
+};
 
 
 
@@ -337,4 +352,5 @@ module.exports = {
   getUsedChannelNumbers,
   uploadFileToContentful,
   createAuthor,
+  getAllExistingAssets,
 };

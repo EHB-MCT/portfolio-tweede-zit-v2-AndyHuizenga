@@ -5,6 +5,8 @@ import ChannelContent from '../components/ChannelContent';
 import ImageGallery from 'react-image-gallery';
 import '../css/ChannelPage.css';
 import 'react-image-gallery/styles/css/image-gallery.css';
+import API_BASE_URL from "./config";
+
 
 const ChannelPage = () => {
   const { channelNumber } = useParams();
@@ -18,7 +20,7 @@ const ChannelPage = () => {
     const fetchContent = async () => {
       try {
         console.log('Fetching content for channel:', channelNumber);
-        const response = await fetch(`http://localhost:3001/api/content/recall/${channelNumber}`);
+        const response = await fetch(`${API_BASE_URL}/recall/${channelNumber}`);
         console.log('Fetch response status:', response.status);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

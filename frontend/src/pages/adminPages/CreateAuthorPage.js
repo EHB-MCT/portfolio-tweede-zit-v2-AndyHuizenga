@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import '../../css/CreateAuthorPage.css';
+import API_BASE_URL from "../config";
+
 
 const CreateAuthorPage = () => {
   const [formData, setFormData] = useState({
@@ -24,7 +26,7 @@ const CreateAuthorPage = () => {
   useEffect(() => {
     const fetchThumbnails = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/content/assets');
+        const response = await axios.get(`${API_BASE_URL}/assets`);
         setThumbnails(response.data);
       } catch (error) {
         console.error('Error fetching thumbnails:', error);
@@ -66,7 +68,7 @@ const CreateAuthorPage = () => {
     files.forEach(file => uploadData.append('content', file));
 
     try {
-      const response = await axios.post('http://localhost:3001/api/content/upload', uploadData, {
+      const response = await axios.post(`${API_BASE_URL}/upload`, uploadData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -99,7 +101,7 @@ const CreateAuthorPage = () => {
     const { name, relationship, profilePicture, email, contactnumber, description, bday } = formData;
 
     try {
-      const response = await axios.post('http://localhost:3001/api/content/createAuthor', {
+      const response = await axios.post(`${API_BASE_URL}/createAuthor`, {
         name,
         relationship,
         profilePicture, // Should be the ID of the uploaded file

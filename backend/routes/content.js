@@ -152,6 +152,15 @@ router.post('/assets', async (req, res) => {
   }
 });
 
+router.get('/assetList', async (req, res) => {
+  try {
+    const assets = await contentfulService.getAllExistingAssets(); // Fetch all assets
+    res.status(200).json(assets);
+  } catch (error) {
+    console.error('Error fetching all assets:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 

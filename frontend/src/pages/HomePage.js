@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import axios from 'axios';
 import '../css/HomePage.css';
+import API_BASE_URL from "./config";
 
 const HomePage = () => {
   const [images, setImages] = useState({ option1: '', option2: '' });
@@ -12,7 +13,7 @@ const HomePage = () => {
       const assetNames = ['option1', 'option2'];
 
       // Send a POST request with the array of names
-      const response = await axios.post('http://localhost:3001/api/content/assets', {
+      const response = await axios.post(`${API_BASE_URL}/assets`, {
         names: assetNames,
       });
       

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Carousel } from 'react-bootstrap';
 import axios from 'axios';
 import '../css/AuthorShowcase.css';
+import API_BASE_URL from '../pages/config';
 
 const AuthorShowcase = () => {
   const [authors, setAuthors] = useState([]);
@@ -9,7 +10,9 @@ const AuthorShowcase = () => {
   useEffect(() => {
     const fetchAuthors = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/content/authors');
+        console.log(" triggered to search authors")
+        const response = await axios.get(`${API_BASE_URL}/authors`);
+        console.log(" show response" + response)
         setAuthors(response.data);
       } catch (error) {
         console.error('Error fetching authors:', error);
@@ -21,8 +24,8 @@ const AuthorShowcase = () => {
 
   return (
     <Container fluid className="AuthorShowcase">
-      <Row className="text-center mb-4"> yeah
-      </Row>
+      <Row className="text-center mb-4"> 
+      </Row> 
 
       <Carousel
         indicators={false}

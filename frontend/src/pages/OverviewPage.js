@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import RecallCard from '../components/RecallCard';
 import '../css/OverviewPage.css'; // Ensure to include your CSS file
 import { Spinner } from 'react-bootstrap';
+import API_BASE_URL from "./config";
 
 const OverviewPage = () => {
   const [recalls, setRecalls] = useState([]);
@@ -12,7 +13,7 @@ const OverviewPage = () => {
   useEffect(() => {
     const fetchRecalls = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/content`);
+        const response = await fetch(`${API_BASE_URL}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

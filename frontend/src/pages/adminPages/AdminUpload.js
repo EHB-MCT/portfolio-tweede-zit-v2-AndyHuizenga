@@ -1,3 +1,4 @@
+import API_BASE_URL from "../config";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Button, Spinner, Alert, Row, Col } from 'react-bootstrap';
@@ -30,48 +31,21 @@ const AdminForm = () => {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [pendingAuthor, setPendingAuthor] = useState(null);
 
-
   useEffect(() => {
-    const fetchAuthorsAndAssets = async () => {
+    const fetchAuthors = async () => {
       try {
-        const authorsResponse = await axios.get('http://localhost:3001/api/content/authors');
-        const authorsData = authorsResponse.data;
-
-        const assetsResponse = await axios.get('http://localhost:3001/api/content/assets');
-        const assetsData = assetsResponse.data;
-
-        const assetsMap = assetsData.reduce((map, asset) => {
-          map[asset.sys.id] = asset.fields.file['en-US'].url;
-          return map;
-        }, {});
-
-        const authorsWithImages = authorsData.map(author => ({
-          ...author,
-          profilePicture: assetsMap[author.profilePicture]
-        }));
-
-        console.log('Fetched authors:', authorsWithImages);
-
-        setAuthors(authorsWithImages);
+        const response = await axios.get(`${API_BASE_URL}/authors`);
+        setAuthors(response.data);
       } catch (error) {
-        console.error('Error fetching authors or assets:', error);
-        setError('Failed to fetch authors or assets.');
+        console.error('Error fetching authors:', error);
+        setError('Failed to fetch authors.');
       }
     };
-
-    const fetchChannels = async () => {
-      try {
-        const channelsResponse = await axios.get('http://localhost:3001/api/content/availableChannels');
-        setChannels(channelsResponse.data);
-      } catch (error) {
-        console.error('Error fetching channels:', error);
-        setError('Failed to fetch channels.');
-      }
-    };
-
-    fetchAuthorsAndAssets();
-    fetchChannels();
+    fetchAuthors();
   }, []);
+
+
+      
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -114,7 +88,7 @@ const AdminForm = () => {
         formDataForUpload.append('content', file);
       });
 
-      const uploadResponse = await axios.post('http://localhost:3001/api/content/upload', formDataForUpload, {
+      const uploadResponse = await axios.post(`${API_BASE_URL}/upload`, formDataForUpload, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -233,7 +207,7 @@ const AdminForm = () => {
   
     try {
       // Send request to the backend
-      const response = await axios.post('http://localhost:3001/api/content/createEntry', requestData, {
+      const response = await axios.post(`${API_BASE_URL}/createEntry`, requestData, {
         headers: {
           'Content-Type': 'application/json',
         }

@@ -1,4 +1,3 @@
-// AuthorSelector.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import '../css/AuthorSelector.css'; // Ensure this path is correct
@@ -12,9 +11,11 @@ const AuthorSelector = ({ authors, onSelectAuthor, selectedAuthorIndex }) => {
           className={`author-option ${selectedAuthorIndex === index ? 'selected' : ''}`}
           onClick={() => onSelectAuthor(author, index)}
         >
-          <div className="author-wrapper">
-            <img src={author.profilePictureUrl} alt={author.name} className="author-image" />
-          </div>
+          <img
+            src={author.profilePictureUrl || '/path/to/default-image.jpg'}
+            alt={author.name}
+            className="author-image"
+          />
           <div className="author-name">{author.name}</div>
         </div>
       ))}
