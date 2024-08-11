@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
-const nfc = require('nfc-pcsc'); // Ensure this is the correct NFC library
+const NfcReader = require('nfc-reader'); // Ensure this is the correct NFC library
 
 require('dotenv').config(); // For environment variables
 
@@ -27,16 +27,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/content', require('./routes/content')); // Example route
 
 // Initialize NFC reader
-const nfcReader = new nfc.NFC();
+const nfcReader = new NfcReader();
 
 // Handle NFC reader events
-function handleNfcReader(reader) {
-  console.log(`${reader.reader.name} device attached`);
+nfcReader.on('reader', (reader) => {
+  console.log(`${reader.name} device attached`);
 
   reader.on('card', async (card) => {
     console.log('Card detected:', card);
 
     try {
+      // Assuming nfc-reader has similar read method
       const data = await reader.read(4, 20); // Adjust block number and length as needed
       const payload = data.toString('utf8');
       console.log('Data read:', payload);
@@ -49,15 +50,13 @@ function handleNfcReader(reader) {
   });
 
   reader.on('error', (err) => {
-    console.log(`${reader.reader.name} an error occurred:`, err);
+    console.log(`${reader.name} an error occurred:`, err);
   });
 
   reader.on('end', () => {
-    console.log(`${reader.reader.name} device removed`);
+    console.log(`${reader.name} device removed`);
   });
-}
-
-nfcReader.on('reader', handleNfcReader);
+});
 
 nfcReader.on('error', (err) => {
   console.log('NFC error:', err);
