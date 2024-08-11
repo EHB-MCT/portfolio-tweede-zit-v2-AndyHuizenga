@@ -1,18 +1,31 @@
 {
-    "name": "fullstack-app",
-    "version": "1.0.0",
-    "private": true,
-    "scripts": {
-      "start": "node backend/server.js",
-      "build": "cd frontend && npm install && npm run build",
-      "heroku-postbuild": "npm run build",
-      "dev": "cd backend && nodemon server.js"
-    },
-    "engines": {
-      "node": "14.x"
-    },
-    "dependencies": {
-    },
-    "devDependencies": {
-    }
+  "name": "fullstack-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node backend/server.js",
+    "build": "cd frontend && npm install && npm run build",
+    "heroku-postbuild": "npm run build",
+    "dev": "cd backend && nodemon server.js"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "contentful": "^10.13.1",
+    "contentful-management": "^11.31.1",
+    "dotenv": "^16.4.5",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "axios": "^1.7.3",
+    "mysql2": "^3.10.2",
+    "sequelize": "^6.37.3",
+    "mime-types": "^2.1.35",
+    "multer": "^1.4.5-lts.1",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
+}
