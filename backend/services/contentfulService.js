@@ -14,6 +14,7 @@ const managementClient = contentfulManagement.createClient({
   accessToken: process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN,
 });
 
+console.log('CONTENTFUL_ACCESS_TOKEN:', process.env.CONTENTFUL_ACCESS_TOKEN);
 console.log('CONTENTFUL_MANAGEMENT_ACCESS_TOKEN:', process.env.CONTENTFUL_MANAGEMENT_ACCESS_TOKEN);
 
 // Utility function to get Contentful space and environment

@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pokusew/pcsclite": "^0.6.0",
     "axios": "^1.7.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
@@ -30,7 +31,7 @@
     "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
-    "nfc-pcsc": "^0.7.2" 
-  }, 
+    "nfc-pcsc": "^0.8.1"
+  },
   "description": ""
 }

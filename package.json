@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-      "start": "node backend/app.js",
+        "backend": "cd backend && npm start",
+      "frontend": "cd frontend && npm start",
+      "start": "cd backend && npm start && cd frontend && npm start",
       "heroku-postbuild": "npm run build",
       "build": "cd frontend && npm install && npm run build && cd ../backend && npm install"
     },
@@ -11,4 +13,3 @@
       "node": "14.x"
     }
   }
-  
