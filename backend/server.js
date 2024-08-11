@@ -1,43 +1,37 @@
+const path = require('path');
 const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const path = require('path'); // Add this line
-
-dotenv.config();
-
-
+const http = require('http'); // For creating an HTTP server
+const socketIo = require('socket.io'); // For WebSocket functionality
+require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-const server = http.createServer(app);
-const io = socketIo(server); // Create the socket.io instance
 
-const corsOptions = {
-  origin: '*', // Allow requests from any origin
-  credentials: true,
-};
+// Middleware
+app.use(cors()); // Enable CORS
+app.use(express.json()); // Parse incoming JSON requests
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data
 
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'frontend/build')));
+// API routes
+app.use('/api/content', require('./routes/content')); // Example API route for content
 
-// Catch-all handler for all other routes
-app.get('/*', function(req, res) {
-    res.sendFile(path.join(__dirname, 'frontend/build/index.html'));
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// Catch-all handler for any other requests - serves the React app's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
 
-
-
-app.use('/api/content', require('./routes/content'));
+// Create an HTTP server and attach the WebSocket server to it
+const server = http.createServer(app);
+const io = socketIo(server);
 
 // Conditionally initialize NFC functionality only in local environment
 if (process.env.NODE_ENV === 'development') {
   try {
     const initializeNfc = require('./services/nfcHandler');
-    initializeNfc(io);
+    initializeNfc(io); // Pass the io instance to the NFC handler
   } catch (error) {
     console.error('Failed to initialize NFC functionality:', error.message);
   }
@@ -48,6 +42,8 @@ const initializeWebSocket = require('./services/webSocketHandler');
 console.log('Initializing WebSocket server');
 initializeWebSocket(io); // Pass the existing io instance
 
+// Start the server
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
