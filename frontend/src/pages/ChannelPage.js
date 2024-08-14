@@ -7,14 +7,13 @@ import '../css/ChannelPage.css';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import API_BASE_URL from "./config";
 
-
 const ChannelPage = () => {
   const { channelNumber } = useParams();
   const [channelContent, setChannelContent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false); // New state for video playback
-  const videoRef = useRef(null); // Reference to the video element
-  const galleryRef = useRef(null); // Reference to the image gallery
+  const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef(null);
+  const galleryRef = useRef(null);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -30,7 +29,7 @@ const ChannelPage = () => {
         setChannelContent(content);
       } catch (error) {
         console.error('Error fetching content:', error);
-        setChannelContent(null); // Set content to null if there's an error
+        setChannelContent(null);
       } finally {
         setLoading(false); 
       }
@@ -41,8 +40,11 @@ const ChannelPage = () => {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      if (event.key === '.') {
+      console.log('Key pressed:', event.key); // Log every key press to verify listener
+
+      if (event.key === ',') {
         if (channelContent?.contentType === 'video' && videoRef.current) {
+          console.log("Play button pressed");
           if (isPlaying) {
             videoRef.current.pause();
           } else {
@@ -69,12 +71,12 @@ const ChannelPage = () => {
   const renderContent = () => {
     console.log('Rendering content:', channelContent);
     if (!channelContent) {
-      return <div>No content available</div>;  // Handle case where channelContent is null or undefined
+      return <div>No content available</div>;
     }
   
     if (channelContent.contentType === 'album') {
       const images = (channelContent.content?.filter(asset => asset.fields?.file?.url) || []).map((asset) => ({
-        original: asset.fields.file.url || 'default-thumbnail.jpg', // Fallback to default image if URL is missing
+        original: asset.fields.file.url || 'default-thumbnail.jpg',
         thumbnail: asset.fields.file.url || 'default-thumbnail.jpg',
       }));
   
@@ -82,7 +84,7 @@ const ChannelPage = () => {
         <ImageGallery ref={galleryRef} items={images} showThumbnails={true} showPlayButton={false} showFullscreenButton={false} />
       );
     } else if (channelContent.contentType === 'video') {
-      const videoUrl = channelContent.content?.[0]?.fields?.file?.url || ''; // Fallback to empty string if URL is missing
+      const videoUrl = channelContent.content?.[0]?.fields?.file?.url || '';
   
       return (
         videoUrl ? (
