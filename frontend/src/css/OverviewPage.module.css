@@ -1,5 +1,5 @@
 /* Container for the entire overview page */
-.overview-page {
+.overviewPage {
   margin: 0; /* Remove margin */
   padding: 0; /* Remove padding */
   display: flex;
@@ -8,30 +8,30 @@
 }
 
 /* Container for the top section (title and description) */
-.top-section {
+.topSection {
   display: flex;
   width: 100%; /* Full width of the container */
   margin: 0; /* Remove margin */
   padding: 0; /* Remove padding */
 }
 
-/* Each section within the top-section */
-.top-left {
+/* Each section within the topSection */
+.topLeft {
   flex: 1; /* Takes up 1/3 of the available width */
   text-align: left; /* Align text to the left */
   padding: 0; /* No padding */
   margin: 0; /* No margin */
 }
 
-/* Ensure that title and description within top-left align to the left edge */
-.top-left h1,
-.top-left p {
+/* Ensure that title and description within topLeft align to the left edge */
+.topLeft h1,
+.topLeft p {
   margin: 0; /* Remove default margin */
   padding: 0; /* Remove default padding */
 }
 
 /* Centered text section */
-.overview-center-text {
+.overviewCenterText {
   flex: 1; /* Takes up 1/3 of the available width */
   display: flex;
   align-items: center;
@@ -43,7 +43,7 @@
 }
 
 /* Empty third section */
-.top-right {
+.topRight {
   flex: 1; /* Takes up 1/3 of the available width */
   text-align: right; /* Align text to the right */
   padding: 0; /* No padding */
@@ -51,7 +51,7 @@
 }
 
 /* Title section */
-.overview-title {
+.overviewTitle {
   font-size: 24px; /* Adjust font size as needed */
   font-weight: bold;
   margin: 0; /* Ensure no margin */
@@ -59,13 +59,13 @@
 }
 
 /* Description section */
-.overview-description {
+.overviewDescription {
   font-size: 16px; /* Adjust font size as needed */
   margin: 0; /* Ensure no margin */
 }
 
 /* Container for recall cards */
-.recall-cards-container {
+.recallCardsContainer {
   display: flex;
   flex-wrap: nowrap; /* Prevent wrapping of cards */
   overflow-x: auto; /* Enable horizontal scrolling */
@@ -74,10 +74,13 @@
   margin: 0; /* Remove default margin */
   padding: 0; /* Remove default padding */
   white-space: nowrap; /* Prevent wrapping */
+  position: relative; /* Ensure the container has relative positioning */
+  scroll-behavior: smooth; /* Smooth scrolling */
+  padding-bottom: 20px; /* Add space for scrollbar */
 }
 
 /* Styling for individual recall cards */
-.recall-card {
+.recallCard {
   flex: 0 0 auto; /* Ensure cards don’t shrink or grow */
   width: 200px; /* Fixed width for cards */
   height: 400px; /* Fixed height for cards */
@@ -89,27 +92,13 @@
   margin: 0 auto;
 }
 
-/* Ensure the container has relative positioning for the scrollbar positioning */
-.recall-cards-container {
-  position: relative;
-  overflow-x: auto; /* Allow horizontal scrolling */
-  overflow-y: hidden; /* Hide vertical scrolling */
-  white-space: nowrap; /* Ensure items do not wrap */
-  scroll-behavior: smooth; /* Smooth scrolling */
-  padding-bottom: 20px; /* Add space for scrollbar */
-}
-
 /* Hide the default scrollbar */
-.recall-cards-container::-webkit-scrollbar {
+.recallCardsContainer::-webkit-scrollbar {
   display: none; /* Hides the scrollbar for WebKit browsers */
 }
 
-
-
-/* Container for the recall cards */
-
-
-.scrollbar-container {
+/* Container for the custom scrollbar */
+.scrollbarContainer {
   position: fixed;
   bottom: 70px;
   left: 50%;
@@ -119,11 +108,10 @@
   background-color: #ddd; /* Track color */
   border-radius: 5px;
   pointer-events: none; /* Avoid interfering with content interaction */
-
 }
 
 /* Custom scrollbar thumb */
-.scrollbar-thumb {
+.scrollbarThumb {
   height: 100%;
   background-color: #888; /* Thumb color */
   border-radius: 5px;
@@ -133,6 +121,6 @@
   pointer-events: none; /* Avoid interacting directly with thumb */
 }
 
-.scrollbar-thumb:hover {
+.scrollbarThumb:hover {
   background-color: #555; /* Darker color on hover */
 }

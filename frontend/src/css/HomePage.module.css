@@ -1,4 +1,5 @@
-.home-page {
+/* HomePage.module.css */
+.homePage {
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -6,25 +7,24 @@
   align-items: center;
 }
 
-.welcome-section {
+.welcomeSection {
   margin-bottom: 50px;
-  margin-top: 0px; /* Reduced top margin to bring this text closer to the top */
+  margin-top: 0px;
 }
 
 code {
   font-family: 'Roboto Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-.welcome-title {
+.welcomeTitle {
   font-family: 'Roboto', sans-serif;
   font-size: 3rem;
   margin-bottom: 10px;
-  margin-top: 0px; /* Reduced top margin to bring this text closer to the top */
-  font-family: 'Roboto Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  margin-top: 0px;
   text-transform: uppercase;
 } 
 
-.welcome-subtitle {
+.welcomeSubtitle {
   font-family: 'Roboto', sans-serif;
   font-size: 1.25rem;
   margin-bottom: 40px;
@@ -32,51 +32,50 @@ code {
   margin: auto;
 }
 
-.bonjour-text {
+.bonjourText {
   font-family: 'Roboto Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
   font-size: 1rem;
-  margin-bottom: 0px; /* Adjusted bottom margin for balanced spacing */
+  margin-bottom: 0px;
 }
 
-.card-section {
+.cardSection {
   display: flex;
   justify-content: center;
-  gap: 40px; /* Increased gap between cards */
+  gap: 40px;
   width: 100%;
-  max-width: 1000px; /* Adjust based on your desired max width */
+  max-width: 1000px;
   padding: 0 20px;
   box-sizing: border-box;
 }
 
-.custom-card {
+.customCard {
   flex: 1;
-  max-width: 45%; /* Ensure cards are evenly spaced */
-  min-width: 300px; /* Ensure cards don’t get too small on narrow screens */
+  max-width: 45%;
+  min-width: 300px;
   border-radius: 15px;
   overflow: hidden;
   background-color: #f8f9fa;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
-  border: 4px solid #000 !important; /* Dark black border with 4px thickness */
+  border: 4px solid #000 !important;
 }
 
-
-.custom-card .card-body {
+.customCard .cardBody {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Spread content evenly */
+  justify-content: space-between;
   height: 100%;
 }
 
-.image-placeholder {
+.imagePlaceholder {
   width: 100%;
-  padding-bottom: 75%; /* Maintain 4:3 aspect ratio */
+  padding-bottom: 75%;
   position: relative;
-  background-color: #ddd; /* Fallback color */
+  background-color: #ddd;
 }
 
-.image-placeholder img {
+.imagePlaceholder img {
   position: absolute;
   top: 0;
   left: 0;

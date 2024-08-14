@@ -1,0 +1,83 @@
+.AuthorShowcase {
+    padding: 0;
+    position: relative;
+}
+
+.scrollContainer {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    white-space: nowrap;
+    position: relative;
+}
+
+.carouselInner {
+    display: flex;
+    align-items: center;
+}
+
+.cardWrapper {
+    display: inline-block;
+    margin-right: 20px; /* Adjust spacing between cards */
+}
+
+.authorCard {
+    width: 90%;
+    max-width: 1200px;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    border: none; /* Remove card border */
+    box-shadow: none; /* Remove card shadow */
+}
+
+.cardImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    aspect-ratio: 1 / 1;
+}
+
+.imageCol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.textCol {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    padding-left: 20px;
+    text-align: left;
+}
+
+.carouselControl {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1;
+    padding: 10px;
+    border-radius: 50%;
+    color: #888;
+}
+
+.carouselControlPrev {
+    left: 10px; /* Adjust position */
+}
+
+.carouselControlNext {
+    right: 10px; /* Adjust position */
+}
+
+.carouselControl:hover {
+    color: #0f0d0d;
+}

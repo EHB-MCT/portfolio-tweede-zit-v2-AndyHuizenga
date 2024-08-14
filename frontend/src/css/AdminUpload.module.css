@@ -1,0 +1,73 @@
+.adminForm {
+  max-width: 900px; /* Max width of the form */
+  margin: auto; /* Center the form horizontally */
+  padding: 20px; /* Add padding inside the form */
+  background-color: #f9f9f9; /* Light background color */
+  border-radius: 8px; /* Rounded corners for the form container */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow around the form */
+}
+
+.title {
+  margin-bottom: 20px; /* Space below the title */
+  font-size: 24px; /* Title font size */
+  font-weight: bold; /* Bold title */
+}
+
+.spinner {
+  display: block;
+  margin: 20px auto; /* Center the spinner horizontally */
+}
+
+.alert {
+  margin-bottom: 20px; /* Space below the alert */
+}
+
+.form {
+  margin-top: 20px; /* Space above the form */
+}
+
+.label {
+  font-weight: bold; /* Bold label text */
+  margin-bottom: 5px; /* Space below the label */
+}
+
+.control {
+  margin-bottom: 15px; /* Space below the form controls */
+}
+
+.fileInput {
+  margin-bottom: 15px; /* Space below the file input */
+}
+
+.fileUploadContainer {
+  display: flex;
+  align-items: center; /* Vertically align items in the center */
+  gap: 10px; /* Space between file input and filenames */
+}
+
+.fileInput {
+  flex: 1; /* Allow the file input to grow and fill the container */
+}
+
+.fileNames {
+  color: #6c757d; /* Muted text color */
+  font-size: 0.9em; /* Slightly smaller text size */
+  overflow: hidden; /* Hide overflowing text */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  text-overflow: ellipsis; /* Show ellipsis if text overflows */
+}
+
+.fileList {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove padding */
+  margin: 10px 0; /* Space above and below the list */
+}
+
+.fileItem {
+  margin-bottom: 5px; /* Space below each file item */
+}
+
+.submitButton {
+  margin-top: 20px; /* Space above the submit button */
+  float: right; /* Align the button to the right of the screen */
+}

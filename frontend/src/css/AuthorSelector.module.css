@@ -1,0 +1,36 @@
+.authorSelect {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Add space between options */
+}
+
+.authorOption {
+  cursor: pointer;
+  padding: 10px;
+  margin-bottom: 20px; /* Reduced bottom margin for better spacing */
+  border-radius: 5px;
+  transition: border-color 0.3s, background-color 0.3s; /* Added background-color transition */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100px; /* Fixed width for consistency */
+  border: 2px solid transparent; /* Default border */
+}
+
+.authorOption.selected {
+  border-color: #007bff; /* Border color for selected state */
+  background-color: #e7f0ff; /* Background color for selected state */
+}
+
+.authorImage {
+  width: 50px; /* Fixed size for images */
+  height: 50px;
+  border-radius: 50%; /* Circular image */
+  object-fit: cover; /* Ensure image covers the container */
+  margin-bottom: 10px; /* Space between image and name */
+}
+
+.authorName {
+  text-align: center;
+  font-size: 14px; /* Adjusted font size for better fit */
+}

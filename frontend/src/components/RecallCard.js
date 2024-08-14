@@ -1,6 +1,5 @@
-// src/components/RecallCard.js
 import React from 'react';
-import '../css/RecallCard.css'; // Ensure to include your CSS file
+import styles from '../css/RecallCard.module.css'; // Updated to import CSS module
 
 const RecallCard = ({ item }) => {
   // Extract fields from item
@@ -13,10 +12,10 @@ const RecallCard = ({ item }) => {
   const formattedChannel = channel < 10 ? `0${channel}` : channel;
 
   return (
-    <div className="recall-card">
+    <div className={styles.recallCard}>
       {/* Image */}
       {imageUrl && (
-        <div className="recall-card-image">
+        <div className={styles.recallCardImage}>
           <img 
             src={imageUrl} 
             alt={title || 'No image available'} 
@@ -25,17 +24,17 @@ const RecallCard = ({ item }) => {
       )}
 
       {/* Channel Number */}
-      <div className="recall-card-channel">
+      <div className={styles.recallCardChannel}>
         {formattedChannel}
       </div>
 
       {/* Title */}
-      <div className="recall-card-title">
+      <div className={styles.recallCardTitle}>
         {title}
       </div>
       
       {/* Content Type */}
-      <div className="recall-card-type">
+      <div className={styles.recallCardType}>
         <em>{contentType}</em>
       </div>
     </div>

@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Button, Spinner, Alert, Row, Col } from 'react-bootstrap';
 import AuthorSelector from '../../components/AuthorSelector'; // Import the AuthorSelector component
-import '../../css/AdminUpload.css';
+import '../../css/AdminUpload.module.css';
 import VerificationModal from '../../components/VerificationModal'; // Import the VerificationModal
-
+import styles from '../../css/AdminUpload.module.css'; // Importing CSS Module
 
 const AdminForm = () => {
   const [channels, setChannels] = useState([]);
@@ -236,25 +236,26 @@ const AdminForm = () => {
   
 
   return (
-    <div className="admin-form">
-      <h2>Create New Recall Item</h2>
-      {loading && <Spinner animation="border" />}
-      {uploading && <Spinner animation="border" />}
-      {error && <Alert variant="danger">{error}</Alert>}
-      {success && <Alert variant="success">{success}</Alert>}
-      <Form onSubmit={handleSubmit}>
+    <div className={styles.adminForm}>
+      <h2 className={styles.title}>Create New Recall Item</h2>
+      {loading && <Spinner animation="border" className={styles.spinner} />}
+      {uploading && <Spinner animation="border" className={styles.spinner} />}
+      {error && <Alert variant="danger" className={styles.alert}>{error}</Alert>}
+      {success && <Alert variant="success" className={styles.alert}>{success}</Alert>}
+      <Form onSubmit={handleSubmit} className={styles.form}>
         <Form.Group controlId="formAuthor">
-          <Form.Label>Author</Form.Label>
+          <Form.Label className={styles.label}>Author</Form.Label>
           <AuthorSelector
             authors={authors}
             onSelectAuthor={handleAuthorSelect}
             selectedAuthorIndex={selectedAuthorIndex}
+            className={styles.authorSelector}
           />
         </Form.Group>
 
         <Form.Group controlId="formSelectedAuthor">
-          <Form.Label>Selected Author</Form.Label>
-          <div>
+          <Form.Label className={styles.label}>Selected Author</Form.Label>
+          <div className={styles.selectedAuthor}>
             {selectedAuthorIndex !== null ? (
               <div>
                 {authors[selectedAuthorIndex]?.name || 'No author selected'}
@@ -268,8 +269,14 @@ const AdminForm = () => {
         <Row>
           <Col md={3}>
             <Form.Group controlId="formChannel">
-              <Form.Label>Channel</Form.Label>
-              <Form.Control as="select" name="channel" value={formData.channel} onChange={handleInputChange}>
+              <Form.Label className={styles.label}>Channel</Form.Label>
+              <Form.Control
+                as="select"
+                name="channel"
+                value={formData.channel}
+                onChange={handleInputChange}
+                className={styles.control}
+              >
                 <option value="">Select Channel</option>
                 {channels.map(channel => (
                   <option key={channel} value={channel}>
@@ -281,32 +288,40 @@ const AdminForm = () => {
           </Col>
           <Col md={3}>
             <Form.Group controlId="formTitle">
-              <Form.Label>Title</Form.Label>
+              <Form.Label className={styles.label}>Title</Form.Label>
               <Form.Control
                 type="text"
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
                 required
+                className={styles.control}
               />
             </Form.Group>
           </Col>
           <Col md={3}>
             <Form.Group controlId="formDate">
-              <Form.Label>Date</Form.Label>
+              <Form.Label className={styles.label}>Date</Form.Label>
               <Form.Control
                 type="date"
                 name="date"
                 value={formData.date}
                 onChange={handleInputChange}
                 required
+                className={styles.control}
               />
             </Form.Group>
           </Col>
           <Col md={3}>
             <Form.Group controlId="formContentType">
-              <Form.Label>Content Type</Form.Label>
-              <Form.Control as="select" name="contentType" value={formData.contentType} onChange={handleInputChange}>
+              <Form.Label className={styles.label}>Content Type</Form.Label>
+              <Form.Control
+                as="select"
+                name="contentType"
+                value={formData.contentType}
+                onChange={handleInputChange}
+                className={styles.control}
+              >
                 <option value="">Select Content Type</option>
                 {contentTypes.map(type => (
                   <option key={type} value={type}>
@@ -319,32 +334,43 @@ const AdminForm = () => {
         </Row>
 
         <Form.Group controlId="formContentFile">
-          <Form.Label>Upload Content</Form.Label>
-          <Form.Control type="file" multiple onChange={handleFileChange} />
+          <Form.Label className={styles.label}>Upload Content</Form.Label>
+          <Form.Control
+            type="file"
+            multiple
+            onChange={handleFileChange}
+            className={styles.fileInput}
+          />
           {uploadedFileNames.length > 0 && (
-            <ul>
+            <ul className={styles.fileList}>
               {uploadedFileNames.map((fileName, index) => (
-                <li key={index}>{fileName}</li>
+                <li key={index} className={styles.fileItem}>{fileName}</li>
               ))}
             </ul>
           )}
         </Form.Group>
 
         <Form.Group controlId="formDescription">
-          <Form.Label>Description</Form.Label>
+          <Form.Label className={styles.label}>Description</Form.Label>
           <Form.Control
             as="textarea"
             rows={3}
             name="description"
             value={formData.description}
             onChange={handleInputChange}
+            className={styles.control}
           />
         </Form.Group>
 
         {isUploaded && (
           <Form.Group controlId="formThumbnail">
-            <Form.Label>Thumbnail</Form.Label>
-            <Form.Control as="select" value={formData.thumbnailId} onChange={handleThumbnailSelect}>
+            <Form.Label className={styles.label}>Thumbnail</Form.Label>
+            <Form.Control
+              as="select"
+              value={formData.thumbnailId}
+              onChange={handleThumbnailSelect}
+              className={styles.control}
+            >
               <option value="">Select Thumbnail</option>
               {formData.content.map(file => (
                 <option key={file.id} value={file.id}>
@@ -359,21 +385,19 @@ const AdminForm = () => {
           variant={isUploaded ? 'success' : 'primary'}
           onClick={isUploaded ? handleSubmit : uploadContent}
           disabled={loading || uploading || (!isUploaded && !formData.content.length)}
-          className="upload-button"
+          className={styles.submitButton}
         >
           {isUploaded ? 'Submit' : 'Upload Content'}
         </Button>
       </Form>
       {showVerificationModal && (
-  <VerificationModal
-    show={showVerificationModal}
-    handleClose={handleCloseModal}
-    onVerify={handleVerifyAuthor}
-    author={pendingAuthor ? pendingAuthor.author : undefined} // Pass the author if available
-  />
-)}
-
-
+        <VerificationModal
+          show={showVerificationModal}
+          handleClose={handleCloseModal}
+          onVerify={handleVerifyAuthor}
+          author={pendingAuthor ? pendingAuthor.author : undefined} // Pass the author if available
+        />
+      )}
     </div>
   );
 };

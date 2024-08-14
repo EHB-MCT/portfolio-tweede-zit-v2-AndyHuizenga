@@ -1,22 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../css/AuthorSelector.css'; // Ensure this path is correct
+import styles from '../css/AuthorSelector.module.css'; // Import the CSS module
 
 const AuthorSelector = ({ authors, onSelectAuthor, selectedAuthorIndex }) => {
   return (
-    <div className="author-select">
+    <div className={styles.authorSelect}>
       {authors.map((author, index) => (
         <div
           key={index}
-          className={`author-option ${selectedAuthorIndex === index ? 'selected' : ''}`}
+          className={`${styles.authorOption} ${selectedAuthorIndex === index ? styles.selected : ''}`}
           onClick={() => onSelectAuthor(author, index)}
         >
           <img
             src={author.profilePictureUrl || '/path/to/default-image.jpg'}
             alt={author.name}
-            className="author-image"
+            className={styles.authorImage}
           />
-          <div className="author-name">{author.name}</div>
+          <div className={styles.authorName}>{author.name}</div>
         </div>
       ))}
     </div>

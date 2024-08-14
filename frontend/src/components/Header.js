@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import Overlay from '../components/Overlay';
-import '../css/Header.css';
+import styles from '../css/Header.module.css'; // Updated to import CSS module
 
 const Header = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -205,33 +205,33 @@ const Header = () => {
 
   return (
     <>
-      <header className="header">
-        <div className="header-row">
-          <div className="current-channel">
-            <div className="channel-number">
+      <header className={styles.header}>
+        <div className={styles.headerRow}>
+          <div className={styles.currentChannel}>
+            <div className={styles.channelNumber}>
               <strong>{channelNumber}</strong> {/* Display channelNumber */}
             </div>
           </div>
-          <div className="tv-info">
-            <div className="time-date">
-              <div className="time">{formatTime(currentTime)}</div>
+          <div className={styles.tvInfo}>
+            <div className={styles.timeDate}>
+              <div className={styles.time}>{formatTime(currentTime)}</div>
             </div>
           </div>
-          <div className="help-text">
-            <div className="help-text-content">
+          <div className={styles.helpText}>
+            <div className={styles.helpTextContent}>
               <p>00 + [ENTER] pour l’acuelle</p>
               <p>99 + [ENTER] pour les chaines</p>
             </div>
           </div>
         </div>
-        <div className="channel-label">chaine</div>
-        <div className="date">{formatDate(currentTime)}</div>
+        <div className={styles.channelLabel}>chaine</div>
+        <div className={styles.date}>{formatDate(currentTime)}</div>
       </header>
       <input
         type="text"
         value={inputValue}
         onChange={handleInputChange}
-        className="transparent-input"
+        className={styles.transparentInput}
         ref={inputRef}
       />
       <Overlay

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Card } from 'react-bootstrap';
-import '../css/StepsShow.css'; 
+import { Card } from 'react-bootstrap';
+import styles from '../css/StepsShow.module.css'; // Import CSS module
 import API_BASE_URL from '../pages/config';
 
 const StepsShow = () => {
@@ -97,36 +97,38 @@ const StepsShow = () => {
   };
 
   return (
-    <Container className="steps-show-container">
-      <div className="title-section">
-        <h1 className="overview-title">{stepsData.name || 'Steps Overview'}</h1>
-        <p className="overview-description">{stepsData.descriptionWholeStep || 'Here’s a small description to guide you through the steps.'}</p>
+    <div className={styles.stepsShowContainer}>
+      <div className={styles.titleSection}>
+        <h1>{stepsData.name || 'Steps Overview'}</h1>
+        <p className={styles.overviewDescription}>
+          {stepsData.descriptionWholeStep || 'Here’s a small description to guide you through the steps.'}
+        </p>
       </div>
       {error && <div className="alert alert-danger">{error}</div>}
       <div 
-        className="scroll-container" 
+        className={styles.scrollContainer} 
         ref={scrollContainerRef} 
         tabIndex="0" // Ensure it can receive focus
         role="region" // Optional: to indicate it’s a scrollable region
       >
-        <div className="scroll-row">
+        <div className={styles.scrollRow}>
           {stepsData.steps.length > 0 ? (
             stepsData.steps.map((step, index) => (
-              <div className="card-wrapper" key={index}>
-                <Card className="card">
-                  <div className="card-img-container">
-                    <Card.Img variant="top" src={step.url} alt={`Step ${index + 1}`} className="card-img-top" />
+              <div className={styles.cardWrapper} key={index}>
+                <Card className={styles.card}>
+                  <div className={styles.cardImgContainer}>
+                    <Card.Img variant="top" src={step.url} alt={`Step ${index + 1}`} className={styles.cardImgTop} />
                   </div>
-                  <div className="card-number">{index + 1}</div> {/* Display step number */}
+                  <div className={styles.cardNumber}>{index + 1}</div> {/* Display step number */}
                   <Card.Body>
-                    <Card.Text>{step.description}</Card.Text>
+                    <Card.Text className={styles.cardText}>{step.description}</Card.Text>
                   </Card.Body>
                 </Card>
               </div>
             ))
           ) : (
-            <div className="card-wrapper">
-              <Card className="card">
+            <div className={styles.cardWrapper}>
+              <Card className={styles.card}>
                 <Card.Body>
                   <Card.Text>No steps available</Card.Text>
                 </Card.Body>
@@ -135,14 +137,14 @@ const StepsShow = () => {
           )}
         </div>
       </div>
-      <div className="scrollbar-container">
-        <div className="scrollbar-thumb" ref={scrollbarRef}></div>
+      <div className={styles.scrollbarContainer}>
+        <div className={styles.scrollbarThumb} ref={scrollbarRef}></div>
       </div>
-      <div className="scroll-prompt" onClick={focusScrollContainer}>
+      <div className={styles.scrollPrompt} onClick={focusScrollContainer}>
         <i className="fas fa-chevron-down"></i> 
         <span>Faites défiler la molette noire pour voir plus d'éléments</span>
       </div>
-    </Container>
+    </div>
   );
 };
 

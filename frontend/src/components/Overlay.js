@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import '../css/Overlay.css'; 
+import styles from '../css/Overlay.module.css'; // Import CSS module
 
 const Overlay = ({ visible, content, onClose }) => {
   useEffect(() => {
@@ -12,8 +12,8 @@ const Overlay = ({ visible, content, onClose }) => {
   if (!visible) return null;
 
   return (
-    <div className="overlay" onClick={onClose}>
-      <div className="overlay-content">
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={styles.overlayContent}>
         {content}
       </div>
     </div>

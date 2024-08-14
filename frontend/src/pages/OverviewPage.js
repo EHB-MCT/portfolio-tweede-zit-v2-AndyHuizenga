@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import RecallCard from '../components/RecallCard';
-import '../css/OverviewPage.css'; // Ensure to include your CSS file
+import styles from '../css/OverviewPage.module.css'; // Import CSS module
 import { Spinner } from 'react-bootstrap';
-import API_BASE_URL from "./config";
+import API_BASE_URL from './config';
 
 const OverviewPage = () => {
   const [recalls, setRecalls] = useState([]);
@@ -28,7 +28,7 @@ const OverviewPage = () => {
       }
     };
 
-    fetchRecalls()
+    fetchRecalls();
   }, []);
 
   useEffect(() => {
@@ -83,27 +83,27 @@ const OverviewPage = () => {
   }, [recalls]);
 
   if (loading) {
-    return <Spinner animation="border" className="spinner" />;
+    return <Spinner animation="border" className={styles.spinner} />;
   }
 
   return (
-    <div className="overview-page">
-      <div className="top-section">
-        <div className="top-left">
-          <h1 className="overview-title">Liste de chaines</h1>
-          <p className="overview-description">
+    <div className={styles.overviewPage}>
+      <div className={styles.topSection}>
+        <div className={styles.topLeft}>
+          <h1 className={styles.overviewTitle}>Liste de chaines</h1>
+          <p className={styles.overviewDescription}>
             Lorem ipsum dolor sit amet, consetetur sadipscing <br /> elitr, sed diam nonumy eirmod
           </p>
         </div>
-        <div className="overview-center-text">
+        <div className={styles.overviewCenterText}>
           <p>Pour naviguer vers la chaines desire</p>
         </div>
-        <div className="top-right">
+        <div className={styles.topRight}>
           {/* Empty div or any other content for the right section */}
         </div>
       </div>
       <div 
-        className="recall-cards-container" 
+        className={styles.recallCardsContainer} 
         ref={scrollContainerRef} 
         tabIndex="0"  // Ensure it can receive focus
         role="region" // Optional: to indicate it’s a scrollable region
@@ -114,8 +114,8 @@ const OverviewPage = () => {
           <p>No recall items found.</p>
         )}
       </div>
-      <div className="scrollbar-container">
-        <div className="scrollbar-thumb" ref={scrollbarRef}></div>
+      <div className={styles.scrollbarContainer}>
+        <div className={styles.scrollbarThumb} ref={scrollbarRef}></div>
       </div>
     </div>
   );

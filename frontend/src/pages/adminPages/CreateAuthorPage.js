@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import '../../css/CreateAuthorPage.css';
+import styles from '../../css/CreateAuthorPage.module.css'; // Updated import for CSS Module
 import API_BASE_URL from "../config";
 
 
@@ -137,17 +137,17 @@ const CreateAuthorPage = () => {
   };
 
   return (
-    <div className="create-author-page">
-      <h2>Create New Author</h2>
+    <div className={styles.createAuthorPage}>
+      <h2 className={styles.title}>Create New Author</h2>
 
-      {loading && <Spinner animation="border" />}
-      {uploading && <Spinner animation="border" />}
-      {success && !uploading && <Alert variant="success">{success}</Alert>}
-      {error && <Alert variant="danger">{error}</Alert>}
+      {loading && <Spinner animation="border" className={styles.spinner} />}
+      {uploading && <Spinner animation="border" className={styles.spinner} />}
+      {success && !uploading && <Alert variant="success" className={styles.alert}>{success}</Alert>}
+      {error && <Alert variant="danger" className={styles.alert}>{error}</Alert>}
 
-      <Form className="create-author-form">
-        <div className="file-upload-container">
-          <Form.Group controlId="formContentFile" className="file-input">
+      <Form className={styles.createAuthorForm}>
+        <div className={styles.fileUploadContainer}>
+          <Form.Group controlId="formContentFile" className={styles.fileInput}>
             <Form.Label className="sr-only">Upload Content File</Form.Label>
             <Form.Control
               type="file"
@@ -155,37 +155,36 @@ const CreateAuthorPage = () => {
               onChange={handleFileChange}
               multiple
               required
-              className="file-input-control"
+              className={styles.fileInputControl}
             />
           </Form.Group>
-          <div className="file-names">
+          <div className={styles.fileNames}>
             {uploadedFileNames.join(', ')}
-          </div> 
-
+          </div>
         </div>
 
-        <div className="form-fields">
-          <Form.Group controlId="formName" className="form-group">
-            <Form.Label className="form-label">Name</Form.Label>
+        <div className={styles.formFields}>
+          <Form.Group controlId="formName" className={styles.formGroup}>
+            <Form.Label className={styles.formLabel}>Name</Form.Label>
             <Form.Control
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
               required
-              className="form-control"
+              className={styles.formControl}
             />
           </Form.Group>
 
-          <Form.Group controlId="formRelationship" className="form-group">
-            <Form.Label className="form-label">Relationship</Form.Label>
+          <Form.Group controlId="formRelationship" className={styles.formGroup}>
+            <Form.Label className={styles.formLabel}>Relationship</Form.Label>
             <Form.Control
               as="select"
               name="relationship"
               value={formData.relationship}
               onChange={handleInputChange}
               required
-              className="form-control"
+              className={styles.formControl}
             >
               <option value="">Select Relationship</option>
               <option value="Family">Family</option>
@@ -194,31 +193,31 @@ const CreateAuthorPage = () => {
             </Form.Control>
           </Form.Group>
 
-          <Form.Group controlId="formEmail" className="form-group">
-            <Form.Label className="form-label">Email</Form.Label>
+          <Form.Group controlId="formEmail" className={styles.formGroup}>
+            <Form.Label className={styles.formLabel}>Email</Form.Label>
             <Form.Control
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="form-control"
+              className={styles.formControl}
             />
           </Form.Group>
 
-          <Form.Group controlId="formContactNumber" className="form-group">
-            <Form.Label className="form-label">Contact Number</Form.Label>
+          <Form.Group controlId="formContactNumber" className={styles.formGroup}>
+            <Form.Label className={styles.formLabel}>Contact Number</Form.Label>
             <Form.Control
               type="text"
               name="contactnumber"
               value={formData.contactnumber}
               onChange={handleInputChange}
-              className="form-control"
+              className={styles.formControl}
             />
           </Form.Group>
 
-          <Form.Group controlId="formDescription" className="form-group">
-            <Form.Label className="form-label">Description</Form.Label>
+          <Form.Group controlId="formDescription" className={styles.formGroup}>
+            <Form.Label className={styles.formLabel}>Description</Form.Label>
             <Form.Control
               as="textarea"
               rows={5}
@@ -226,18 +225,18 @@ const CreateAuthorPage = () => {
               value={formData.description}
               onChange={handleInputChange}
               required
-              className="description-textarea"
+              className={styles.descriptionTextarea}
             />
           </Form.Group>
 
-          <Form.Group controlId="formBday" className="form-group">
-            <Form.Label className="form-label">Birthday</Form.Label>
+          <Form.Group controlId="formBday" className={styles.formGroup}>
+            <Form.Label className={styles.formLabel}>Birthday</Form.Label>
             <Form.Control
               type="date"
               name="bday"
               value={formData.bday}
               onChange={handleInputChange}
-              className="form-control"
+              className={styles.formControl}
             />
           </Form.Group>
         </div>
@@ -246,7 +245,7 @@ const CreateAuthorPage = () => {
           variant={isUploaded ? 'success' : 'primary'}
           onClick={isUploaded ? handleSubmit : handleProfilePictureUpload}
           disabled={loading || uploading || (!isUploaded && !formData.profilePicture.length)}
-          className="upload-button"
+          className={styles.uploadButton}
         >
           {isUploaded ? 'Submit' : 'Upload Content'}
         </Button>

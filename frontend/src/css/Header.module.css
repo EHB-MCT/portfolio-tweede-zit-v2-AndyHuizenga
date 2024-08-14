@@ -1,0 +1,108 @@
+.header {
+  height: 20vh; /* 20% of the viewport height */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 100px;
+  position: relative;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.currentChannel {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 33.33%;
+  font-weight: 100;
+}
+
+.channelNumber {
+  font-size: 60px;
+  font-style: italic;
+}
+
+.tvInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 33.33%;
+}
+
+.helpText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  text-align: right;
+  width: 33.33%;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.helpTextContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.helpText p {
+  margin: 0;
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.channelLabel {
+  font-size: 14px;
+  color: #333;
+  position: absolute;
+  top: 50px;
+  left: 100px;
+  z-index: 2000;
+  background: none;
+  padding: 5px;
+}
+
+.timeDate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.date {
+  font-size: 12px;
+  color: #888;
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  background: none;
+  padding: 5px;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.time {
+  font-size: 50px;
+}
+
+.transparentInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20vh;
+  z-index: 1000;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: transparent;
+  font-size: 16px;
+}

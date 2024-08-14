@@ -1,9 +1,9 @@
 import React from 'react';
-import '../css/PageWrapper.css'; // Import the CSS file for custom styles
+import styles from '../css/PageWrapper.module.css'; // Updated to import CSS module
 
 const PageWrapper = ({ children }) => {
   return (
-    <div className="page-wrapper">
+    <div className={styles.pageWrapper}>
       {children}
     </div>
   );

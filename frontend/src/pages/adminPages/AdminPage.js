@@ -2,39 +2,39 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { FaUserPlus, FaFileAlt, FaCog } from 'react-icons/fa'; // Importing icons from react-icons
-import '../../css/AdminPage.css'; // Import your CSS file
+import styles from '../../css/AdminPage.module.css'; // Updated to import CSS module
 
 const AdminPage = () => {
   return (
-    <Container className="admin-page">
+    <Container className={styles.adminPage}>
       <h1>Admin Dashboard</h1>
       <Row className="justify-content-center mt-5">
         <Col md={4}>
-          <Link to="/admin/create-author" className="card-link">
-            <Card className="admin-card light-blue-card">
-              <Card.Body className="admin-card-body">
-                <FaUserPlus className="admin-card-icon" />
-                <Card.Title className="admin-card-title">Create New Author</Card.Title>
+          <Link to="/admin/create-author" className={styles.cardLink}>
+            <Card className={`${styles.adminCard} ${styles.lightBlueCard}`}>
+              <Card.Body className={styles.adminCardBody}>
+                <FaUserPlus className={styles.adminCardIcon} />
+                <Card.Title className={styles.adminCardTitle}>Create New Author</Card.Title>
               </Card.Body>
             </Card>
           </Link>
         </Col>
         <Col md={4}>
-          <Link to="/admin/create-entry" className="card-link">
-            <Card className="admin-card purple-card">
-              <Card.Body className="admin-card-body">
-                <FaFileAlt className="admin-card-icon" />
-                <Card.Title className="admin-card-title">Create New Entry</Card.Title>
+          <Link to="/admin/create-entry" className={styles.cardLink}>
+            <Card className={`${styles.adminCard} ${styles.purpleCard}`}>
+              <Card.Body className={styles.adminCardBody}>
+                <FaFileAlt className={styles.adminCardIcon} />
+                <Card.Title className={styles.adminCardTitle}>Create New Entry</Card.Title>
               </Card.Body>
             </Card>
           </Link>
         </Col>
         <Col md={4}>
-          <Link to="/admin/settings" className="card-link">
-            <Card className="admin-card light-grey-card">
-              <Card.Body className="admin-card-body">
-                <FaCog className="admin-card-icon" />
-                <Card.Title className="admin-card-title">Settings</Card.Title>
+          <Link to="/admin/settings" className={styles.cardLink}>
+            <Card className={`${styles.adminCard} ${styles.lightGreyCard}`}>
+              <Card.Body className={styles.adminCardBody}>
+                <FaCog className={styles.adminCardIcon} />
+                <Card.Title className={styles.adminCardTitle}>Settings</Card.Title>
               </Card.Body>
             </Card>
           </Link>

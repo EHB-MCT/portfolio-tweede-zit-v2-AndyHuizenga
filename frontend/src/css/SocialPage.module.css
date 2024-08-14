@@ -1,0 +1,18 @@
+/* SocialPage.module.css */
+.socialPage {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .titleSection {
+    margin-bottom: 40px;
+  }
+  
+  .titleSection h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .titleSection p {
+    font-size: 1.25rem;
+  }

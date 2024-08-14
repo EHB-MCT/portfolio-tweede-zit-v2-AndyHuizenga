@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, Card, Carousel } from 'react-bootstrap';
 import axios from 'axios';
-import '../css/AuthorShowcase.css';
+import styles from '../css/AuthorShowcase.module.css'; // Import CSS module
 import API_BASE_URL from '../pages/config';
 
 const AuthorShowcase = () => {
   const [authors, setAuthors] = useState([]);
+  const carouselRef = useRef(null);
 
   useEffect(() => {
     const fetchAuthors = async () => {
       try {
-        console.log(" triggered to search authors")
         const response = await axios.get(`${API_BASE_URL}/authors`);
-        console.log(" show response" + response)
         setAuthors(response.data);
       } catch (error) {
         console.error('Error fetching authors:', error);
@@ -22,10 +21,34 @@ const AuthorShowcase = () => {
     fetchAuthors();
   }, []);
 
+  useEffect(() => {
+    const handleWheel = (event) => {
+      if (carouselRef.current) {
+        const { deltaY } = event;
+        if (deltaY > 0) {
+          // Scroll down
+          carouselRef.current.next();
+        } else {
+          // Scroll up
+          carouselRef.current.prev();
+        }
+        event.preventDefault(); // Prevent the default vertical scroll behavior
+      }
+    };
+
+    document.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      document.removeEventListener('wheel', handleWheel);
+    };
+  }, [authors]);
+
   return (
-    <Container fluid className="AuthorShowcase">
-      <Row className="text-center mb-4"> 
-      </Row> 
+    <Container fluid className={styles.AuthorShowcase}> 
+      <Row className="text-center mb-4">
+        <Col>
+          {/* You can add a title or any content here */}
+        </Col>
+      </Row>
 
       <Carousel
         indicators={false}
@@ -33,19 +56,21 @@ const AuthorShowcase = () => {
         controls={true}
         slide={true}
         wrap={false}
+        ref={carouselRef}
+        className={styles.carouselInner} // Added class to ensure proper layout
       >
         {authors.map((author, index) => (
           <Carousel.Item key={index}>
-            <Card className="mx-auto author-card">
+            <Card className={`mx-auto ${styles.authorCard}`}> 
               <Row noGutters>
-                <Col md={4} className="image-col"> {/* 2/5 of 12 columns is 4 */}
+                <Col md={4} className={styles.imageCol}> 
                   <Card.Img
-                    src={author.profilePictureUrl}
+                    src={author.profilePictureUrl || '/path/to/default-image.jpg'}
                     alt={`${author.name}'s picture`}
-                    className="img-fluid"
+                    className={styles.cardImg} 
                   />
                 </Col>
-                <Col md={8} className="text-col"> {/* 3/5 of 12 columns is 8 */}
+                <Col md={8} className={styles.textCol}> 
                   <Card.Body>
                     <Card.Text className="text-muted fst-italic">
                       {author.relationship}
