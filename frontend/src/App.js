@@ -11,6 +11,7 @@ import CreateEntryPage from './pages/adminPages/AdminUpload';
 import SettingsPage from './pages/adminPages/SettingsPage';
 import SocialPage from './pages/SocialPage';
 import Overlay from './components/Overlay';
+import StepsShow from './pages/StepsShow';
 
 function App() {
   const [overlayVisible, setOverlayVisible] = useState(false);
@@ -36,6 +37,8 @@ function App() {
 <Route path="/channel/:channelNumber" element={<PageWrapper><ChannelPage /></PageWrapper>} />
 <Route path="/overview" element={<PageWrapper><OverviewPage /></PageWrapper>} /> 
 <Route path="/social" element={<PageWrapper><SocialPage /></PageWrapper>} /> 
+<Route path="/steps" element={<PageWrapper><StepsShow /></PageWrapper>} /> 
+
 </Routes>
 <Overlay visible={overlayVisible} content={overlayContent} onClose={hideOverlay} />
 </Router>

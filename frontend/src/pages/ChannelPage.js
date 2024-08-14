@@ -14,6 +14,7 @@ const ChannelPage = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
   const galleryRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -40,28 +41,39 @@ const ChannelPage = () => {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      console.log('Key pressed:', event.key); // Log every key press to verify listener
-
-      if (event.key === ',') {
+      if (event.key === '<') {
         if (channelContent?.contentType === 'video' && videoRef.current) {
-          console.log("Play button pressed");
           if (isPlaying) {
             videoRef.current.pause();
           } else {
             videoRef.current.play();
           }
-          setIsPlaying(prevIsPlaying => !prevIsPlaying); // Toggle playback state
-        } else if (channelContent?.contentType === 'album' && galleryRef.current) {
-          galleryRef.current.slideToIndex(galleryRef.current.getCurrentIndex() + 1);
+          setIsPlaying(prevIsPlaying => !prevIsPlaying);
         }
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
+    const handleMouseWheel = (event) => {
+      if (channelContent?.contentType === 'album' && galleryRef.current) {
+        event.preventDefault(); // Prevent default scroll behavior
+        const direction = event.deltaY > 0 ? 1 : -1;
+        const currentIndex = galleryRef.current.getCurrentIndex();
+        const nextIndex = Math.max(0, Math.min(galleryRef.current.props.items.length - 1, currentIndex + direction));
+        galleryRef.current.slideToIndex(nextIndex);
+      }
     };
+
+    const container = containerRef.current;
+
+    if (container) {
+      container.addEventListener('wheel', handleMouseWheel);
+      window.addEventListener('keydown', handleKeyPress);
+
+      return () => {
+        container.removeEventListener('wheel', handleMouseWheel);
+        window.removeEventListener('keydown', handleKeyPress);
+      };
+    }
   }, [isPlaying, channelContent]);
 
   if (loading) {
@@ -69,11 +81,10 @@ const ChannelPage = () => {
   }
 
   const renderContent = () => {
-    console.log('Rendering content:', channelContent);
     if (!channelContent) {
       return <div>No content available</div>;
     }
-  
+
     if (channelContent.contentType === 'album') {
       const images = (channelContent.content?.filter(asset => asset.fields?.file?.url) || []).map((asset) => ({
         original: asset.fields.file.url || 'default-thumbnail.jpg',
@@ -103,7 +114,7 @@ const ChannelPage = () => {
 
   return (
     <div className="channel-page">
-      <div className="channel-content">
+      <div className="channel-content" ref={containerRef}>
         <div className="text-section">
           <ChannelContent content={channelContent} />
         </div>

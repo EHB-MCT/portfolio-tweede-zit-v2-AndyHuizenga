@@ -301,6 +301,61 @@ const uploadFileToContentful = async (file) => {
   }
 };
 
+async function getSteps() {
+  try {
+    // Fetch entries of type 'steps'
+    const response = await client.getEntries({
+      content_type: 'steps',
+      include: 2 // Include linked assets up to two levels deep
+    });
+
+    console.log('Contentful response:', response); // Log the full response for debugging
+
+    if (response.items.length === 0) {
+      throw new Error('No steps content found');
+    }
+
+    // Assuming there's only one entry (or take the first entry as an example)
+    const item = response.items[0].fields;
+
+    // Extract general information about the steps entry
+    const name = item.name || 'No name provided';
+    const descriptionWholeStep = item.descriptionWholeStep || 'No description provided';
+
+    // Extract asset IDs from the fields
+    const assetIds = Object.keys(item)
+      .filter(key => key.startsWith('step') && item[key] && item[key].sys)
+      .map(key => item[key].sys.id);
+
+    // Map assets to their URLs
+    const assetsMap = response.includes.Asset.reduce((acc, asset) => {
+      acc[asset.sys.id] = `https:${asset.fields.file.url}`; // Ensure URL is correctly formatted
+      return acc;
+    }, {});
+
+    // Create the structured steps object
+    const steps = Object.keys(item)
+      .filter(key => key.startsWith('step') && item[key] && item[key].sys)
+      .map(key => {
+        const assetId = item[key].sys.id;
+        return {
+          url: assetsMap[assetId] || 'URL not found',
+          description: response.includes.Asset.find(asset => asset.sys.id === assetId)?.fields.description || ''
+        };
+      });
+
+    return {
+      name,
+      descriptionWholeStep,
+      steps
+    };
+
+  } catch (error) {
+    console.error('Error fetching steps from Contentful:', error.message);
+    throw error;
+  }
+}
+
 
 // Create an author
 const createAuthor = async (name, relationship, profilePicture, email, contactnumber, description, bday) => {
@@ -343,6 +398,8 @@ const createAuthor = async (name, relationship, profilePicture, email, contactnu
 };
 
 
+
+
 module.exports = {
   getContentByChannel,
   getAllRecallItems,
@@ -353,4 +410,6 @@ module.exports = {
   uploadFileToContentful,
   createAuthor,
   getAllExistingAssets,
+  getSteps,
+
 };

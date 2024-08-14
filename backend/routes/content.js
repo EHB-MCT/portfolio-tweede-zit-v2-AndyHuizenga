@@ -215,6 +215,23 @@ router.post('/createAuthor', async (req, res) => {
 });
 
 
+
+// routes/content.js
+// GET /api/steps - Fetch all steps
+router.get('/steps', async (req, res) => {
+  try {
+    const steps = await contentfulService.getSteps();
+    res.json(steps);
+  } catch (error) {
+    console.error('Error fetching steps:', error.message);
+    res.status(500).json({ error: 'Failed to fetch steps', details: error.message });
+  }
+});
+
+
+
+
+
 module.exports = router;
 
 
