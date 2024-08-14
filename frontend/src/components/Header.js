@@ -18,8 +18,33 @@ const Header = () => {
     (text) => {
       if (process.env.NODE_ENV === 'development') {
         console.log('Handling NFC read text:', text);
-        setChannelNumber(text);
-        navigate(`/channel/${text}`);
+
+        // Special handling for specific numbers
+        switch (text) {
+          case '00':
+            navigate('/');
+            break;
+          case '99':
+            navigate('/overview'); 
+            break;
+          case '98':
+            navigate('/admin');
+            break;
+          case '97':
+            navigate('/social');
+            break;
+          case '50':
+            navigate('/steps');
+            break;
+          default:
+            // For regular channel numbers
+            if (/^\d{2}$/.test(text)) { // Ensure it's a two-digit number
+              navigate(`/channel/${text}`);
+            } else {
+              console.error('Invalid NFC data:', text);
+            }
+        }
+        setChannelNumber(text); // Update channelNumber regardless
       }
     },
     [navigate]
@@ -141,7 +166,7 @@ const Header = () => {
             if (newValue === '00') {
               navigate('/');
             } else if (newValue === '99') {
-              navigate('/overview');
+              navigate('/overview'); 
             } else if (newValue === '98') {
               navigate('/admin');
             } else if (newValue === '97') {

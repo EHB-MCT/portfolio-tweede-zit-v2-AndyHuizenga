@@ -4,6 +4,7 @@ const cors = require('cors');
 const http = require('http'); // For creating an HTTP server
 const socketIo = require('socket.io'); // For WebSocket functionality
 require('dotenv').config(); // Load environment variables from .env file
+const initializeNfc = require('./services/nfcHandler')
 
 const app = express();
 
@@ -36,6 +37,7 @@ if (process.env.NODE_ENV === 'development') {
     console.error('Failed to initialize NFC functionality:', error.message);
   }
 }
+
 
 // Initialize WebSocket server with the existing io instance
 const initializeWebSocket = require('./services/webSocketHandler');

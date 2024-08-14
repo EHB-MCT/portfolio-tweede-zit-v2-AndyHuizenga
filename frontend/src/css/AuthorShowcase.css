@@ -1,53 +1,53 @@
-/* AuthorShowcase.css */
-.author-carousel .carousel-item {
+/* Add a unique container class to scope the styles */
+.AuthorShowcase .author-carousel .carousel-item {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
 }
-  
 
-.title-section {
+.AuthorShowcase .title-section {
     margin-top: 0px;
     margin-bottom: 40px;
-  }
-  
-  .title-section h1 {
+}
+
+.AuthorShowcase .title-section h1 {
     font-size: 2.5rem;
     margin-bottom: 10px;
-  }
-  
-  .title-section p {
+}
+
+.AuthorShowcase .title-section p {
     font-size: 1.25rem;
-  }
-  
+}
 
-
-.author-card {
-    width: 80% !important;
+/* Adjust the card's size to accommodate larger images */
+.AuthorShowcase .author-card {
+    width: 90% !important; /* Increase width to allow larger images */
     max-width: 1200px !important;
-    min-height: 300px !important;
+    min-height: 400px !important; /* Increase min-height to fit larger images */
     display: flex !important;
     align-items: center !important;
-    border: none !important; /* Remove the border from the card */
-    box-shadow: none !important; /* Remove any shadow if present */
-}
-  
-.author-card .card-img {
-    width: 100% !important;  /* Ensure the image takes up the full width of its container */
-    height: auto !important; /* Maintain aspect ratio */
-    object-fit: cover !important; /* Scale the image to cover the entire area */
-    border-radius: 10px !important;
-    aspect-ratio: 1 / 1 !important; /* Ensure the image is square */
+    border: none !important;
+    box-shadow: none !important;
 }
 
-.author-card .image-col {
+/* Ensure images within the card are larger */
+.AuthorShowcase .author-card .card-img {
+    width: 100% !important;  /* Ensure the image takes up the full width of its container */
+    height: 100% !important; /* Ensure the image takes up the full height of its container */
+    object-fit: cover !important; /* Scale the image to cover the entire area */
+    border-radius: 10px !important;
+    aspect-ratio: 1 / 1 !important; /* Maintain square aspect ratio */
+}
+
+/* Optionally, adjust the image column size if needed */
+.AuthorShowcase .author-card .image-col {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     height: 100% !important;
 }
 
-.author-card .text-col {
+.AuthorShowcase .author-card .text-col {
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;  /* Vertically center the text */
@@ -56,17 +56,16 @@
     padding-left: 20px !important;
     text-align: left !important;
 }
-  
-.carousel-control-prev,
-.carousel-control-next {
+
+.AuthorShowcase .carousel-control-prev,
+.AuthorShowcase .carousel-control-next {
     width: 5% !important;
 }
-  
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
+
+.AuthorShowcase .carousel-control-prev-icon,
+.AuthorShowcase .carousel-control-next-icon {
     background-color: transparent !important; /* Remove the background color */
     border-radius: 50% !important;
     padding: 5px !important;
     filter: invert(100%); /* Make the arrow icons black */
 }
-
