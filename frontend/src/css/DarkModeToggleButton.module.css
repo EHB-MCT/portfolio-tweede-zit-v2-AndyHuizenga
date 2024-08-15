@@ -1,0 +1,10 @@
+/* DarkModeToggleButton.module.css */
+
+.button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: background-color 0.3s, color 0.3s;
+  }

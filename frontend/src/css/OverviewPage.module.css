@@ -111,16 +111,49 @@
 }
 
 /* Custom scrollbar thumb */
+/* Regular scrollbar thumb styles */
 .scrollbarThumb {
   height: 100%;
-  background-color: #888; /* Thumb color */
+  background-color: #888; /* Default thumb color */
   border-radius: 5px;
-  transition: background-color 0.3s; /* Smooth color transition */
+  transition: background-color 0.3s;
   position: absolute;
   top: 0;
-  pointer-events: none; /* Avoid interacting directly with thumb */
+  pointer-events: none;
 }
 
-.scrollbarThumb:hover {
-  background-color: #555; /* Darker color on hover */
+/* Dark mode scrollbar thumb styles */
+.scrollbarThumb.dark {
+  background-color: #ffffff; /* White thumb color for dark mode */
 }
+
+/* Scrollbar hover styles */
+.scrollbarThumb:hover {
+  background-color: #555; /* Darker thumb color on hover */
+}
+
+.scrollbarThumb.dark:hover {
+  background-color: #ffffff; /* White thumb hover color for dark mode */
+}
+
+/* Dark mode for the overview page */
+.overviewPage.dark {
+
+  color: white;
+}
+
+.overviewPage.dark .overviewTitle,
+.overviewPage.dark .overviewDescription,
+.overviewPage.dark .overviewCenterText {
+  color: white;
+}
+
+/* Dark mode for the recall cards */
+.overviewPage.dark .recallCard {
+ 
+  color: white; /* Text color */
+
+}
+
+
+

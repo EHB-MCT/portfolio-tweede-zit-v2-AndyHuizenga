@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card } from 'react-bootstrap';
-import styles from '../css/StepsShow.module.css'; // Import CSS module
+import styles from '../css/StepsShow.module.css';
 import API_BASE_URL from '../pages/config';
 
-const StepsShow = () => {
+const StepsShow = ({ darkMode }) => {
   const [stepsData, setStepsData] = useState({
     name: '',
     descriptionWholeStep: '',
@@ -22,18 +22,8 @@ const StepsShow = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        if (data) {
-          setStepsData(data);
-        } else {
-          console.error('Unexpected data format:', data);
-          setStepsData({
-            name: '',
-            descriptionWholeStep: '',
-            steps: []
-          });
-        }
+        setStepsData(data);
       } catch (error) {
-        console.error('Error fetching steps:', error.message);
         setError('Error fetching steps. Please try again later.');
       }
     };
@@ -61,7 +51,7 @@ const StepsShow = () => {
 
     if (container) {
       container.addEventListener('scroll', handleScroll);
-      updateScrollbar(); // Initial update
+      updateScrollbar();
 
       return () => {
         container.removeEventListener('scroll', handleScroll);
@@ -69,35 +59,27 @@ const StepsShow = () => {
     }
   }, [stepsData.steps]);
 
-  // Handle mouse wheel scrolling
+  // Handle mouse wheel scrolling globally
   useEffect(() => {
-    const container = scrollContainerRef.current;
-
     const handleWheel = (event) => {
+      const container = scrollContainerRef.current;
       if (container) {
         container.scrollLeft += event.deltaY;
-        event.preventDefault(); // Prevent the default vertical scroll behavior
+        event.preventDefault(); // Prevent default vertical scroll
       }
     };
 
-    if (container) {
-      container.addEventListener('wheel', handleWheel);
+    // Add global wheel event listener
+    window.addEventListener('wheel', handleWheel, { passive: false });
 
-      return () => {
-        container.removeEventListener('wheel', handleWheel);
-      };
-    }
+    return () => {
+      // Clean up the global event listener
+      window.removeEventListener('wheel', handleWheel);
+    };
   }, [stepsData.steps]);
 
-  // Function to focus on scroll container
-  const focusScrollContainer = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.focus();
-    }
-  };
-
   return (
-    <div className={styles.stepsShowContainer}>
+    <div className={`${styles.stepsShowContainer} ${darkMode ? styles.dark : ''}`}>
       <div className={styles.titleSection}>
         <h1>{stepsData.name || 'Steps Overview'}</h1>
         <p className={styles.overviewDescription}>
@@ -105,30 +87,27 @@ const StepsShow = () => {
         </p>
       </div>
       {error && <div className="alert alert-danger">{error}</div>}
-      <div 
-        className={styles.scrollContainer} 
-        ref={scrollContainerRef} 
-        tabIndex="0" // Ensure it can receive focus
-        role="region" // Optional: to indicate it’s a scrollable region
-      >
+      <div className={styles.scrollContainer} ref={scrollContainerRef}>
         <div className={styles.scrollRow}>
           {stepsData.steps.length > 0 ? (
             stepsData.steps.map((step, index) => (
               <div className={styles.cardWrapper} key={index}>
-                <Card className={styles.card}>
+                <Card className={`${styles.card} ${darkMode ? styles.dark : ''}`}>
                   <div className={styles.cardImgContainer}>
                     <Card.Img variant="top" src={step.url} alt={`Step ${index + 1}`} className={styles.cardImgTop} />
                   </div>
-                  <div className={styles.cardNumber}>{index + 1}</div> {/* Display step number */}
-                  <Card.Body>
-                    <Card.Text className={styles.cardText}>{step.description}</Card.Text>
-                  </Card.Body>
+                  <div className={styles.cardBodyContainer}>
+                    <div className={styles.cardNumber}>{index + 1}</div>
+                    <Card.Body>
+                      <Card.Text className={styles.cardText}>{step.description}</Card.Text>
+                    </Card.Body>
+                  </div>
                 </Card>
               </div>
             ))
           ) : (
             <div className={styles.cardWrapper}>
-              <Card className={styles.card}>
+              <Card className={`${styles.card} ${darkMode ? styles.dark : ''}`}>
                 <Card.Body>
                   <Card.Text>No steps available</Card.Text>
                 </Card.Body>
@@ -140,7 +119,7 @@ const StepsShow = () => {
       <div className={styles.scrollbarContainer}>
         <div className={styles.scrollbarThumb} ref={scrollbarRef}></div>
       </div>
-      <div className={styles.scrollPrompt} onClick={focusScrollContainer}>
+      <div className={styles.scrollPrompt}>
         <i className="fas fa-chevron-down"></i> 
         <span>Faites défiler la molette noire pour voir plus d'éléments</span>
       </div>

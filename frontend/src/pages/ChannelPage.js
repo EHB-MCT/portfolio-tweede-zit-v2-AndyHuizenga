@@ -7,7 +7,7 @@ import '../css/ChannelPage.css';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import API_BASE_URL from "./config";
 
-const ChannelPage = () => {
+const ChannelPage = ({ darkMode }) => { // Accept darkMode as a prop
   const { channelNumber } = useParams();
   const [channelContent, setChannelContent] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,17 +19,13 @@ const ChannelPage = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        console.log('Fetching content for channel:', channelNumber);
         const response = await fetch(`${API_BASE_URL}/recall/${channelNumber}`);
-        console.log('Fetch response status:', response.status);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const content = await response.json();
-        console.log('Content received from backend:', content);
         setChannelContent(content);
       } catch (error) {
-        console.error('Error fetching content:', error);
         setChannelContent(null);
       } finally {
         setLoading(false); 
@@ -76,10 +72,6 @@ const ChannelPage = () => {
     }
   }, [isPlaying, channelContent]);
 
-  if (loading) {
-    return <Spinner animation="border" className="spinner" />;
-  }
-
   const renderContent = () => {
     if (!channelContent) {
       return <div>No content available</div>;
@@ -112,9 +104,13 @@ const ChannelPage = () => {
     }
   };
 
+  if (loading) {
+    return <Spinner animation="border" className="spinner" />;
+  }
+
   return (
-    <div className="channel-page">
-      <div className="channel-content" ref={containerRef}>
+    <div className={`channel-page ${darkMode ? 'dark-mode' : ''}`} ref={containerRef}>
+      <div className="channel-content">
         <div className="text-section">
           <ChannelContent content={channelContent} />
         </div>
@@ -124,7 +120,7 @@ const ChannelPage = () => {
       </div>
       {channelContent && (
         <span className="help-text-span">
-          <p>Press [.] to {channelContent.contentType === 'video' ? 'play/pause the video' : 'move to the next picture'}.</p>
+          <p>{channelContent.contentType === 'video' ? 'Press [.] to play/pause the video' : 'Use the weel to move to the next picture'}.</p>
         </span>
       )}
     </div>

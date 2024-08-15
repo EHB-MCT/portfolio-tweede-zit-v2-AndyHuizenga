@@ -32,8 +32,10 @@ function ChannelContent({ content }) {
               <div className="content-type">
                 {content.contentType} created by {author.name || "Unknown Author"}
               </div>
+              
             )}
           </div>
+          
         </div>
       ) : (
         <div>No author information available.</div>

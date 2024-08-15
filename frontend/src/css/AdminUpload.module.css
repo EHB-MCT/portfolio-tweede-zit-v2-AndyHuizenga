@@ -70,4 +70,5 @@
 .submitButton {
   margin-top: 20px; /* Space above the submit button */
   float: right; /* Align the button to the right of the screen */
+  margin-top: 35px; /* Space above the upload button */
 }

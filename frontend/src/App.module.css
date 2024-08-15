@@ -1,0 +1,38 @@
+/* App.module.css */
+
+/* Header styling */
+.AppHeader {
+  background-color: #bdc4d1;
+  color: white;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Link styling */
+.AppLink {
+  color: #61dafb;
+}
+
+/* Ensure text changes color in dark mode */
+
+
+body.dark-mode .AppLink {
+  color: #bb86fc;
+}
+
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3, 
+body.dark-mode h4, 
+body.dark-mode h5, 
+body.dark-mode h6, 
+body.dark-mode p, 
+body.dark-mode span, 
+body.dark-mode div, 
+body.dark-mode li, 
+body.dark-mode code {
+  color: #e0e0e0; /* Ensure text elements are changed to light color in dark mode */
+}
+
+/* App.module.css */
+
+

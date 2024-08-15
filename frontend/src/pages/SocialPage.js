@@ -3,17 +3,17 @@ import { Container, Row, Col } from 'react-bootstrap';
 import AuthorShowcase from '../components/AuthorShowcase';
 import styles from '../css/SocialPage.module.css'; // Import the CSS module
 
-const SocialPage = () => {
+const SocialPage = ({ darkMode }) => {
   return (
-    <Container fluid className={styles.socialPage}> {/* Use CSS module for styling */}
-      <Row className={`${styles.titleSection} text-center`}> {/* Combine CSS module class with Bootstrap class */}
+    <Container fluid className={`${styles.socialPage} ${darkMode ? styles.dark : ''}`}>
+      <Row className={`${styles.titleSection}`}>
         <Col>
           <h1>Mon entourage</h1>
-          <p>Le lieu où vous n'oublierez jamais les personnes qui comptent.</p> {/* Removed extraneous quote */}
+          <p>Le lieu où vous n'oublierez jamais les personnes qui comptent.</p>
         </Col>
       </Row>
 
-      <AuthorShowcase />
+      <AuthorShowcase darkMode={darkMode} /> {/* Pass darkMode to AuthorShowcase */}
     </Container>
   );
 };

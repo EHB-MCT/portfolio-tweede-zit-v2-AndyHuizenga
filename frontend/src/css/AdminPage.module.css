@@ -1,6 +1,7 @@
 .adminPage {
   text-align: center; /* Center-align text */
   padding: 20px; /* Add padding around the page */
+  height: 100% !important;
 }
 
 .adminCard {
@@ -10,7 +11,7 @@
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
   height: 60vw; /* Adjust height to 60% of the viewport width */
-  max-height: 400px; /* Set a max height to avoid cards getting too large */
+  height: 400px !important; /* Set a max height to avoid cards getting too large */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,7 +47,7 @@
   justify-content: center;
   align-items: center;
   padding: 20px;
-  height: 100%; /* Ensure it takes full height of its parent */
+  height: 100% !important; /* Ensure it takes full height of its parent */
 }
 
 .adminCardIcon {
@@ -64,3 +65,8 @@
 .cardLink {
   text-decoration: none; /* Remove underline from links */
 }
+
+.darkMode h1 {
+  color: white;
+}
+

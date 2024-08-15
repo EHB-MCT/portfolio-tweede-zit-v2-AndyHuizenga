@@ -1,0 +1,32 @@
+.imageGallery {
+    width: 100%;
+    position: relative;
+  }
+  
+  .imageGalleryThumbnailsWrapper {
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  .imageGalleryThumbnailsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .imageGalleryThumbnail {
+    width: 100px;
+    margin: 5px;
+  }
+  
+  .imageGalleryThumbnail img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  .imageGalleryThumbnail.active {
+    border: 2px solid #007bff;
+  }

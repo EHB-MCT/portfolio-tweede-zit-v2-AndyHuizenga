@@ -4,9 +4,9 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 import { FaUserPlus, FaFileAlt, FaCog } from 'react-icons/fa'; // Importing icons from react-icons
 import styles from '../../css/AdminPage.module.css'; // Updated to import CSS module
 
-const AdminPage = () => {
+const AdminPage = ({ darkMode }) => { // Accept darkMode as a prop
   return (
-    <Container className={styles.adminPage}>
+    <Container className={`${styles.adminPage} ${darkMode ? styles.darkMode : ''}`}>
       <h1>Admin Dashboard</h1>
       <Row className="justify-content-center mt-5">
         <Col md={4}>

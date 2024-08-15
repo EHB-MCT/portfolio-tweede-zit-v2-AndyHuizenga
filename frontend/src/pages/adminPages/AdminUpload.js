@@ -7,7 +7,7 @@ import '../../css/AdminUpload.module.css';
 import VerificationModal from '../../components/VerificationModal'; // Import the VerificationModal
 import styles from '../../css/AdminUpload.module.css'; // Importing CSS Module
 
-const AdminForm = () => {
+const AdminForm = ({ handleOpenVerificationModal }) => { 
   const [channels, setChannels] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [contentTypes] = useState(['video', 'album']);
@@ -28,8 +28,7 @@ const AdminForm = () => {
   const [uploadedFileNames, setUploadedFileNames] = useState([]);
   const [isUploaded, setIsUploaded] = useState(false);
   const [selectedAuthorIndex, setSelectedAuthorIndex] = useState(null);
-  const [showVerificationModal, setShowVerificationModal] = useState(false);
-  const [pendingAuthor, setPendingAuthor] = useState(null);
+
 
   useEffect(() => {
     const fetchAuthorsAndAssets = async () => {
@@ -139,28 +138,17 @@ const AdminForm = () => {
   };
 
   const handleAuthorSelect = (author, index) => {
-    setPendingAuthor({ author, index });
-    console.log("Selected Author:", author); // Log the selected author
-    setShowVerificationModal(true);
+    setSelectedAuthorIndex(index); // Store the selected author index
+    setFormData((prevState) => ({
+      ...prevState,
+      author: author.name, // Update the form data with the selected author's name
+    }));
+    
+    // Trigger modal for verification if required
+    handleOpenVerificationModal(author); // Ensure handleOpenVerificationModal is correctly passed in props
   };
-  
-  const handleVerifyAuthor = () => {
-    if (pendingAuthor) {
-      console.log("Verifying Author:", pendingAuthor.author); // Log the author being verified
-      setSelectedAuthorIndex(pendingAuthor.index);
-      setFormData(prevState => ({
-        ...prevState,
-        author: pendingAuthor.author
-      }));
-    }
-    handleCloseModal();
-  };
-  
 
-  const handleCloseModal = () => {
-    setShowVerificationModal(false);
-    setPendingAuthor(null);
-  };
+
 
 
   
@@ -246,11 +234,11 @@ const AdminForm = () => {
         <Form.Group controlId="formAuthor">
           <Form.Label className={styles.label}>Author</Form.Label>
           <AuthorSelector
-            authors={authors}
-            onSelectAuthor={handleAuthorSelect}
-            selectedAuthorIndex={selectedAuthorIndex}
-            className={styles.authorSelector}
-          />
+  authors={authors} // Pass the list of authors
+  onSelectAuthor={handleAuthorSelect} // Handle author selection
+  selectedAuthorIndex={selectedAuthorIndex} // Highlight selected author if applicable
+  className={styles.authorSelector}
+/>
         </Form.Group>
 
         <Form.Group controlId="formSelectedAuthor">
@@ -390,14 +378,7 @@ const AdminForm = () => {
           {isUploaded ? 'Submit' : 'Upload Content'}
         </Button>
       </Form>
-      {showVerificationModal && (
-        <VerificationModal
-          show={showVerificationModal}
-          handleClose={handleCloseModal}
-          onVerify={handleVerifyAuthor}
-          author={pendingAuthor ? pendingAuthor.author : undefined} // Pass the author if available
-        />
-      )}
+     
     </div>
   );
 };

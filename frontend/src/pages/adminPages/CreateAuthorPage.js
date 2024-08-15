@@ -4,12 +4,11 @@ import axios from 'axios';
 import styles from '../../css/CreateAuthorPage.module.css'; // Updated import for CSS Module
 import API_BASE_URL from "../config";
 
-
-const CreateAuthorPage = () => {
+const CreateAuthorPage = ({ darkMode }) => {
   const [formData, setFormData] = useState({
     name: '',
     relationship: '',
-    profilePicture: '', // This should be an ID
+    profilePicture: '',
     email: '',
     contactnumber: '',
     description: '',
@@ -21,7 +20,7 @@ const CreateAuthorPage = () => {
   const [success, setSuccess] = useState('');
   const [uploadedFileNames, setUploadedFileNames] = useState([]);
   const [thumbnails, setThumbnails] = useState([]);
-  const [isUploaded, setIsUploaded] = useState(false); // New state to track if content is uploaded
+  const [isUploaded, setIsUploaded] = useState(false);
 
   useEffect(() => {
     const fetchThumbnails = async () => {
@@ -32,7 +31,6 @@ const CreateAuthorPage = () => {
         console.error('Error fetching thumbnails:', error);
       }
     };
-
     fetchThumbnails();
   }, []);
 
@@ -77,10 +75,10 @@ const CreateAuthorPage = () => {
       if (response.data.success && response.data.fileIds && response.data.fileIds.length > 0) {
         setFormData(prevState => ({
           ...prevState,
-          profilePicture: response.data.fileIds[0] // Assuming a single file is uploaded
+          profilePicture: response.data.fileIds[0]
         }));
         setSuccess('Profile picture uploaded successfully!');
-        setIsUploaded(true); // Mark as uploaded
+        setIsUploaded(true);
       } else {
         setError('Failed to upload profile picture.');
       }
@@ -104,7 +102,7 @@ const CreateAuthorPage = () => {
       const response = await axios.post(`${API_BASE_URL}/createAuthor`, {
         name,
         relationship,
-        profilePicture, // Should be the ID of the uploaded file
+        profilePicture,
         email,
         contactnumber,
         description,
@@ -123,7 +121,7 @@ const CreateAuthorPage = () => {
           bday: ''
         });
         setUploadedFileNames([]);
-        setIsUploaded(false); // Reset the upload state after submission
+        setIsUploaded(false);
         setError('');
       } else {
         setError('Failed to create author.');
@@ -137,7 +135,7 @@ const CreateAuthorPage = () => {
   };
 
   return (
-    <div className={styles.createAuthorPage}>
+    <div className={`${styles.createAuthorPage} ${darkMode ? styles.darkMode : ''}`}>
       <h2 className={styles.title}>Create New Author</h2>
 
       {loading && <Spinner animation="border" className={styles.spinner} />}

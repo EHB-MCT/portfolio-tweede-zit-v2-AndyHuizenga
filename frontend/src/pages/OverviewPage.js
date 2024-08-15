@@ -4,7 +4,7 @@ import styles from '../css/OverviewPage.module.css'; // Import CSS module
 import { Spinner } from 'react-bootstrap';
 import API_BASE_URL from './config';
 
-const OverviewPage = () => {
+const OverviewPage = ({ darkMode }) => {  // Accept darkMode prop
   const [recalls, setRecalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null);
@@ -35,7 +35,6 @@ const OverviewPage = () => {
     const container = scrollContainerRef.current;
 
     if (container) {
-      // Function to handle the horizontal scroll
       const handleWheel = (e) => {
         if (e.deltaY !== 0) {
           container.scrollLeft += e.deltaY;
@@ -43,24 +42,20 @@ const OverviewPage = () => {
         }
       };
 
-      // Add event listener for the wheel event
       window.addEventListener('wheel', handleWheel);
 
       return () => {
-        // Clean up event listener
         window.removeEventListener('wheel', handleWheel);
       };
     }
   }, [recalls]);
 
-  // Ensure the scroll container is focused
   useEffect(() => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.focus();
     }
   }, []);
 
-  // Update custom scrollbar width and position
   useEffect(() => {
     const container = scrollContainerRef.current;
     const scrollbar = scrollbarRef.current;
@@ -74,7 +69,7 @@ const OverviewPage = () => {
       };
 
       container.addEventListener('scroll', updateScrollbar);
-      updateScrollbar(); // Initial update
+      updateScrollbar();
 
       return () => {
         container.removeEventListener('scroll', updateScrollbar);
@@ -87,7 +82,7 @@ const OverviewPage = () => {
   }
 
   return (
-    <div className={styles.overviewPage}>
+    <div className={`${styles.overviewPage} ${darkMode ? styles.dark : ''}`}>
       <div className={styles.topSection}>
         <div className={styles.topLeft}>
           <h1 className={styles.overviewTitle}>Liste de chaines</h1>
@@ -99,7 +94,7 @@ const OverviewPage = () => {
           <p>Pour naviguer vers la chaines desire</p>
         </div>
         <div className={styles.topRight}>
-          {/* Empty div or any other content for the right section */}
+          {/* Optional content for the right section */}
         </div>
       </div>
       <div 
@@ -115,7 +110,8 @@ const OverviewPage = () => {
         )}
       </div>
       <div className={styles.scrollbarContainer}>
-        <div className={styles.scrollbarThumb} ref={scrollbarRef}></div>
+        {/* Apply the dark class to scrollbarThumb if darkMode is true */}
+        <div className={`${styles.scrollbarThumb} ${darkMode ? styles.dark : ''}`} ref={scrollbarRef}></div>
       </div>
     </div>
   );

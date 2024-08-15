@@ -1,50 +1,44 @@
-/* Container for the entire steps page */
+/* General Container for the entire steps page */
 .stepsShowContainer {
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
     gap: 0;
-    width: 100vw; /* Full viewport width */
+    width: 100vw;
     height: 100vh;
     overflow: hidden;
-    /* Remove fixed width to allow full-width behavior */
-    /* width: 2000px; */ /* Commented out to allow full width */
+    background-color: #ffffff;
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* Title section */
+.stepsShowContainer.dark {
+    background-color: transparent;
+    color: white;
+}
+
+/* Title section styling */
 .titleSection {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin: 0;
-    box-sizing: border-box;
-    padding-bottom: 20px;
-}
-
-/* Title styling */
-.titleSection h1 {
-    font-size: 2rem;
-    font-weight: bold;
-    margin: 0;
-    padding: 0;
-}
-
-/* Small description under title */
-.overviewDescription {
-    font-size: 1rem;
-    color: #6c757d;
-    margin-top: 10px;
-    line-height: 1.5;
+    padding-left: 20px;
     text-align: left;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    max-width: 100%;
-    box-sizing: border-box;
 }
 
-/* Container for horizontal scrolling */
+.titleSection h1 {
+    font-size: 1.7rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: inherit;
+}
+
+.titleSection p {
+    font-size: 1rem;
+    max-width: 300px;
+    color: inherit;
+}
+
+/* Scroll container styling */
 .scrollContainer {
     width: 100%;
     overflow-x: auto !important;
@@ -56,7 +50,6 @@
     box-sizing: border-box;
 }
 
-/* Row for horizontally aligned items */
 .scrollRow {
     display: flex;
     align-items: flex-start;
@@ -64,29 +57,36 @@
     padding: 0;
 }
 
-/* Wrapper for each card */
+/* Card styling */
 .cardWrapper {
     flex: 0 0 auto;
     margin-right: 20px;
 }
 
-/* Styling for individual cards */
 .card {
     width: 500px !important;
-    height: 500px !important;
-    border: none !important;
-    box-shadow: none;
+    height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    text-align: center;
+    text-align: left;
     position: relative;
     margin-left: 10px;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: black;
+    border: none !important;
+    box-shadow: none;
+    transition: background-color 0.3s, color 0.3s;
+    padding: 20px;
 }
 
-/* Container for images to maintain aspect ratio and fixed dimensions */
+.card.dark {
+    background-color: rgba(255, 255, 255, 0);
+    color: white;
+}
+
+/* Image container styling */
 .cardImgContainer {
     width: 500px;
     height: 281px;
@@ -101,29 +101,31 @@
     object-fit: cover;
 }
 
-/* Big number styling within the card */
-.cardNumber {
-    font-size: 3rem;
-    font-weight: bold;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    color: #fff;
-    background-color: rgb(0, 0, 0);
-    padding: 10px 15px;
-    border-radius: 5px;
+/* Number and text section under the image */
+.cardBodyContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-top: 10px;
+    width: 100%;
 }
 
-/* Description styling within the card */
+/* Number styling under the image */
+.cardNumber {
+    font-size: 2rem;
+    font-weight: bold;
+    color: inherit;
+    background-color: transparent;
+    padding: 0;
+}
+
+/* Text styling within the card */
 .cardText {
     font-size: 0.9rem;
-    padding-top: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: normal;
-    text-align: left;
-    width: 100%;
+    width: 109%;
     box-sizing: border-box;
+    color: inherit;
 }
 
 /* Custom scrollbar container */
@@ -139,7 +141,6 @@
     pointer-events: none;
 }
 
-/* Custom scrollbar thumb */
 .scrollbarThumb {
     height: 100%;
     background-color: #888;
@@ -154,16 +155,6 @@
     background-color: #555;
 }
 
-/* Hide the default scrollbar */
-.scrollContainer::-webkit-scrollbar {
-    display: none !important;
-}
-
-.scrollContainer {
-    -ms-overflow-style: none !important;
-    scrollbar-width: none !important;
-}
-
 /* Scroll prompt styling */
 .scrollPrompt {
     position: fixed;
@@ -171,13 +162,12 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: 1.5rem;
-    color: #333;
+    color: inherit;
     text-align: center;
     z-index: 999;
-    font-family: 'Roboto Mono', monospace; 
+    font-family: 'Roboto Mono', monospace;
 }
 
-/* Styling for scroll prompt icon or text */
 .scrollPrompt i {
     display: block;
     font-size: 2rem;
@@ -188,3 +178,14 @@
     display: block;
     font-size: 1rem;
 }
+
+/* Hide the default scrollbar */
+.scrollContainer::-webkit-scrollbar {
+    display: none !important;
+}
+
+.scrollContainer {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+}
+

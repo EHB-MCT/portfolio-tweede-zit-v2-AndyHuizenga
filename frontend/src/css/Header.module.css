@@ -106,3 +106,26 @@
   color: transparent;
   font-size: 16px;
 }
+
+
+/* Dark mode styles */
+
+.darkMode .channelNumber {
+  color: white; /* Dark mode text color */
+}
+
+.darkMode .helpText p {
+  color: white; /* Dark mode text color */
+}
+
+.darkMode .channelLabel {
+  color: white;
+}
+
+.darkMode .date {
+  color: white;
+}
+
+.darkMode .time {
+  color: white;
+}
