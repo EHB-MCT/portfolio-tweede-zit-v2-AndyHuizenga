@@ -26,8 +26,11 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
         const content = await response.json();
         setChannelContent(content);
 
-        // Set the background image to the first image if it's an album
-        if (content?.contentType === 'album' && content.content?.length > 0) {
+        // Check if the content type is video and set the thumbnail as the background
+        if (content?.contentType === 'video' && content?.thumbnail?.fields?.file?.url) {
+          const videoThumbnail = content.thumbnail.fields.file.url;
+          setBackgroundImage(videoThumbnail); // Set the video thumbnail as the background
+        } else if (content?.contentType === 'album' && content.content?.length > 0) {
           const firstImage = content.content[0]?.fields?.file?.url || '';
           if (firstImage) {
             setBackgroundImage(firstImage); // Set the first image as the background
@@ -82,7 +85,7 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
 
   const handleSlide = (currentIndex) => {
     const currentImage = galleryRef.current.props.items[currentIndex].original;
-    setBackgroundImage(currentImage); // Set the background image to the current image
+    setBackgroundImage(currentImage); // Set the background image to the current image in the album
   };
 
   const renderContent = () => {
@@ -145,9 +148,6 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
         <p>{channelContent?.contentType === 'video' ? 'Press [.] to play/pause the video' : 'Use the wheel to move to the next picture'}.</p>
       </span>
     </div>
-    
-    
-    
   );
 };
 

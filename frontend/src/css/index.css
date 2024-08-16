@@ -49,6 +49,7 @@ html, body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   z-index: -2; /* Background is placed behind everything */
+  transition: opacity 0.8s ease-in-out;
 }
 
 /* Background filter layer */
@@ -62,6 +63,8 @@ html, body {
   z-index: -1; /* Filter is above the background image but below the content */
   pointer-events: none; /* Ensures that interactions pass through the filter */
 }
+
+
 
 /* Content layer */
 .app-content {

@@ -25,7 +25,7 @@ function App() {
   const [backgroundImage, setBackgroundImage] = useState(
     'https://images.ctfassets.net/2x4vothfh006/6JMV9HK1W3fUrdySCC6AS8/031ddedabd3e7e7b090dc1827a1ec85d/selected_18.jpg'
   ); // State to hold background image
-
+  const [bgOpacity, setBgOpacity] = useState(1); // State for background opacity
   const showOverlay = (content) => {
     setOverlayContent(content);
     setOverlayVisible(true);
@@ -58,6 +58,8 @@ function App() {
     console.log("Verification successful!");
     handleCloseVerificationModal(); // Close the modal after verification
   };
+
+  
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -140,17 +142,7 @@ function App() {
               }
             />
             <Route path="/overview" element={<PageWrapper><OverviewPage darkMode={darkMode} /></PageWrapper>} />
-            <Route 
-              path="/social" 
-              element={
-                <PageWrapper>
-                  <SocialPage
-                    darkMode={darkMode}
-                    setBackgroundImage={setBackgroundImage} // Pass function to update background image
-                  />
-                </PageWrapper>
-              }
-            />
+            <Route path="/social" element={<PageWrapper><SocialPage darkMode={darkMode} /></PageWrapper>} />
             <Route 
               path="/steps" 
               element={
