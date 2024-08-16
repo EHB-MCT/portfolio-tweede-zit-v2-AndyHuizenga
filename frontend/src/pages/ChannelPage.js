@@ -11,7 +11,9 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
   const { channelNumber } = useParams();
   const [channelContent, setChannelContent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const galleryRef = useRef(null);
+  const videoRef = useRef(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -39,9 +41,22 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
     };
 
     fetchContent();
-  }, [channelNumber, setBackgroundImage]); // Ensure setBackgroundImage is in the dependency array
+  }, [channelNumber, setBackgroundImage]);
 
   useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === '.') {
+        if (channelContent?.contentType === 'video' && videoRef.current) {
+          if (isPlaying) {
+            videoRef.current.pause();
+          } else {
+            videoRef.current.play();
+          }
+          setIsPlaying((prevIsPlaying) => !prevIsPlaying);
+        }
+      }
+    };
+
     const handleMouseWheel = (event) => {
       if (channelContent?.contentType === 'album' && galleryRef.current) {
         event.preventDefault(); // Prevent default scroll behavior
@@ -53,19 +68,21 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
     };
 
     const container = containerRef.current;
+
     if (container) {
       container.addEventListener('wheel', handleMouseWheel);
+      window.addEventListener('keydown', handleKeyPress);
+
       return () => {
         container.removeEventListener('wheel', handleMouseWheel);
+        window.removeEventListener('keydown', handleKeyPress);
       };
     }
-  }, [channelContent]);
+  }, [isPlaying, channelContent]);
 
   const handleSlide = (currentIndex) => {
-    if (channelContent?.contentType === 'album') {
-      const currentImage = galleryRef.current.props.items[currentIndex].original;
-      setBackgroundImage(currentImage); // Update the background image with the active image
-    }
+    const currentImage = galleryRef.current.props.items[currentIndex].original;
+    setBackgroundImage(currentImage); // Set the background image to the current image
   };
 
   const renderContent = () => {
@@ -86,7 +103,10 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
           showThumbnails={true}
           showPlayButton={false}
           showFullscreenButton={false}
-          onSlide={handleSlide} // Handle slide change
+          onSlide={handleSlide}
+          renderItem={(item) => (
+            <img src={item.original} className="padded-image" alt="gallery item" />
+          )} // Apply padded-image class here
         />
       );
     } else if (channelContent.contentType === 'video') {
@@ -94,7 +114,7 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
 
       return (
         videoUrl ? (
-          <video ref={galleryRef} controls className="content-video">
+          <video ref={videoRef} className="padded-image" controls>
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
@@ -121,12 +141,13 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
           {renderContent()}
         </div>
       </div>
-      {channelContent && (
-        <span className="help-text-span">
-          <p>{channelContent.contentType === 'video' ? 'Press [.] to play/pause the video' : 'Use the wheel to move to the next picture'}.</p>
-        </span>
-      )}
+      <span className="help-text-span">
+        <p>{channelContent?.contentType === 'video' ? 'Press [.] to play/pause the video' : 'Use the wheel to move to the next picture'}.</p>
+      </span>
     </div>
+    
+    
+    
   );
 };
 

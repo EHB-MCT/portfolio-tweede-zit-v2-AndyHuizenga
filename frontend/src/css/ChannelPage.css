@@ -166,16 +166,26 @@
   object-fit: contain;
 }
 
-/* ChannelPage.css */
 .help-text-span {
   position: absolute;
-  top: 65%; /* Adjust this value to position it closer to the image section */
-  left: 43%; /* Adjust this value to position it closer to the image section */
-  font-family: 'Roboto Mono', monospace; 
-  font-size: 14px; /* Font size */
-  z-index: 1000; /* Ensure it appears above other elements */
-  text-align: center; /* Center the text */
+  bottom: 250px; /* Positioned 10px from the bottom */
+  left: 50%;
+  transform: translateX(-50%); /* Center the text horizontally */
+  text-align: center;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 14px;
+  color: rgb(255, 255, 255); /* Adjust for dark mode */
+  z-index: 3; /* Ensure it appears above other elements */
+  background-color: rgb(138, 165, 132);
+  padding: 10px;
+border-radius: 10px;
 }
+
+.help-text-span *{
+margin: 0px;
+}
+
+
 
 /* Author section: Flexbox for horizontal alignment */
 .author-section {
@@ -206,6 +216,27 @@
 }
 
 
-.channel-page.dark-mode * {
-  color: white !important;
+.channel-page.dark-mode .text-section * {
+  color: white; /* Change text color to white in dark mode */
+}
+
+/* Styles for the images with internal white padding */
+/* Main content images with internal white padding */
+.padded-image {
+  padding: 10px; /* Add internal white space, simulating a border */
+  background-color: white; /* White background for the padding area */
+  object-fit: contain; /* Keep the image aspect ratio */
+  max-width: 100%; /* Ensure the image does not exceed the container */
+  height: auto; /* Maintain the image's aspect ratio */
+  box-sizing: border-box; /* Include padding in the total size calculation */
+}
+
+/* No padding for author thumbnail */
+.author-section img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover; /* Ensure the author thumbnail image fits nicely */
+  background-color: transparent; /* No padding or background for the author image */
 }
