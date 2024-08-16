@@ -205,3 +205,7 @@
   color: #333; /* Text color */
 }
 
+
+.channel-page.dark-mode * {
+  color: white !important;
+}

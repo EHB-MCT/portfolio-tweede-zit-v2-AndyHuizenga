@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, Card, Carousel } from 'react-bootstrap';
 import axios from 'axios';
-import styles from '../css/SocialPage.module.css'; // Import CSS module
+import styles from '../css/SocialPage.module.css'; // Consolidated CSS
 import API_BASE_URL from '../pages/config';
 
-const AuthorShowcase = ({ darkMode }) => {
+const AuthorShowcase = ({ darkMode, setBackgroundImage }) => {
   const [authors, setAuthors] = useState([]);
   const carouselRef = useRef(null);
 
@@ -13,13 +13,18 @@ const AuthorShowcase = ({ darkMode }) => {
       try {
         const response = await axios.get(`${API_BASE_URL}/authors`);
         setAuthors(response.data);
+
+        // Set the background image to the first author image
+        if (response.data.length > 0) {
+          setBackgroundImage(response.data[0].profilePictureUrl);
+        }
       } catch (error) {
         console.error('Error fetching authors:', error);
       }
     };
 
     fetchAuthors();
-  }, []);
+  }, [setBackgroundImage]);
 
   useEffect(() => {
     const handleWheel = (event) => {
@@ -40,10 +45,14 @@ const AuthorShowcase = ({ darkMode }) => {
     };
   }, [authors]);
 
+  const handleSlide = (selectedIndex) => {
+    if (authors[selectedIndex]) {
+      setBackgroundImage(authors[selectedIndex].profilePictureUrl);
+    }
+  };
+
   return (
     <Container fluid className={styles.AuthorShowcase}>
-
-
       <Carousel
         indicators={false}
         interval={null}
@@ -52,6 +61,7 @@ const AuthorShowcase = ({ darkMode }) => {
         wrap={false}
         ref={carouselRef}
         className={styles.carouselInner}
+        onSlide={handleSlide}
       >
         {authors.map((author, index) => (
           <Carousel.Item key={index}>
@@ -71,7 +81,6 @@ const AuthorShowcase = ({ darkMode }) => {
                     </Card.Text>
                     <Card.Title>{author.name}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">
-     
                     </Card.Subtitle>
                     <Card.Text>{author.description}</Card.Text>
                     <Card.Text>

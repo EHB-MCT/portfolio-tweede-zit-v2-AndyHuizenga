@@ -13,7 +13,6 @@ import SocialPage from './pages/SocialPage';
 import Overlay from './components/Overlay';
 import StepsShow from './pages/StepsShow';
 import VerificationModal from './components/VerificationModal'; // Import VerificationModal
-import styles from './App.module.css'; // Importing CSS module
 import './css/index.css'; // Importing global styles
 
 function App() {
@@ -23,6 +22,9 @@ function App() {
   const [enterPressCount, setEnterPressCount] = useState(0); // Track the number of Enter key presses
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [pendingAuthor, setPendingAuthor] = useState(null); // State to hold the author to verify
+  const [backgroundImage, setBackgroundImage] = useState(
+    'https://images.ctfassets.net/2x4vothfh006/6JMV9HK1W3fUrdySCC6AS8/031ddedabd3e7e7b090dc1827a1ec85d/selected_18.jpg'
+  ); // State to hold background image
 
   const showOverlay = (content) => {
     setOverlayContent(content);
@@ -54,13 +56,11 @@ function App() {
 
   const handleVerify = () => {
     console.log("Verification successful!");
-    // Add any further actions you want to perform after successful verification
     handleCloseVerificationModal(); // Close the modal after verification
   };
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      // Handle your keydown logic here
       if (event.key === 'Enter') {
         setEnterPressCount((prevCount) => prevCount + 1);
 
@@ -85,67 +85,91 @@ function App() {
       // Always remove the event listener when the component unmounts or modal opens
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [enterPressCount, isVerificationModalOpen]); // Add isVerificationModalOpen as a dependency
+  }, [enterPressCount, isVerificationModalOpen]);
 
   return (
-    <div className="app-container">
-      <Router>
-        <Header
-          showOverlay={showOverlay}
-          hideOverlay={hideOverlay}
-          darkMode={darkMode} // Pass dark mode state to the Header component
-          isVerificationModalOpen={isVerificationModalOpen} 
-        />
-        <Routes>
-          <Route path="/" element={<PageWrapper><HomePage darkMode={darkMode} /></PageWrapper>} />
-          <Route path="/admin" element={<PageWrapper><AdminPage darkMode={darkMode} /></PageWrapper>} />
-          <Route 
-            path="/admin/create-author" 
-            element={<PageWrapper><CreateAuthorPage darkMode={darkMode} /></PageWrapper>} 
+    <div className={`app-container ${darkMode ? 'dark-mode' : ''}`}>
+      {darkMode && (
+        <>
+          <div
+            className="background-image"
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+            }}
+          ></div>
+          <div className="background-filter"></div>
+        </>
+      )}
+      <div className="app-content">
+        <Router>
+          <Header
+            showOverlay={showOverlay}
+            hideOverlay={hideOverlay}
+            darkMode={darkMode}
           />
-          <Route 
-            path="/admin/create-entry" 
-            element={
-              <PageWrapper>
-                <AdminForm 
-                  handleOpenVerificationModal={handleOpenVerificationModal} // Pass the function here
-                  handleCloseVerificationModal={handleCloseVerificationModal} // Pass close modal handler
-                  darkMode={darkMode} 
-                />
-              </PageWrapper>
-            } 
+          <Routes>
+            <Route path="/" element={<PageWrapper><HomePage darkMode={darkMode} /></PageWrapper>} />
+            <Route path="/admin" element={<PageWrapper><AdminPage darkMode={darkMode} /></PageWrapper>} />
+            <Route 
+              path="/admin/create-author" 
+              element={<PageWrapper><CreateAuthorPage darkMode={darkMode} /></PageWrapper>} 
+            />
+            <Route 
+              path="/admin/create-entry" 
+              element={
+                <PageWrapper>
+                  <AdminForm 
+                    darkMode={darkMode}
+                  />
+                </PageWrapper>
+              }
+            />
+            <Route 
+              path="/admin/settings" 
+              element={<PageWrapper><SettingsPage darkMode={darkMode} /></PageWrapper>} 
+            />
+            <Route 
+              path="/channel/:channelNumber" 
+              element={
+                <PageWrapper>
+                  <ChannelPage
+                    darkMode={darkMode}
+                    setBackgroundImage={setBackgroundImage} // Pass function to update background image
+                  />
+                </PageWrapper>
+              }
+            />
+            <Route path="/overview" element={<PageWrapper><OverviewPage darkMode={darkMode} /></PageWrapper>} />
+            <Route 
+              path="/social" 
+              element={
+                <PageWrapper>
+                  <SocialPage
+                    darkMode={darkMode}
+                    setBackgroundImage={setBackgroundImage} // Pass function to update background image
+                  />
+                </PageWrapper>
+              }
+            />
+            <Route 
+              path="/steps" 
+              element={
+                <PageWrapper>
+                  <StepsShow 
+                    darkMode={darkMode} 
+                    setBackgroundImage={setBackgroundImage} // Pass function to update background image
+                  />
+                </PageWrapper>
+              } 
+            />
+          </Routes>
+          <Overlay visible={overlayVisible} content={overlayContent} onClose={hideOverlay} />
+          <VerificationModal 
+            show={overlayVisible}
+            handleClose={hideOverlay}
           />
-          <Route 
-            path="/admin/settings" 
-            element={<PageWrapper><SettingsPage darkMode={darkMode} /></PageWrapper>} 
-          />
-          <Route 
-            path="/channel/:channelNumber" 
-            element={<PageWrapper><ChannelPage darkMode={darkMode} /></PageWrapper>} 
-          />
-          <Route 
-            path="/overview" 
-            element={<PageWrapper><OverviewPage darkMode={darkMode} /></PageWrapper>} 
-          />
-          <Route 
-            path="/social" 
-            element={<PageWrapper><SocialPage darkMode={darkMode} /></PageWrapper>} 
-          />
-          <Route 
-            path="/steps" 
-            element={<PageWrapper><StepsShow darkMode={darkMode} /></PageWrapper>} 
-          />
-        </Routes>
-        <Overlay visible={overlayVisible} content={overlayContent} onClose={hideOverlay} />
-
-        {/* Render VerificationModal globally */}
-        <VerificationModal 
-          show={isVerificationModalOpen}
-          handleClose={handleCloseVerificationModal}
-          onVerify={handleVerify}
-          author={pendingAuthor} // Pass the author to verify
-        />
-      </Router>
+        </Router>
+      </div>
     </div>
   );
 }

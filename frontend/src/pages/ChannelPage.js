@@ -5,14 +5,12 @@ import ChannelContent from '../components/ChannelContent';
 import ImageGallery from 'react-image-gallery';
 import '../css/ChannelPage.css';
 import 'react-image-gallery/styles/css/image-gallery.css';
-import API_BASE_URL from "./config";
+import API_BASE_URL from './config';
 
-const ChannelPage = ({ darkMode }) => { // Accept darkMode as a prop
+const ChannelPage = ({ darkMode, setBackgroundImage }) => {
   const { channelNumber } = useParams();
   const [channelContent, setChannelContent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const videoRef = useRef(null);
   const galleryRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -25,30 +23,25 @@ const ChannelPage = ({ darkMode }) => { // Accept darkMode as a prop
         }
         const content = await response.json();
         setChannelContent(content);
+
+        // Set the background image to the first image if it's an album
+        if (content?.contentType === 'album' && content.content?.length > 0) {
+          const firstImage = content.content[0]?.fields?.file?.url || '';
+          if (firstImage) {
+            setBackgroundImage(firstImage); // Set the first image as the background
+          }
+        }
       } catch (error) {
         setChannelContent(null);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
     fetchContent();
-  }, [channelNumber]);
+  }, [channelNumber, setBackgroundImage]); // Ensure setBackgroundImage is in the dependency array
 
   useEffect(() => {
-    const handleKeyPress = (event) => {
-      if (event.key === '<') {
-        if (channelContent?.contentType === 'video' && videoRef.current) {
-          if (isPlaying) {
-            videoRef.current.pause();
-          } else {
-            videoRef.current.play();
-          }
-          setIsPlaying(prevIsPlaying => !prevIsPlaying);
-        }
-      }
-    };
-
     const handleMouseWheel = (event) => {
       if (channelContent?.contentType === 'album' && galleryRef.current) {
         event.preventDefault(); // Prevent default scroll behavior
@@ -60,17 +53,20 @@ const ChannelPage = ({ darkMode }) => { // Accept darkMode as a prop
     };
 
     const container = containerRef.current;
-
     if (container) {
       container.addEventListener('wheel', handleMouseWheel);
-      window.addEventListener('keydown', handleKeyPress);
-
       return () => {
         container.removeEventListener('wheel', handleMouseWheel);
-        window.removeEventListener('keydown', handleKeyPress);
       };
     }
-  }, [isPlaying, channelContent]);
+  }, [channelContent]);
+
+  const handleSlide = (currentIndex) => {
+    if (channelContent?.contentType === 'album') {
+      const currentImage = galleryRef.current.props.items[currentIndex].original;
+      setBackgroundImage(currentImage); // Update the background image with the active image
+    }
+  };
 
   const renderContent = () => {
     if (!channelContent) {
@@ -82,16 +78,23 @@ const ChannelPage = ({ darkMode }) => { // Accept darkMode as a prop
         original: asset.fields.file.url || 'default-thumbnail.jpg',
         thumbnail: asset.fields.file.url || 'default-thumbnail.jpg',
       }));
-  
+
       return (
-        <ImageGallery ref={galleryRef} items={images} showThumbnails={true} showPlayButton={false} showFullscreenButton={false} />
+        <ImageGallery
+          ref={galleryRef}
+          items={images}
+          showThumbnails={true}
+          showPlayButton={false}
+          showFullscreenButton={false}
+          onSlide={handleSlide} // Handle slide change
+        />
       );
     } else if (channelContent.contentType === 'video') {
       const videoUrl = channelContent.content?.[0]?.fields?.file?.url || '';
-  
+
       return (
         videoUrl ? (
-          <video ref={videoRef} controls className="content-video">
+          <video ref={galleryRef} controls className="content-video">
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
@@ -120,7 +123,7 @@ const ChannelPage = ({ darkMode }) => { // Accept darkMode as a prop
       </div>
       {channelContent && (
         <span className="help-text-span">
-          <p>{channelContent.contentType === 'video' ? 'Press [.] to play/pause the video' : 'Use the weel to move to the next picture'}.</p>
+          <p>{channelContent.contentType === 'video' ? 'Press [.] to play/pause the video' : 'Use the wheel to move to the next picture'}.</p>
         </span>
       )}
     </div>

@@ -72,3 +72,17 @@
   float: right; /* Align the button to the right of the screen */
   margin-top: 35px; /* Space above the upload button */
 }
+
+/* Admin form stays the same in dark mode */
+body.dark-mode .adminForm {
+  color: black; /* Keep the text color black */
+  background-color: #f9f9f9; /* Keep the background the same */
+}
+
+/* Ensure form elements and labels also stay the same */
+body.dark-mode .adminForm .label,
+body.dark-mode .adminForm .control,
+body.dark-mode .adminForm .fileNames,
+body.dark-mode .adminForm .fileItem {
+  color: black; /* Keep text color black */
+}

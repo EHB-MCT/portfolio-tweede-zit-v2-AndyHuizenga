@@ -151,3 +151,40 @@
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
 }
+
+/* Dark mode scrollbar styling */
+.scrollbarContainer.dark {
+  background-color: rgba(255, 255, 255, 0.2); /* White border with slight transparency */
+}
+
+.scrollbarThumb.dark {
+  background-color: white; /* White scrollbar thumb in dark mode */
+}
+
+.scrollbarThumb.dark:hover {
+  background-color: #f0f0f0; /* Slightly lighter white on hover */
+}
+
+/* Scroll prompt styling */
+.scrollPrompt {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  color: inherit;
+  text-align: center;
+  z-index: 999;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.scrollPrompt i {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 5px; 
+}
+
+.scrollPrompt span {
+  display: block;
+  font-size: 1rem;
+}

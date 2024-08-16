@@ -76,6 +76,7 @@
     background-color: rgba(255, 255, 255, 0.2);
     color: black;
     border: none !important;
+
     box-shadow: none;
     transition: background-color 0.3s, color 0.3s;
     padding: 20px;
@@ -189,3 +190,16 @@
     scrollbar-width: none !important;
 }
 
+
+/* Dark mode scrollbar styling */
+.scrollbarContainer.dark {
+    background-color: rgba(255, 255, 255, 0.2); /* White border with slight transparency */
+}
+
+.scrollbarThumb.dark {
+    background-color: white; /* White scrollbar thumb in dark mode */
+}
+
+.scrollbarThumb.dark:hover {
+    background-color: #f0f0f0; /* Slightly lighter white on hover */
+}

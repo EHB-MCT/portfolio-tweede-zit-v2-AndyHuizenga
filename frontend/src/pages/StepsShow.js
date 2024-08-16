@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import styles from '../css/StepsShow.module.css';
 import API_BASE_URL from '../pages/config';
 
-const StepsShow = ({ darkMode }) => {
+const StepsShow = ({ darkMode , setBackgroundImage}) => {
   const [stepsData, setStepsData] = useState({
     name: '',
     descriptionWholeStep: '',
@@ -23,13 +23,22 @@ const StepsShow = ({ darkMode }) => {
         }
         const data = await response.json();
         setStepsData(data);
+  
+        // Set the first step's image as the background image
+        if (data.steps.length > 0) {
+          const firstStepImage = data.steps[0]?.url;
+          if (firstStepImage) {
+            setBackgroundImage(firstStepImage); // Set the background image
+          }
+        }
       } catch (error) {
-        setError('Error fetching steps. Please try again later.');
+        console.error('Error fetching steps:', error);
+        setError(`Error fetching steps: ${error.message}. Please try again later.`);
       }
     };
-
+  
     fetchSteps();
-  }, []);
+  }, [setBackgroundImage]);
 
   // Update scrollbar style
   useEffect(() => {
@@ -116,13 +125,13 @@ const StepsShow = ({ darkMode }) => {
           )}
         </div>
       </div>
-      <div className={styles.scrollbarContainer}>
-        <div className={styles.scrollbarThumb} ref={scrollbarRef}></div>
-      </div>
-      <div className={styles.scrollPrompt}>
-        <i className="fas fa-chevron-down"></i> 
-        <span>Faites défiler la molette noire pour voir plus d'éléments</span>
-      </div>
+ <div className={`${styles.scrollbarContainer} ${darkMode ? styles.dark : ''}`}>
+  <div className={`${styles.scrollbarThumb} ${darkMode ? styles.dark : ''}`} ref={scrollbarRef}></div>
+</div>
+<div className={styles.scrollPrompt}>
+  <i className="fas fa-chevron-down"></i> 
+  <span>Faites défiler la molette noire pour voir plus d'éléments</span>
+</div> 
     </div>
   );
 };
