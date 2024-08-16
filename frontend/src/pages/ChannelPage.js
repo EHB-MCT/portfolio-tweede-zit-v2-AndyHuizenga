@@ -12,6 +12,7 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
   const [channelContent, setChannelContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const galleryRef = useRef(null);
   const videoRef = useRef(null);
   const containerRef = useRef(null);
@@ -26,15 +27,10 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
         const content = await response.json();
         setChannelContent(content);
 
-        // Check if the content type is video and set the thumbnail as the background
-        if (content?.contentType === 'video' && content?.thumbnail?.fields?.file?.url) {
-          const videoThumbnail = content.thumbnail.fields.file.url;
-          setBackgroundImage(videoThumbnail); // Set the video thumbnail as the background
-        } else if (content?.contentType === 'album' && content.content?.length > 0) {
-          const firstImage = content.content[0]?.fields?.file?.url || '';
-          if (firstImage) {
-            setBackgroundImage(firstImage); // Set the first image as the background
-          }
+        // Set the background image based on the first content item
+        if (content?.contentType === 'album' && content.content?.length > 0) {
+          const firstImage = content.content.find(item => item.fields.file.url.endsWith('.jpg') || item.fields.file.url.endsWith('.png'))?.fields.file.url || '';
+          setBackgroundImage(firstImage);
         }
       } catch (error) {
         setChannelContent(null);
@@ -46,23 +42,35 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
     fetchContent();
   }, [channelNumber, setBackgroundImage]);
 
-  useEffect(() => {
-    const handleKeyPress = (event) => {
-      if (event.key === '.') {
-        if (channelContent?.contentType === 'video' && videoRef.current) {
-          if (isPlaying) {
-            videoRef.current.pause();
-          } else {
-            videoRef.current.play();
-          }
-          setIsPlaying((prevIsPlaying) => !prevIsPlaying);
-        }
+  const handleKeyPress = (event) => {
+    if (event.key === '<' && channelContent?.contentType === 'video' && videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
       }
-    };
+      setIsPlaying(!isPlaying);
+    }
+  };
 
+  useEffect(() => {
     const handleMouseWheel = (event) => {
-      if (channelContent?.contentType === 'album' && galleryRef.current) {
+      if (channelContent?.contentType === 'video') {
         event.preventDefault(); // Prevent default scroll behavior
+        const direction = event.deltaY > 0 ? 1 : -1;
+
+        // Handle video scrolling navigation
+        const videos = channelContent.content?.filter(asset => asset.fields?.file?.url && asset.fields.file.url.endsWith('.mp4'));
+
+        if (videos && videos.length > 0) {
+          setCurrentVideoIndex((prevIndex) => {
+            const newIndex = Math.max(0, Math.min(videos.length - 1, prevIndex + direction));
+            return newIndex;
+          });
+        }
+      } else if (channelContent?.contentType === 'album' && galleryRef.current) {
+        // Handle image gallery scrolling navigation
+        event.preventDefault();
         const direction = event.deltaY > 0 ? 1 : -1;
         const currentIndex = galleryRef.current.getCurrentIndex();
         const nextIndex = Math.max(0, Math.min(galleryRef.current.props.items.length - 1, currentIndex + direction));
@@ -81,11 +89,11 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
         window.removeEventListener('keydown', handleKeyPress);
       };
     }
-  }, [isPlaying, channelContent]);
+  }, [channelContent, isPlaying]);
 
   const handleSlide = (currentIndex) => {
     const currentImage = galleryRef.current.props.items[currentIndex].original;
-    setBackgroundImage(currentImage); // Set the background image to the current image in the album
+    setBackgroundImage(currentImage); // Set the background image to the current item in the album
   };
 
   const renderContent = () => {
@@ -94,7 +102,8 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
     }
 
     if (channelContent.contentType === 'album') {
-      const images = (channelContent.content?.filter(asset => asset.fields?.file?.url) || []).map((asset) => ({
+      // Handle only images for the gallery
+      const images = (channelContent.content?.filter(asset => asset.fields?.file?.url && (asset.fields.file.url.endsWith('.jpg') || asset.fields.file.url.endsWith('.png'))) || []).map((asset) => ({
         original: asset.fields.file.url || 'default-thumbnail.jpg',
         thumbnail: asset.fields.file.url || 'default-thumbnail.jpg',
       }));
@@ -109,22 +118,37 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
           onSlide={handleSlide}
           renderItem={(item) => (
             <img src={item.original} className="padded-image" alt="gallery item" />
-          )} // Apply padded-image class here
+          )}
         />
       );
     } else if (channelContent.contentType === 'video') {
-      const videoUrl = channelContent.content?.[0]?.fields?.file?.url || '';
+      // Handle multiple videos with scroll navigation
+      const videos = channelContent.content?.filter(asset => asset.fields?.file?.url && asset.fields.file.url.endsWith('.mp4'));
 
-      return (
-        videoUrl ? (
-          <video ref={videoRef} className="padded-image" controls>
-            <source src={videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        ) : (
-          <div>Video not available</div>
-        )
-      );
+      if (videos && videos.length > 0) {
+        const videoUrl = videos[currentVideoIndex].fields.file.url;
+
+        return (
+          <div className="video-container">
+            <video
+              ref={videoRef}
+              className="padded-image"
+              controls
+              key={videoUrl}
+              style={{
+                width: '840px',
+                height: '551px',
+                objectFit: 'cover'
+              }}
+            >
+              <source src={videoUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        );
+      } else {
+        return <div>No videos available</div>;
+      }
     } else {
       return <div>Unsupported content type</div>;
     }

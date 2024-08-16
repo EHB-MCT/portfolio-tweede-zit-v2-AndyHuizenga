@@ -129,9 +129,10 @@
   position: absolute; /* Position it absolutely */
   bottom: 0; /* Align it to the bottom of the container */
   left: 0; /* Align it to the left of the container */
-  width: 100%; /* Full width of the container */
-  margin: 0; /* Remove margin */
+  width: 96%; /* Full width of the container */
+  margin: auto; /* Remove margin */
   padding: 0; /* Remove padding */
+
 }
 
 /* Adjust the position of the thumbnails list */
@@ -151,8 +152,9 @@
 
 /* Adjust thumbnail sizes */
 .image-gallery-thumbnail img {
-  width: 100px; /* Adjust thumbnail width */
-  height: auto; /* Maintain aspect ratio */
+  width: 80px; /* Adjust thumbnail width */
+  height: 80px; /* Maintain aspect ratio */
+
 }
 
 /* Hide the default image gallery description if needed */
@@ -228,6 +230,7 @@ margin: 0px;
   object-fit: contain; /* Keep the image aspect ratio */
   max-width: 100%; /* Ensure the image does not exceed the container */
   height: auto; /* Maintain the image's aspect ratio */
+  max-height: 572px; /* Maximum height of 572px */
   box-sizing: border-box; /* Include padding in the total size calculation */
 }
 
