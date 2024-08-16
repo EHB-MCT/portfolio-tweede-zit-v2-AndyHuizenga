@@ -7,25 +7,26 @@ import PageWrapper from './components/PageWrapper';
 import OverviewPage from './pages/OverviewPage';
 import AdminPage from './pages/adminPages/AdminPage';
 import CreateAuthorPage from './pages/adminPages/CreateAuthorPage';
-import AdminForm from './pages/adminPages/AdminUpload'; // AdminForm is your CreateEntryPage
+import AdminForm from './pages/adminPages/AdminUpload';
 import SettingsPage from './pages/adminPages/SettingsPage';
 import SocialPage from './pages/SocialPage';
 import Overlay from './components/Overlay';
 import StepsShow from './pages/StepsShow';
 import VerificationModal from './components/VerificationModal'; // Import VerificationModal
-import './css/index.css'; // Importing global styles
+import './css/index.css';
 
 function App() {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [overlayContent, setOverlayContent] = useState('');
-  const [darkMode, setDarkMode] = useState(false); // State for dark mode
-  const [enterPressCount, setEnterPressCount] = useState(0); // Track the number of Enter key presses
+  const [darkMode, setDarkMode] = useState(false);
+  const [enterPressCount, setEnterPressCount] = useState(0);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
-  const [pendingAuthor, setPendingAuthor] = useState(null); // State to hold the author to verify
+  const [pendingAuthor, setPendingAuthor] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState(
     'https://images.ctfassets.net/2x4vothfh006/6JMV9HK1W3fUrdySCC6AS8/031ddedabd3e7e7b090dc1827a1ec85d/selected_18.jpg'
-  ); // State to hold background image
-  const [bgOpacity, setBgOpacity] = useState(1); // State for background opacity
+  );
+  const [bgOpacity, setBgOpacity] = useState(1);
+
   const showOverlay = (content) => {
     setOverlayContent(content);
     setOverlayVisible(true);
@@ -45,46 +46,42 @@ function App() {
   };
 
   const handleOpenVerificationModal = (author) => {
-    setPendingAuthor(author); // Set the author to be verified
-    setIsVerificationModalOpen(true); // Open the modal
+    setPendingAuthor(author);
+    setIsVerificationModalOpen(true);
   };
 
   const handleCloseVerificationModal = () => {
     setIsVerificationModalOpen(false);
-    setPendingAuthor(null); // Reset the pending author after modal closes
+    setPendingAuthor(null);
   };
 
   const handleVerify = () => {
     console.log("Verification successful!");
-    handleCloseVerificationModal(); // Close the modal after verification
+    handleCloseVerificationModal();
   };
-
-  
 
   useEffect(() => {
     const handleKeyDown = (event) => {
+      if (isVerificationModalOpen) {
+        return; // Skip global key handling if the modal is open
+      }
+
       if (event.key === 'Enter') {
         setEnterPressCount((prevCount) => prevCount + 1);
 
-        // If the user presses Enter twice within 500ms, toggle dark mode
         if (enterPressCount === 1) {
           toggleDarkMode();
         }
 
-        // Reset the count after 500ms if no other Enter key is pressed
         setTimeout(() => {
           setEnterPressCount(0);
         }, 500);
       }
     };
 
-    if (!isVerificationModalOpen) {
-      // Only add event listener if modal is not open
-      window.addEventListener('keydown', handleKeyDown);
-    }
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      // Always remove the event listener when the component unmounts or modal opens
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [enterPressCount, isVerificationModalOpen]);
@@ -108,6 +105,7 @@ function App() {
             showOverlay={showOverlay}
             hideOverlay={hideOverlay}
             darkMode={darkMode}
+            isVerificationModalOpen={isVerificationModalOpen} // Pass this prop to Header
           />
           <Routes>
             <Route path="/" element={<PageWrapper><HomePage darkMode={darkMode} /></PageWrapper>} />
@@ -122,6 +120,7 @@ function App() {
                 <PageWrapper>
                   <AdminForm 
                     darkMode={darkMode}
+                    handleOpenVerificationModal={handleOpenVerificationModal} 
                   />
                 </PageWrapper>
               }
@@ -136,20 +135,30 @@ function App() {
                 <PageWrapper>
                   <ChannelPage
                     darkMode={darkMode}
-                    setBackgroundImage={setBackgroundImage} // Pass function to update background image
+                    setBackgroundImage={setBackgroundImage}
                   />
                 </PageWrapper>
               }
             />
             <Route path="/overview" element={<PageWrapper><OverviewPage darkMode={darkMode} /></PageWrapper>} />
-            <Route path="/social" element={<PageWrapper><SocialPage darkMode={darkMode} /></PageWrapper>} />
+            <Route 
+              path="/social" 
+              element={
+                <PageWrapper>
+                  <SocialPage
+                    darkMode={darkMode}
+                    setBackgroundImage={setBackgroundImage}
+                  />
+                </PageWrapper>
+              }
+            />
             <Route 
               path="/steps" 
               element={
                 <PageWrapper>
                   <StepsShow 
                     darkMode={darkMode} 
-                    setBackgroundImage={setBackgroundImage} // Pass function to update background image
+                    setBackgroundImage={setBackgroundImage} 
                   />
                 </PageWrapper>
               } 
@@ -157,8 +166,10 @@ function App() {
           </Routes>
           <Overlay visible={overlayVisible} content={overlayContent} onClose={hideOverlay} />
           <VerificationModal 
-            show={overlayVisible}
-            handleClose={hideOverlay}
+            show={isVerificationModalOpen}
+            handleClose={handleCloseVerificationModal}
+            onVerify={handleVerify}
+            author={pendingAuthor}
           />
         </Router>
       </div>

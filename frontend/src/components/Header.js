@@ -26,7 +26,7 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
           case '98':
             navigate('/admin');
             break;
-          case '97':
+          case '51':
             navigate('/social');
             break;
           case '50':
@@ -101,8 +101,8 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (isVerificationModalOpen) { // Prevent keydown event when modal is open
-        return;
+      if (isVerificationModalOpen) {
+        return; // Prevent keydown event when modal is open
       }
 
       const keyMapping = {
@@ -149,7 +149,7 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
               navigate('/overview');
             } else if (newValue === '98') {
               navigate('/admin');
-            } else if (newValue === '97') {
+            } else if (newValue === '51') {
               navigate('/social');
             } else if (newValue === '50') {
               navigate('/steps');
@@ -169,7 +169,7 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [inputValue, navigate, isVerificationModalOpen]); // Added isVerificationModalOpen to the dependency list
+  }, [inputValue, navigate, isVerificationModalOpen]);
 
   return (
     <>
