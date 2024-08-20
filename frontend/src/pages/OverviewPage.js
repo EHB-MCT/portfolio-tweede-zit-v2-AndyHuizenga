@@ -87,7 +87,7 @@ const OverviewPage = ({ darkMode }) => {  // Accept darkMode prop
         <div className={styles.topLeft}>
           <h1 className={styles.overviewTitle}>Liste de chaines</h1>
           <p className={styles.overviewDescription}>
-            Lorem ipsum dolor sit amet, consetetur sadipscing <br /> elitr, sed diam nonumy eirmod
+          Voici un aperçu de toutes <br /> les chaînes disponibles. 
           </p>
         </div>
         <div className={styles.overviewCenterText}>

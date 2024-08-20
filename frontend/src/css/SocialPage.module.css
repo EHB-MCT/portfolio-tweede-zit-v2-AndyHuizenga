@@ -1,6 +1,5 @@
 /* General Styles for Social Page */
 .socialPage {
-
   min-height: 100vh;
   transition: background-color 0.3s, color 0.3s;
   background-color: #ffffff;
@@ -15,7 +14,6 @@
 /* Title Section Styles */
 .titleSection {
   margin-bottom: 20px;
-
 }
 
 .titleSection h1 {
@@ -57,8 +55,6 @@
   background-color: rgba(255, 255, 255, 0.2);
   color: black;
   transition: background-color 0.3s, color 0.3s;
-
-
   box-shadow: none;
   border: none !important;
 }
@@ -97,26 +93,26 @@
 .textCol p,
 .textCol .fst-italic {
   margin: 0;
-  padding-bottom: 10px; /* Add breathing space below each element */
+  padding-bottom: 10px;
 }
 
 /* Breathing room for elements */
 .textCol .fst-italic {
-  margin-bottom: 10px; /* Add space below relationship */
+  margin-bottom: 10px;
   color: inherit;
 }
 
 .textCol .card-title {
-  margin-bottom: 10px; /* Add space below name/title */
+  margin-bottom: 10px;
   font-size: 1.8rem;
 }
 
 .textCol .card-text {
-  margin-bottom: 15px; /* Add space below description */
+  margin-bottom: 15px;
 }
 
 .textCol strong {
-  margin-bottom: 10px; /* Add space below birthday label */
+  margin-bottom: 10px;
 }
 
 /* Carousel Controls */
@@ -124,14 +120,14 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.8) !important;
   border: none;
-  font-size: 24px;
+  font-size: 60px;
   cursor: pointer;
   z-index: 1;
   padding: 10px;
   border-radius: 50%;
-  color: #888;
+  color: #000000 !important;
   transition: background-color 0.3s, color 0.3s;
 }
 
@@ -152,18 +148,52 @@
   color: white;
 }
 
-/* Dark mode scrollbar styling */
-.scrollbarContainer.dark {
-  background-color: rgba(255, 255, 255, 0.2); /* White border with slight transparency */
+/* Normal mode - black icons with white arrows */
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+  background-color: black !important; /* Ensure the icons have black background in light mode */
+  background-image: none !important; /* Remove the default background-image from Bootstrap */
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.scrollbarThumb.dark {
-  background-color: white; /* White scrollbar thumb in dark mode */
+/* Custom arrows - white inside black circle */
+.carousel-control-next-icon::after,
+.carousel-control-prev-icon::after {
+  content: '';
+  display: inline-block;
+  border: solid white;
+  border-width: 0 4px 4px 0;
+  padding: 10px;
 }
 
-.scrollbarThumb.dark:hover {
-  background-color: #f0f0f0; /* Slightly lighter white on hover */
+/* Right Arrow */
+.carousel-control-next-icon::after {
+  transform: rotate(-45deg);
 }
+
+/* Left Arrow */
+.carousel-control-prev-icon::after {
+  transform: rotate(135deg);
+}
+
+/* Dark Mode - white background with black arrows */
+.socialPage.dark .carousel-control-next-icon,
+.socialPage.dark .carousel-control-prev-icon {
+  background-color: white !important; /* White background in dark mode */
+  color: black !important;
+}
+
+/* Dark Mode Arrows - black inside white circle */
+.socialPage.dark .carousel-control-next-icon::after,
+.socialPage.dark .carousel-control-prev-icon::after {
+  border-color: black; /* Black arrows in dark mode */
+}
+
 
 /* Scroll prompt styling */
 .scrollPrompt {
@@ -176,6 +206,9 @@
   text-align: center;
   z-index: 999;
   font-family: 'Roboto Mono', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .scrollPrompt i {

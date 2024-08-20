@@ -27,10 +27,13 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
         const content = await response.json();
         setChannelContent(content);
 
-        // Set the background image based on the first content item
+        // Set the background image based on the first content item or the video thumbnail
         if (content?.contentType === 'album' && content.content?.length > 0) {
           const firstImage = content.content.find(item => item.fields.file.url.endsWith('.jpg') || item.fields.file.url.endsWith('.png'))?.fields.file.url || '';
           setBackgroundImage(firstImage);
+        } else if (content?.contentType === 'video' && content?.thumbnail?.fields?.file?.url) {
+          const videoThumbnail = content.thumbnail.fields.file.url;
+          setBackgroundImage(videoThumbnail); // Set the video thumbnail as the background
         }
       } catch (error) {
         setChannelContent(null);

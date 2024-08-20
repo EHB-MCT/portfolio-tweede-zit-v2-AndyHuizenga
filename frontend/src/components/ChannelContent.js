@@ -26,7 +26,7 @@ function ChannelContent({ content }) {
           <div className="author-info">
             {content.contentType && (
               <div className="content-type">
-                {content.contentType} created by {author.name || "Unknown Author"}
+                {content.contentType} creé par {author.name || "l'admin"}
               </div>
             )}
           </div>

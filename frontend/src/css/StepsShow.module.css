@@ -45,22 +45,27 @@
     overflow-y: hidden !important;
     position: relative;
     scroll-behavior: smooth;
-    padding-bottom: 15px;
     margin: 20px 0;
     box-sizing: border-box;
 }
-
 .scrollRow {
     display: flex;
     align-items: flex-start;
-    gap: 20px;
+    gap: 40px;
     padding: 0;
+    width: max-content; /* Ensure the width adapts to the content */
+    margin-right: 100px; /* Add more margin at the right to provide extra scroll space */
+}
+
+/* To add extra space after the last card, use an empty div as a spacer */
+.scrollRow::after {
+    content: '';
+    flex: 0 0 100px; /* This adds an extra 100px space at the end of the row */
 }
 
 /* Card styling */
 .cardWrapper {
     flex: 0 0 auto;
-    margin-right: 20px;
 }
 
 .card {
@@ -76,10 +81,9 @@
     background-color: rgba(255, 255, 255, 0.2);
     color: black;
     border: none !important;
-
     box-shadow: none;
     transition: background-color 0.3s, color 0.3s;
-    padding: 20px;
+    padding: 0 20px;
 }
 
 .card.dark {

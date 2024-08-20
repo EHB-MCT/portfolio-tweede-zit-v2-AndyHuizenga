@@ -26,13 +26,14 @@ const SocialPage = ({ darkMode, setBackgroundImage }) => {
 
     if (container) {
       container.addEventListener('scroll', handleScroll);
-      updateScrollbar();
+      updateScrollbar(); // Ensure scrollbar is updated initially
 
+      // Cleanup: Remove scroll event listener when the component unmounts
       return () => {
         container.removeEventListener('scroll', handleScroll);
       };
     }
-  }, []);
+  }, [scrollContainerRef, scrollbarRef]); // Add refs to the dependency array
 
   return (
     <Container fluid className={`${styles.socialPage} ${darkMode ? styles.dark : ''}`}>
