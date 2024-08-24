@@ -171,11 +171,11 @@
 .help-text-span {
   position: absolute;
   bottom: 250px; /* Positioned 10px from the bottom */
-  left: 50%;
+  left: 70%;
   transform: translateX(-50%); /* Center the text horizontally */
   text-align: center;
   font-family: 'Roboto Mono', monospace;
-  font-size: 14px;
+  font-size: 12px;
   color: rgb(255, 255, 255); /* Adjust for dark mode */
   z-index: 3; /* Ensure it appears above other elements */
   background-color: rgb(138, 165, 132);

@@ -112,14 +112,33 @@ const CreateAuthorPage = ({ darkMode }) => {
       console.log('Create Author Response:', response.data); // Log the response data
 
       if (response.data.success) {
-
         try {
-          console.log("email send has been triggered")
-          const recipientEmail  = response.data.email?.['en-US'] || formData.email;
+          console.log("Email sending has been triggered");
+  
+          // Access email and name directly from response.data
+          const recipientEmail = response.data.email?.['en-US'] || formData.email;
+          const recipientName = response.data.name?.['en-US'] || formData.name;
+          const code = response.data.code // If you want to include the code as well
+  
+          // Compose the email content with personalization and proper formatting
+          const emailContent = `
+            Hi ${recipientName},
+  
+            Thank you for creating your profile. Your profile has been successfully added as an author for Christine's recall app!
+  
+            You can now add content through for the content portal: https://recall-app-9b0d5095233f.herokuapp.com/admin/create-entry
+
+            Here is your personalised code: ${code}
+  
+            Kind regards,
+            Recall Support Team
+          `;
+  
+          // Send the email
           await axios.post(`${API_BASE_URL}/sendEmail`, {
-      
             email: recipientEmail,
-            code: response.data.code
+            content: emailContent, // Pass the personalized email content
+            code: response.data.code // If you want to include the code as well
           });
           setSuccess(`Author created successfully! Code sent to: ${response.data.fields['email']['en-US']}`);
         } catch (emailError) {
@@ -261,7 +280,7 @@ const CreateAuthorPage = ({ darkMode }) => {
           disabled={loading || uploading || (!isUploaded && !formData.profilePicture.length)}
           className={styles.uploadButton}
         >
-          {isUploaded ? 'upload info' : 'Confirm'}
+          {isUploaded ? 'Confirm' : 'upload info'}
         </Button>
       </Form>
     </div>

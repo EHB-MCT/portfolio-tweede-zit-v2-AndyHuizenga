@@ -36,7 +36,7 @@ const HomePage = ({ darkMode }) => {
           <Card.Body className={styles.cardBody}>
             <Card.Title className={styles.customCardTitle}>Option 1</Card.Title>
             <Card.Text>
-              Placez vos éléments « recall » sur le scanner pour accéder à leur contenu.
+              Placez vos éléments lié sur le scanner pour accéder à leur contenu.
             </Card.Text>
           </Card.Body>
         </Card>
@@ -45,7 +45,7 @@ const HomePage = ({ darkMode }) => {
           <Card.Body className={styles.cardBody}>
             <Card.Title className={styles.customCardTitle}>Option 2</Card.Title>
             <Card.Text>
-              Utilisez la télécommande pour naviguer à travers les différents éléments.
+              Utilisez la télécommande pour naviguer à travers les différents chaines.
             </Card.Text>
           </Card.Body>
         </Card>

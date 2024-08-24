@@ -21,10 +21,10 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
             navigate('/overview');
             break;
           case '99':
-            navigate('/');
+            navigate('/admin');
             break;
           case '98':
-            navigate('/admin');
+            navigate('/');
             break;
           case '51':
             navigate('/social');
@@ -146,9 +146,9 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
             if (newValue === '00') {
               navigate('/overview');
             } else if (newValue === '99') {
-              navigate('/');
-            } else if (newValue === '98') {
               navigate('/admin');
+            } else if (newValue === '98') {
+              navigate('/');
             } else if (newValue === '51') {
               navigate('/social');
             } else if (newValue === '50') {
@@ -187,8 +187,8 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
           </div>
           <div className={styles.helpText}>
             <div className={styles.helpTextContent}>
-              <p>00 + [ENTER] pour l’acuelle</p>
-              <p>99 + [ENTER] pour les chaines</p>
+              <p>00 + [ENTER] pour les chaines</p>
+              <p>98 + [ENTER] pour les l'accuelle</p>
             </div>
           </div>
         </div>

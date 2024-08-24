@@ -172,7 +172,7 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
         </div>
       </div>
       <span className="help-text-span">
-        <p>{channelContent?.contentType === 'video' ? 'Press [.] to play/pause the video' : 'Use the wheel to move to the next picture'}.</p>
+        <p>{channelContent?.contentType === 'video' ? 'Appuyez sur [.] pour lire/mettre en pause la vidéo' : 'Utilisez la molette pour passer a la photo suivante'}.</p>
       </span>
     </div>
   );

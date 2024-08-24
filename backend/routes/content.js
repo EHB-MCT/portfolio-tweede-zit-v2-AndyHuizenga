@@ -238,7 +238,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 router.post('/sendEmail', async (req, res) => {
-  const { email, code } = req.body; // Extract the email and code from the request body
+  const { email, content } = req.body; 
 console.log(`email has been sent to ${email}`)
   // Ensure the email is properly defined and valid
   if (!email) {
@@ -246,10 +246,10 @@ console.log(`email has been sent to ${email}`)
   }
 
   const mailOptions = {
-    from: process.env.EMAIL_USER, // Your Gmail account
-    to: email, // The recipient's email address
-    subject: 'Your Author Code',
-    text: `Here you go, you got your code: ${code}`,
+    from: process.env.EMAIL_USER,
+    to: email, // Send to the user's email address
+    subject: 'Your Profile Has Been Created',
+    text: content // Use the personalized email content
   };
 
   try {
