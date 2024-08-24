@@ -18,10 +18,10 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
       if (process.env.NODE_ENV === 'development') {
         switch (text) {
           case '00':
-            navigate('/');
+            navigate('/overview');
             break;
           case '99':
-            navigate('/overview');
+            navigate('/');
             break;
           case '98':
             navigate('/admin');
@@ -144,9 +144,9 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
             setOverlayVisible(false);
 
             if (newValue === '00') {
-              navigate('/');
-            } else if (newValue === '99') {
               navigate('/overview');
+            } else if (newValue === '99') {
+              navigate('/');
             } else if (newValue === '98') {
               navigate('/admin');
             } else if (newValue === '51') {

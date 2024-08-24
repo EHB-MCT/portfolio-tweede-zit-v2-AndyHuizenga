@@ -26,6 +26,7 @@
     "mysql2": "^3.10.2",
     "nfc-reader": "^1.0.0",
     "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.14",
     "sequelize": "^6.37.3",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5"

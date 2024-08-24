@@ -4,7 +4,7 @@ import styles from '../css/OverviewPage.module.css'; // Import CSS module
 import { Spinner } from 'react-bootstrap';
 import API_BASE_URL from './config';
 
-const OverviewPage = ({ darkMode }) => {  // Accept darkMode prop
+const OverviewPage = ({ darkMode }) => {
   const [recalls, setRecalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null);
@@ -42,19 +42,13 @@ const OverviewPage = ({ darkMode }) => {  // Accept darkMode prop
         }
       };
 
-      window.addEventListener('wheel', handleWheel);
+      container.addEventListener('wheel', handleWheel, { passive: false });
 
       return () => {
-        window.removeEventListener('wheel', handleWheel);
+        container.removeEventListener('wheel', handleWheel);
       };
     }
   }, [recalls]);
-
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.focus();
-    }
-  }, []);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -87,15 +81,13 @@ const OverviewPage = ({ darkMode }) => {  // Accept darkMode prop
         <div className={styles.topLeft}>
           <h1 className={styles.overviewTitle}>Liste de chaines</h1>
           <p className={styles.overviewDescription}>
-          Voici un aperçu de toutes <br /> les chaînes disponibles. 
+            Voici un aperçu de toutes <br /> les chaînes disponibles.
           </p>
         </div>
         <div className={styles.overviewCenterText}>
-          <p>Pour naviguer vers la chaines desire</p>
+          <p>Pour naviguer vers la chaîne désirée</p>
         </div>
-        <div className={styles.topRight}>
-          {/* Optional content for the right section */}
-        </div>
+        <div className={styles.topRight}></div>
       </div>
       <div 
         className={styles.recallCardsContainer} 
@@ -103,14 +95,19 @@ const OverviewPage = ({ darkMode }) => {  // Accept darkMode prop
         tabIndex="0"  // Ensure it can receive focus
         role="region" // Optional: to indicate it’s a scrollable region
       >
-        {recalls.length > 0 ? (
-          recalls.map((item) => <RecallCard key={item.channel} item={item} />)
-        ) : (
-          <p>No recall items found.</p>
-        )}
+        <div className={styles.scrollRow}>
+          {recalls.length > 0 ? (
+            recalls.map((item) => (
+              <div className={styles.cardWrapper} key={item.channel}>
+                <RecallCard item={item} />
+              </div>
+            ))
+          ) : (
+            <p>No recall items found.</p>
+          )}
+        </div>
       </div>
       <div className={styles.scrollbarContainer}>
-        {/* Apply the dark class to scrollbarThumb if darkMode is true */}
         <div className={`${styles.scrollbarThumb} ${darkMode ? styles.dark : ''}`} ref={scrollbarRef}></div>
       </div>
     </div>

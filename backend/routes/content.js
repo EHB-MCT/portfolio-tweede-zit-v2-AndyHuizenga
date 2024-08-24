@@ -7,6 +7,7 @@ const mime = require('mime-types');
 const fs = require('fs');
 const path = require('path');
 const { log } = require('console');
+const nodemailer = require('nodemailer');
 
 // GET /api/recall/:channel - Fetch content based on channel number
 router.get('/recall/:channel', async (req, res) => {
@@ -229,6 +230,41 @@ router.get('/steps', async (req, res) => {
 });
 
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER, // your email address
+    pass: process.env.EMAIL_PASS  // your email password
+  }
+});
+router.post('/sendEmail', async (req, res) => {
+  const { email, code } = req.body; // Extract the email and code from the request body
+console.log(`email has been sent to ${email}`)
+  // Ensure the email is properly defined and valid
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Recipient email not provided' });
+  }
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER, // Your Gmail account
+    to: email, // The recipient's email address
+    subject: 'Your Author Code',
+    text: `Here you go, you got your code: ${code}`,
+  };
+
+  try {
+    // Send the email
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ success: true, message: 'Email sent successfully!' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ success: false, message: 'Failed to send email.' });
+  }
+});
+
+
+console.log('Email User:', process.env.EMAIL_USER);
+console.log('Email Pass:', process.env.EMAIL_PASS);
 
 
 

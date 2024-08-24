@@ -77,7 +77,7 @@ const CreateAuthorPage = ({ darkMode }) => {
           ...prevState,
           profilePicture: response.data.fileIds[0]
         }));
-        setSuccess('Profile picture uploaded successfully!');
+        setSuccess('Information has succesfully been uploaded!');
         setIsUploaded(true);
       } else {
         setError('Failed to upload profile picture.');
@@ -109,7 +109,23 @@ const CreateAuthorPage = ({ darkMode }) => {
         bday
       });
 
+      console.log('Create Author Response:', response.data); // Log the response data
+
       if (response.data.success) {
+
+        try {
+          console.log("email send has been triggered")
+          const recipientEmail  = response.data.email?.['en-US'] || formData.email;
+          await axios.post(`${API_BASE_URL}/sendEmail`, {
+      
+            email: recipientEmail,
+            code: response.data.code
+          });
+          setSuccess(`Author created successfully! Code sent to: ${response.data.fields['email']['en-US']}`);
+        } catch (emailError) {
+          console.error('Error sending email:', emailError);
+          setError('Author created, but failed to send the email.');
+        }
         setSuccess(`Author created successfully! Code: ${response.data.code}`);
         setFormData({
           name: '',
@@ -245,7 +261,7 @@ const CreateAuthorPage = ({ darkMode }) => {
           disabled={loading || uploading || (!isUploaded && !formData.profilePicture.length)}
           className={styles.uploadButton}
         >
-          {isUploaded ? 'Submit' : 'Upload Content'}
+          {isUploaded ? 'upload info' : 'Confirm'}
         </Button>
       </Form>
     </div>
