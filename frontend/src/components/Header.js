@@ -26,10 +26,10 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
           case '98':
             navigate('/');
             break;
-          case '51':
+          case '10':
             navigate('/social');
             break;
-          case '50':
+          case '11':
             navigate('/steps');
             break;
           default:
@@ -149,11 +149,11 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
               navigate('/admin');
             } else if (newValue === '98') {
               navigate('/');
-            } else if (newValue === '51') {
+            } else if (newValue === '10') {
               navigate('/social');
-            } else if (newValue === '50') {
+            } else if (newValue === '11') {
               navigate('/steps');
-            } else if (newValue >= '01' && newValue <= '50') {
+            } else if (newValue >= '01' && newValue <= '20') {
               navigate(`/channel/${newValue}`);
             }
 

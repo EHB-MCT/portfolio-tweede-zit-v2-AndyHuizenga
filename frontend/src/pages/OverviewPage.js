@@ -18,7 +18,6 @@ const OverviewPage = ({ darkMode }) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        // Sort recalls by channel number (assuming channel is numeric)
         data.sort((a, b) => a.channel - b.channel);
         setRecalls(data);
       } catch (error) {
@@ -34,20 +33,25 @@ const OverviewPage = ({ darkMode }) => {
   useEffect(() => {
     const container = scrollContainerRef.current;
 
+    // Automatically focus on the scroll container when the page loads
     if (container) {
-      const handleWheel = (e) => {
-        if (e.deltaY !== 0) {
-          container.scrollLeft += e.deltaY;
-          e.preventDefault();
-        }
-      };
-
-      container.addEventListener('wheel', handleWheel, { passive: false });
-
-      return () => {
-        container.removeEventListener('wheel', handleWheel);
-      };
+      container.focus();
     }
+
+    const handleWheel = (e) => {
+      // Apply horizontal scroll based on the vertical wheel input
+      if (e.deltaY !== 0) {
+        container.scrollLeft += e.deltaY;
+        e.preventDefault();  // Prevent default vertical scroll
+      }
+    };
+
+    // Add the wheel event listener to the window
+    window.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);  // Clean up event listener on unmount
+    };
   }, [recalls]);
 
   useEffect(() => {
@@ -85,14 +89,14 @@ const OverviewPage = ({ darkMode }) => {
           </p>
         </div>
         <div className={styles.overviewCenterText}>
-          <p>Pour naviguer vers la chaîne désirée</p>
+          <p>Utilisez la molette pour passer chaines suivante.</p>
         </div>
         <div className={styles.topRight}></div>
       </div>
       <div 
         className={styles.recallCardsContainer} 
         ref={scrollContainerRef} 
-        tabIndex="0"  // Ensure it can receive focus
+        tabIndex="0"  // Ensure the container can receive focus
         role="region" // Optional: to indicate it’s a scrollable region
       >
         <div className={styles.scrollRow}>

@@ -243,3 +243,57 @@ margin: 0px;
   object-fit: cover; /* Ensure the author thumbnail image fits nicely */
   background-color: transparent; /* No padding or background for the author image */
 }
+
+.video-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.video-instructions {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #333;
+  text-align: left;
+  padding-left: 5px;
+}
+
+.video-instructions .play-icon {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 10px solid black; /* Creates the play triangle */
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.video-instructions .pause-icon {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: black; /* Creates the pause bars */
+  position: relative;
+  margin-left: 5px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.video-instructions .pause-icon:before,
+.video-instructions .pause-icon:after {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 10px;
+  background-color: black;
+}
+
+.video-instructions .pause-icon:before {
+  left: 0;
+}
+
+.video-instructions .pause-icon:after {
+  right: 0;
+}
