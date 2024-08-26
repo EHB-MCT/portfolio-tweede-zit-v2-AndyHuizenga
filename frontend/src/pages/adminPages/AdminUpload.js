@@ -1,13 +1,16 @@
 import API_BASE_URL from "../config";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react'; // Make sure 'useContext' is included here
 import axios from 'axios';
 import { Form, Button, Spinner, Alert, Row, Col } from 'react-bootstrap';
 import AuthorSelector from '../../components/AuthorSelector'; // Import the AuthorSelector component
 import '../../css/AdminUpload.module.css';
 import VerificationModal from '../../components/VerificationModal'; // Import the VerificationModal
 import styles from '../../css/AdminUpload.module.css'; // Importing CSS Module
+import DataCacheContext from '../../utils/DataCacheContext'; // Add this import
 
 const AdminForm = ({ handleOpenVerificationModal }) => { 
+  const { getCachedData, setCachedData } = useContext(DataCacheContext); // Access cache context
+
   const [channels, setChannels] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [contentTypes] = useState(['video', 'album']);
@@ -35,6 +38,7 @@ const AdminForm = ({ handleOpenVerificationModal }) => {
       try {
         const authorsResponse = await axios.get(`${API_BASE_URL}/authors`);
         setAuthors(authorsResponse.data);
+        setCachedData('authors', authorsResponse.data); // Cache authors data
       } catch (error) {
         console.error('Error fetching authors:', error);
         setError('Failed to fetch authors.');
@@ -45,6 +49,7 @@ const AdminForm = ({ handleOpenVerificationModal }) => {
       try {
         const channelsResponse = await axios.get(`${API_BASE_URL}/availableChannels`);
         setChannels(channelsResponse.data);
+        setCachedData('channels', channelsResponse.data); // Cache channels data
       } catch (error) {
         console.error('Error fetching channels:', error);
         setError('Failed to fetch channels.');

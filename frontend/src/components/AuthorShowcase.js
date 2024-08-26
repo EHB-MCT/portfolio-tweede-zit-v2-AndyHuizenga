@@ -1,30 +1,45 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Container, Row, Col, Card, Carousel } from 'react-bootstrap';
 import axios from 'axios';
-import styles from '../css/SocialPage.module.css'; // Consolidated CSS
+import styles from '../css/SocialPage.module.css';
 import API_BASE_URL from '../pages/config';
+import DataCacheContext from '../utils/DataCacheContext'; // Import the cache context
 
 const AuthorShowcase = ({ darkMode, setBackgroundImage }) => {
   const [authors, setAuthors] = useState([]);
   const carouselRef = useRef(null);
 
+  const { getCachedData, setCachedData } = useContext(DataCacheContext); // Access cache context
+
   useEffect(() => {
-    const fetchAuthors = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/authors`);
-        setAuthors(response.data);
+    const cachedAuthors = getCachedData('authors');
 
-        // Set the background image to the first author image
-        if (response.data.length > 0) {
-          setBackgroundImage(response.data[0].profilePictureUrl);
-        }
-      } catch (error) {
-        console.error('Error fetching authors:', error);
+    if (cachedAuthors) {
+      setAuthors(cachedAuthors);
+      if (cachedAuthors.length > 0) {
+        setBackgroundImage(cachedAuthors[0].profilePictureUrl);
       }
-    };
+    } else {
+      const fetchAuthors = async () => {
+        try {
+          const response = await axios.get(`${API_BASE_URL}/authors`);
+          setAuthors(response.data);
 
-    fetchAuthors();
-  }, [setBackgroundImage]);
+          // Set the background image to the first author image
+          if (response.data.length > 0) {
+            setBackgroundImage(response.data[0].profilePictureUrl);
+          }
+
+          // Cache the fetched authors data
+          setCachedData('authors', response.data);
+        } catch (error) {
+          console.error('Error fetching authors:', error);
+        }
+      };
+
+      fetchAuthors();
+    }
+  }, [setBackgroundImage, getCachedData, setCachedData]);
 
   useEffect(() => {
     const handleWheel = (event) => {

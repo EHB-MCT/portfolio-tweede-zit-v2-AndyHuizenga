@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Card } from 'react-bootstrap';
 import styles from '../css/StepsShow.module.css';
 import API_BASE_URL from '../pages/config';
+import DataCacheContext from '../utils/DataCacheContext'; // Import cache context
 
-const StepsShow = ({ darkMode , setBackgroundImage}) => {
+const StepsShow = ({ darkMode, setBackgroundImage }) => {
   const [stepsData, setStepsData] = useState({
     name: '',
     descriptionWholeStep: '',
@@ -13,32 +14,47 @@ const StepsShow = ({ darkMode , setBackgroundImage}) => {
   const scrollContainerRef = useRef(null);
   const scrollbarRef = useRef(null);
 
+  const { getCachedData, setCachedData } = useContext(DataCacheContext); // Use cache context
+
   // Fetch steps data from API
   useEffect(() => {
-    const fetchSteps = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/steps`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    const cachedSteps = getCachedData('stepsData');
+
+    if (cachedSteps) {
+      setStepsData(cachedSteps);
+      if (cachedSteps.steps.length > 0) {
+        const firstStepImage = cachedSteps.steps[0]?.url;
+        if (firstStepImage) {
+          setBackgroundImage(firstStepImage); // Set background image from cache
         }
-        const data = await response.json();
-        setStepsData(data);
-  
-        // Set the first step's image as the background image
-        if (data.steps.length > 0) {
-          const firstStepImage = data.steps[0]?.url;
-          if (firstStepImage) {
-            setBackgroundImage(firstStepImage); // Set the background image
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching steps:', error);
-        setError(`Error fetching steps: ${error.message}. Please try again later.`);
       }
-    };
-  
-    fetchSteps();
-  }, [setBackgroundImage]);
+    } else {
+      const fetchSteps = async () => {
+        try {
+          const response = await fetch(`${API_BASE_URL}/steps`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setStepsData(data);
+          setCachedData('stepsData', data); // Cache the fetched steps data
+
+          // Set the first step's image as the background image
+          if (data.steps.length > 0) {
+            const firstStepImage = data.steps[0]?.url;
+            if (firstStepImage) {
+              setBackgroundImage(firstStepImage); // Set the background image
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching steps:', error);
+          setError(`Error fetching steps: ${error.message}. Please try again later.`);
+        }
+      };
+
+      fetchSteps();
+    }
+  }, [setBackgroundImage, getCachedData, setCachedData]);
 
   // Update scrollbar style
   useEffect(() => {
@@ -125,13 +141,13 @@ const StepsShow = ({ darkMode , setBackgroundImage}) => {
           )}
         </div>
       </div>
- <div className={`${styles.scrollbarContainer} ${darkMode ? styles.dark : ''}`}>
-  <div className={`${styles.scrollbarThumb} ${darkMode ? styles.dark : ''}`} ref={scrollbarRef}></div>
-</div>
-<div className={styles.scrollPrompt}>
-  <i className="fas fa-chevron-down"></i> 
-  <span>Faites défiler la molette noire pour voir plus d'éléments</span>
-</div> 
+      <div className={`${styles.scrollbarContainer} ${darkMode ? styles.dark : ''}`}>
+        <div className={`${styles.scrollbarThumb} ${darkMode ? styles.dark : ''}`} ref={scrollbarRef}></div>
+      </div>
+      <div className={styles.scrollPrompt}>
+        <i className="fas fa-chevron-down"></i> 
+        <span>Faites défiler la molette noire pour voir plus d'éléments</span>
+      </div> 
     </div>
   );
 };
