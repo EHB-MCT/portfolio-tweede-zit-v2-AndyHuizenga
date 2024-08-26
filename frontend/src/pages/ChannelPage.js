@@ -24,7 +24,7 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
     if (showModal) {
       const timer = setTimeout(() => {
         navigate('/overview');
-      }, 4000); // 4 seconds
+      }, 3000); // 4 seconds
 
       return () => clearTimeout(timer); // Clean up the timer
     }
