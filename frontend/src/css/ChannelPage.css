@@ -330,44 +330,19 @@ margin: 0px;
 }
 
 /* Optional: Add animation to modal */
-@keyframes modalFadeIn {
+@keyframes modalFadeOut {
   from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
     opacity: 1;
     transform: translateY(0);
   }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }
 
+/* Apply fade-in and fade-out to modal */
 .modal.no-border-modal .modal-dialog {
-  animation: modalFadeIn 0.5s ease-in-out; /* Add fade-in animation */
+  animation: modalFadeIn 0.5s ease-in-out, modalFadeOut 0.5s ease-in-out 1.5s forwards; /* Add fade-out after 1.5 seconds */
 }
 
-/* Add to your ChannelPage.css */
-
-.image-fade-in {
-  opacity: 0;
-  transition: opacity 1s ease-in-out 0.5s !important; /* Added 0.5s delay */
-}
-
-.image-fade-in.loaded {
-  opacity: 1 !important;
-}
-
-.text-fade-in {
-  opacity: 0  !important;
-  transition: opacity 1s ease-in-out 0.5s  !important; /* Added 0.5s delay */
-}
-
-.text-fade-in.loaded {
-  opacity: 1 !important;
-}
-
-.channel-page.dark-mode .text-section,
-.channel-page.dark-mode .image-section,
-.channel-page.dark-mode .help-text-span {
-  transition: none !important; /* Disable transition delays on text and image sections */
-  color: #ffffff; /* Ensure text color changes instantly */
-}

@@ -1,93 +1,94 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Spinner, Modal, Button } from 'react-bootstrap'; // Import Modal for pop-up
+import { Spinner, Modal, Button } from 'react-bootstrap'; 
 import ChannelContent from '../components/ChannelContent';
 import ImageGallery from 'react-image-gallery';
 import '../css/ChannelPage.css';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import API_BASE_URL from './config';
+import DataCacheContext from '../utils/DataCacheContext'; // Import DataCacheContext
 
 const ChannelPage = ({ darkMode, setBackgroundImage }) => {
   const { channelNumber } = useParams();
   const [channelContent, setChannelContent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false); // State for the pop-up
+  const [showModal, setShowModal] = useState(false); 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const galleryRef = useRef(null);
   const videoRef = useRef(null);
   const containerRef = useRef(null);
-  const navigate = useNavigate(); // useNavigate for redirection
+  const navigate = useNavigate(); 
 
- 
+  const { getCachedData, setCachedData } = useContext(DataCacheContext); // Use cache context
+
+  useEffect(() => {
+    const cachedChannelData = getCachedData(`channel-data-${channelNumber}`);
+    const cachedBgImage = getCachedData(`channel-bg-${channelNumber}`);
+
+    if (cachedChannelData && cachedBgImage) {
+      setChannelContent(cachedChannelData);
+      setBackgroundImage(cachedBgImage);
+      setLoading(false);
+    } else {
+      const fetchContent = async () => {
+        setLoading(true);
+        setChannelContent(null);
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/recall/${channelNumber}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const content = await response.json();
+          setChannelContent(content);
+          setCachedData(`channel-data-${channelNumber}`, content); // Cache the entire content
+
+          // Set and cache the background image
+          let bgImage = '';
+          if (content.contentType === 'album' && content.content.length > 0) {
+            bgImage = content.content.find(item =>
+              item.fields.file.url.endsWith('.jpg') || item.fields.file.url.endsWith('.png')
+            )?.fields.file.url || '';
+          } else if (content.contentType === 'video' && content?.thumbnail?.fields?.file?.url) {
+            bgImage = content.thumbnail.fields.file.url;
+          }
+
+          if (bgImage) {
+            setBackgroundImage(bgImage);
+            setCachedData(`channel-bg-${channelNumber}`, bgImage); // Cache the background image
+          }
+        } catch (error) {
+          setShowModal(true); // Show error modal if no content or error
+        } finally {
+          setLoading(false); 
+        }
+      };
+
+      fetchContent();
+    }
+  }, [channelNumber, getCachedData, setCachedData, setBackgroundImage]);
+
   useEffect(() => {
     if (showModal) {
       const timer = setTimeout(() => {
         navigate('/overview');
-      }, 3000); // 4 seconds
-
-      return () => clearTimeout(timer); // Clean up the timer
+      }, 4000); // 7 seconds delay for modal
+      return () => clearTimeout(timer); 
     }
   }, [showModal, navigate]);
 
-  useEffect(() => {
-    const fetchContent = async () => {
-      // Clear existing content and reset states when switching channels
-      setChannelContent(null);
-      setBackgroundImage(null);
-      setLoading(true); 
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/recall/${channelNumber}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const content = await response.json();
-
-        if (content && content.content?.length > 0) {
-          setChannelContent(content);
-
-          // Set the background image based on the first content item or the video thumbnail
-          if (content.contentType === 'album' && content.content.length > 0) {
-            const firstImage = content.content.find(item => item.fields.file.url.endsWith('.jpg') || item.fields.file.url.endsWith('.png'))?.fields.file.url || '';
-            setBackgroundImage(firstImage);
-          } else if (content.contentType === 'video' && content?.thumbnail?.fields?.file?.url) {
-            const videoThumbnail = content.thumbnail.fields.file.url;
-            setBackgroundImage(videoThumbnail);
-          }
-        } else {
-          setChannelContent(null);
-          setShowModal(true); // Show the modal if no content is available
-        }
-      } catch (error) {
-        setChannelContent(null);
-        setShowModal(true); // Show the modal on error
-      } finally {
-        setLoading(false); // Stop loading spinner
-      }
-    };
-
-    fetchContent();
-  }, [channelNumber, setBackgroundImage]);
-
-  // Handle modal close and redirection (automatically triggered after a delay)
   const handleModalClose = () => {
     navigate('/overview');
   };
 
   useEffect(() => {
-    // Register the keypress event listener
     const handleKeyDown = (event) => handleKeyPress(event);
-  
     window.addEventListener('keydown', handleKeyDown);
-  
-    // Clean up the event listener on unmount
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [channelContent, isPlaying]);
-  
+
   const handleKeyPress = (event) => {
     if (event.key === '<' && channelContent?.contentType === 'video' && videoRef.current) {
       if (isPlaying) {
@@ -102,12 +103,11 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
   useEffect(() => {
     const handleMouseWheel = (event) => {
       if (channelContent?.contentType === 'video') {
-        event.preventDefault(); // Prevent default scroll behavior for video
+        event.preventDefault(); 
         const direction = event.deltaY > 0 ? 1 : -1;
-  
+
         // Handle video scrolling navigation
         const videos = channelContent.content?.filter(asset => asset.fields?.file?.url && asset.fields.file.url.endsWith('.mp4'));
-  
         if (videos && videos.length > 0) {
           setCurrentVideoIndex((prevIndex) => {
             const newIndex = Math.max(0, Math.min(videos.length - 1, prevIndex + direction));
@@ -115,7 +115,6 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
           });
         }
       } else if (channelContent?.contentType === 'album' && galleryRef.current) {
-        // Handle image gallery scrolling navigation
         event.preventDefault();
         const direction = event.deltaY > 0 ? 1 : -1;
         const currentIndex = galleryRef.current.getCurrentIndex();
@@ -123,17 +122,14 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
         galleryRef.current.slideToIndex(nextIndex);
       }
     };
-  
-    window.addEventListener('wheel', handleMouseWheel); // Attach to window for global scroll
-  
-    return () => {
-      window.removeEventListener('wheel', handleMouseWheel); // Cleanup on unmount
-    };
+
+    window.addEventListener('wheel', handleMouseWheel); 
+    return () => window.removeEventListener('wheel', handleMouseWheel);
   }, [channelContent, isPlaying]);
 
   const handleSlide = (currentIndex) => {
     const currentImage = galleryRef.current.props.items[currentIndex].original;
-    setBackgroundImage(currentImage); // Set the background image to the current item in the album
+    setBackgroundImage(currentImage); 
   };
 
   const renderContent = () => {
@@ -142,7 +138,6 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
     }
 
     if (channelContent.contentType === 'album') {
-      // Handle only images for the gallery
       const images = (channelContent.content?.filter(asset => asset.fields?.file?.url && (asset.fields.file.url.endsWith('.jpg') || asset.fields.file.url.endsWith('.png'))) || []).map((asset) => ({
         original: asset.fields.file.url || 'default-thumbnail.jpg',
         thumbnail: asset.fields.file.url || 'default-thumbnail.jpg',
@@ -162,7 +157,6 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
         />
       );
     } else if (channelContent.contentType === 'video') {
-      // Handle multiple videos with scroll navigation
       const videos = channelContent.content?.filter(asset => asset.fields?.file?.url && asset.fields.file.url.endsWith('.mp4'));
 
       if (videos && videos.length > 0) {
@@ -184,9 +178,6 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
               <source src={videoUrl} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
-            <div className="video-instructions">
-
-    </div>
           </div>
         );
       } else {
@@ -215,20 +206,19 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
         <p>{channelContent?.contentType === 'video' ? 'Utilisez la molette pour passer à la video suivante' : 'Utilisez la molette pour passer à la photo suivante'}.</p>
       </span>
 
-      {/* Modal for no content pop-up */}
       <Modal
-  show={showModal}
-  onHide={handleModalClose}
-  centered
-  className="no-border-modal"
-  backdrop="static"
-  keyboard={false}
-  animation={false}
->
-  <Modal.Body className="text-center">
-    Ce canal n'a pas encore de contenu. Vous serez redirigé vers la vue d'ensemble.
-  </Modal.Body>
-</Modal>
+        show={showModal}
+        onHide={handleModalClose}
+        centered
+        className="no-border-modal"
+        backdrop="static"
+        keyboard={false}
+        animation={false}
+      >
+        <Modal.Body className="text-center">
+          Ce canal n'a pas encore de contenu. Vous serez redirigé vers la vue d'ensemble.
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

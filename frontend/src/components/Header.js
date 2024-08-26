@@ -159,7 +159,7 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop 
 
             setChannelNumber(newValue);
             setInputValue('');
-          }, 500);
+          }, 1000);
         }
       }
     };

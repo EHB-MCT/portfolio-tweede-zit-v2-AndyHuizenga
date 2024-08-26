@@ -34,8 +34,8 @@ function App() {
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => !prevMode);
     document.body.classList.toggle('dark-mode', !darkMode);
-    const _ = document.body.offsetHeight; // Trigger a reflow, re-render the elements
-    document.body.style.display = '';
+
+
   };
 
   useEffect(() => {
