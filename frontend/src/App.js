@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import HomePage from './pages/HomePage';
@@ -15,7 +15,7 @@ import Overlay from './components/Overlay';
 import StepsShow from './pages/StepsShow';
 import VerificationModal from './components/VerificationModal';
 import './css/index.css';
-import './css/transitions.css'; // Make sure this is imported to apply global styles
+import './css/transitions.css';
 
 function App() {
   const location = useLocation();
@@ -28,14 +28,42 @@ function App() {
     'https://images.ctfassets.net/2x4vothfh006/6JMV9HK1W3fUrdySCC6AS8/031ddedabd3e7e7b090dc1827a1ec85d/selected_18.jpg'
   );
 
+  const [enterPressCount, setEnterPressCount] = useState(0);
+  const enterTimeoutRef = useRef(null); // UseRef to store the timeout ID
+
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (!darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
+    setDarkMode((prevMode) => !prevMode);
+    document.body.classList.toggle('dark-mode', !darkMode);
+    const _ = document.body.offsetHeight; // Trigger a reflow, re-render the elements
+    document.body.style.display = '';
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        setEnterPressCount((prevCount) => prevCount + 1);
+      }
+    };
+
+    const resetPressCount = () => {
+      if (enterPressCount === 2) {
+        toggleDarkMode(); // Toggle dark mode if 'Enter' is pressed twice within 500ms
+      }
+      setEnterPressCount(0);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    if (enterPressCount > 0) {
+      if (enterTimeoutRef.current) clearTimeout(enterTimeoutRef.current); // Clear the existing timeout
+      enterTimeoutRef.current = setTimeout(resetPressCount, 500); // Set a new timeout for resetting the press count
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      if (enterTimeoutRef.current) clearTimeout(enterTimeoutRef.current); // Clean up timeout on unmount
+    };
+  }, [enterPressCount]);
 
   const handleOpenVerificationModal = (author) => {
     setPendingAuthor(author);
