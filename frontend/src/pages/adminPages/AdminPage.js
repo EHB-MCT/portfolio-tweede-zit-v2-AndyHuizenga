@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Card } from 'react-bootstrap';
-import { FaUserPlus, FaFileAlt, FaCog } from 'react-icons/fa'; // Importing icons from react-icons
-import styles from '../../css/AdminPage.module.css'; // Updated to import CSS module
+import { FaUserPlus, FaFileAlt, FaCog } from 'react-icons/fa'; 
+import styles from '../../css/AdminPage.module.css'; 
 
-const AdminPage = ({ darkMode }) => { // Accept darkMode as a prop
+const AdminPage = ({ darkMode }) => { 
   return (
     <Container className={`${styles.adminPage} ${darkMode ? styles.darkMode : ''}`}>
       <h1>Admin Dashboard</h1>

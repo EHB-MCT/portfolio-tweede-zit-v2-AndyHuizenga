@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import AuthorShowcase from '../components/AuthorShowcase';
-import styles from '../css/SocialPage.module.css'; // Import the CSS module
+import styles from '../css/SocialPage.module.css'; 
 
 const SocialPage = ({ darkMode, setBackgroundImage }) => {
   const scrollContainerRef = useRef(null);
@@ -26,14 +26,14 @@ const SocialPage = ({ darkMode, setBackgroundImage }) => {
 
     if (container) {
       container.addEventListener('scroll', handleScroll);
-      updateScrollbar(); // Ensure scrollbar is updated initially
+      updateScrollbar(); 
 
-      // Cleanup: Remove scroll event listener when the component unmounts
+      
       return () => {
         container.removeEventListener('scroll', handleScroll);
       };
     }
-  }, [scrollContainerRef, scrollbarRef]); // Add refs to the dependency array
+  }, [scrollContainerRef, scrollbarRef]); 
 
   return (
     <Container fluid className={`${styles.socialPage} ${darkMode ? styles.dark : ''}`}>

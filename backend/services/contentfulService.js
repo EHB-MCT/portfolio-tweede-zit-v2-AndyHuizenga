@@ -119,7 +119,7 @@ const getExistingAssets = async (assetNames = []) => {
     return filteredAssets.map(item => ({
       id: item.sys.id,
       title: item.fields.title['en-US'],
-      url: item.fields.file['en-US'].url, // Include the URL for easy access
+      url: item.fields.file['en-US'].url, 
     }));
   } catch (error) {
     console.error('Error fetching assets:', error.message);
@@ -134,7 +134,7 @@ const getAllExistingAssets = async () => {
     return entries.items.map(item => ({
       id: item.sys.id,
       title: item.fields.title['en-US'],
-      url: item.fields.file['en-US'].url, // Include the URL for easy access
+      url: item.fields.file['en-US'].url, 
     }));
   } catch (error) {
     console.error('Error fetching all assets:', error.message);
@@ -156,7 +156,7 @@ const findAuthorByName = async (name) => {
       throw new Error('No author found with the given name');
     }
 
-    // Assuming the name is unique, return the first match
+
     return entries.items[0];
   } catch (error) {
     console.error('Error fetching author:', error.message);
@@ -193,7 +193,7 @@ const addRecallItem = async (data) => {
         channel: { 'en-US': data.channel },
         title: { 'en-US': data.title },
         date: { 'en-US': data.date },
-        content: { 'en-US': contentAssetIds }, // Ensure this is an array of objects
+        content: { 'en-US': contentAssetIds }, 
         contentType: { 'en-US': data.contentType },
         description: { 'en-US': data.description },
         author: { 
@@ -260,15 +260,15 @@ const uploadFileToContentful = async (file) => {
     let asset = await environment.createAsset({
       fields: {
         title: {
-          'en-US': file.originalname, // Use the original file name as the title
+          'en-US': file.originalname,
         },
         description: {
-          'en-US': 'recall media content', // Automatically add description
+          'en-US': 'recall media content', 
         },
         file: {
           'en-US': {
-            contentType: mime.lookup(file.originalname) || 'application/octet-stream', // Use mime-types to get MIME type
-            fileName: file.originalname, // Use the original file name
+            contentType: mime.lookup(file.originalname) || 'application/octet-stream', 
+            fileName: file.originalname, 
             uploadFrom: {
               sys: {
                 type: 'Link',

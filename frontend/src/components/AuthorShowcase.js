@@ -3,13 +3,13 @@ import { Container, Row, Col, Card, Carousel } from 'react-bootstrap';
 import axios from 'axios';
 import styles from '../css/SocialPage.module.css';
 import API_BASE_URL from '../pages/config';
-import DataCacheContext from '../utils/DataCacheContext'; // Import the cache context
+import DataCacheContext from '../utils/DataCacheContext'; 
 
 const AuthorShowcase = ({ darkMode, setBackgroundImage }) => {
   const [authors, setAuthors] = useState([]);
   const carouselRef = useRef(null);
 
-  const { getCachedData, setCachedData } = useContext(DataCacheContext); // Access cache context
+  const { getCachedData, setCachedData } = useContext(DataCacheContext); 
 
   useEffect(() => {
     const cachedAuthors = getCachedData('authors');

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import RecallCard from '../components/RecallCard';
-import styles from '../css/OverviewPage.module.css'; // Import CSS module
+import styles from '../css/OverviewPage.module.css'; 
 import { Spinner } from 'react-bootstrap';
 import API_BASE_URL from './config';
 
@@ -33,24 +33,24 @@ const OverviewPage = ({ darkMode }) => {
   useEffect(() => {
     const container = scrollContainerRef.current;
 
-    // Automatically focus on the scroll container when the page loads
+    
     if (container) {
       container.focus();
     }
 
     const handleWheel = (e) => {
-      // Apply horizontal scroll based on the vertical wheel input
+      
       if (e.deltaY !== 0) {
         container.scrollLeft += e.deltaY;
-        e.preventDefault();  // Prevent default vertical scroll
+        e.preventDefault();  
       }
     };
 
-    // Add the wheel event listener to the window
+    
     window.addEventListener('wheel', handleWheel, { passive: false });
 
     return () => {
-      window.removeEventListener('wheel', handleWheel);  // Clean up event listener on unmount
+      window.removeEventListener('wheel', handleWheel);  
     };
   }, [recalls]);
 
@@ -96,8 +96,8 @@ const OverviewPage = ({ darkMode }) => {
       <div 
         className={styles.recallCardsContainer} 
         ref={scrollContainerRef} 
-        tabIndex="0"  // Ensure the container can receive focus
-        role="region" // Optional: to indicate it’s a scrollable region
+        tabIndex="0"  
+        role="region" 
       >
         <div className={styles.scrollRow}>
           {recalls.length > 0 ? (

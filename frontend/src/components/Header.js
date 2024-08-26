@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import Overlay from '../components/Overlay';
 import styles from '../css/Header.module.css';
 
-const Header = ({ darkMode, isVerificationModalOpen }) => {  // Accept the prop to know if the modal is open
+const Header = ({ darkMode, isVerificationModalOpen }) => {   
   const [currentTime, setCurrentTime] = useState(new Date());
   const [channelNumber, setChannelNumber] = useState('01');
   const [inputValue, setInputValue] = useState('');

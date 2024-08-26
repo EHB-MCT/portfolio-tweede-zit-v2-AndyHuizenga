@@ -17,11 +17,11 @@ function ChannelContent({ content }) {
 
       {author ? (
         <div className="author-section">
-          {/* No padding for author's thumbnail */}
+
           <img 
             src={profilePictureUrl} 
             alt={author.name || "Unknown Author"} 
-            className="author-thumbnail" /* Different class for author thumbnail */
+            className="author-thumbnail" 
           />
           <div className="author-info">
             {content.contentType && (

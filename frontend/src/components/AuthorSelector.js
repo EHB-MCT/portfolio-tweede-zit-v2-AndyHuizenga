@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from '../css/AuthorSelector.module.css'; // Import the CSS module
+import styles from '../css/AuthorSelector.module.css'; 
 
 const AuthorSelector = ({ authors, onSelectAuthor, selectedAuthorIndex }) => {
   return (

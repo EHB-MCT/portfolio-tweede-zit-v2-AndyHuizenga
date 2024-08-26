@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import styles from '../../css/CreateAuthorPage.module.css'; // Updated import for CSS Module
+import styles from '../../css/CreateAuthorPage.module.css'; 
 import API_BASE_URL from "../config";
 
 const CreateAuthorPage = ({ darkMode }) => {
@@ -109,18 +109,16 @@ const CreateAuthorPage = ({ darkMode }) => {
         bday
       });
 
-      console.log('Create Author Response:', response.data); // Log the response data
+   
 
       if (response.data.success) {
         try {
-          console.log("Email sending has been triggered");
+
   
           // Access email and name directly from response.data
           const recipientEmail = response.data.email?.['en-US'] || formData.email;
           const recipientName = response.data.name?.['en-US'] || formData.name;
-          const code = response.data.code // If you want to include the code as well
-  
-          // Compose the email content with personalization and proper formatting
+          const code = response.data.code 
           const emailContent = `
             Hi ${recipientName},
   
@@ -137,8 +135,8 @@ const CreateAuthorPage = ({ darkMode }) => {
           // Send the email
           await axios.post(`${API_BASE_URL}/sendEmail`, {
             email: recipientEmail,
-            content: emailContent, // Pass the personalized email content
-            code: response.data.code // If you want to include the code as well
+            content: emailContent,
+            code: response.data.code 
           });
           setSuccess(`Author created successfully! Code sent to: ${response.data.fields['email']['en-US']}`);
         } catch (emailError) {

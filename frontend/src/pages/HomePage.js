@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import axios from 'axios';
-import styles from '../css/HomePage.module.css'; // Import CSS Module
+import styles from '../css/HomePage.module.css'; 
 import API_BASE_URL from "./config";
 
 const HomePage = ({ darkMode }) => {

@@ -132,7 +132,7 @@ router.get('/availableChannels', async (req, res) => {
   }
 });
 
-// If handling multiple fields, use `upload.fields` instead of `upload.array`
+
 
 // In your backend service or API
 router.post('/assets', async (req, res) => {

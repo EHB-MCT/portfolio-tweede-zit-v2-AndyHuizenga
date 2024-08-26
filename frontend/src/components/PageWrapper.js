@@ -5,7 +5,7 @@ const PageWrapper = ({ children }) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Simulate a fade-in effect by changing state
+ 
     setVisible(true);
   }, []);
 

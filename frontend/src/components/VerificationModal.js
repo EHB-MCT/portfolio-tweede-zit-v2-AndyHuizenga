@@ -8,8 +8,8 @@ const VerificationModal = ({ show, handleClose, onVerify, author }) => {
 
   const handleCodeChange = (e) => setCode(e.target.value);
   const handleVerify = () => {
-    console.log("Entered Code:", code); // Log the code entered by the user
-    console.log("Expected Code:", author.code); // Log the expected code for the author
+    console.log("Entered Code:", code); 
+    console.log("Expected Code:", author.code); 
   
     if (author && code.toString() === author.code.toString()) {
       console.log("Verification successful for author:", author); 
@@ -26,7 +26,7 @@ const VerificationModal = ({ show, handleClose, onVerify, author }) => {
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Verify Author: {author ? author.name : 'Unknown'}</Modal.Title> {/* Handle undefined author */}
+        <Modal.Title>Verify Author: {author ? author.name : 'Unknown'}</Modal.Title> {}
       </Modal.Header>
       <Modal.Body>
         <Form.Group controlId="formVerificationCode">
@@ -56,7 +56,7 @@ VerificationModal.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   onVerify: PropTypes.func.isRequired,
-  author: PropTypes.object, // Make this prop optional to handle undefined cases
+  author: PropTypes.object, 
 };
 
 export default VerificationModal;

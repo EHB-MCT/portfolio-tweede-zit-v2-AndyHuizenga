@@ -10,7 +10,7 @@ const StepsShow = ({ darkMode, setBackgroundImage }) => {
     descriptionWholeStep: '',
     steps: []
   });
-  const [loading, setLoading] = useState(true);  // Track loading state
+  const [loading, setLoading] = useState(true);  
   const [error, setError] = useState(null);
   const scrollContainerRef = useRef(null);
   const scrollbarRef = useRef(null);
@@ -28,7 +28,7 @@ const StepsShow = ({ darkMode, setBackgroundImage }) => {
           setBackgroundImage(firstStepImage);
         }
       }
-      setLoading(false);  // Set loading to false after retrieving data from cache
+      setLoading(false);  
     } else {
       const fetchSteps = async () => {
         try {
@@ -49,7 +49,7 @@ const StepsShow = ({ darkMode, setBackgroundImage }) => {
           console.error('Error fetching steps:', error);
           setError(`Error fetching steps: ${error.message}. Please try again later.`);
         } finally {
-          setLoading(false);  // Stop loading spinner
+          setLoading(false);  
         }
       };
 

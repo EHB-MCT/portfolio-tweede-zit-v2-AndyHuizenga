@@ -6,7 +6,7 @@ import ImageGallery from 'react-image-gallery';
 import '../css/ChannelPage.css';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import API_BASE_URL from './config';
-import DataCacheContext from '../utils/DataCacheContext'; // Import DataCacheContext
+import DataCacheContext from '../utils/DataCacheContext'; //
 
 const ChannelPage = ({ darkMode, setBackgroundImage }) => {
   const { channelNumber } = useParams();
@@ -20,7 +20,7 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
   const containerRef = useRef(null);
   const navigate = useNavigate(); 
 
-  const { getCachedData, setCachedData } = useContext(DataCacheContext); // Use cache context
+  const { getCachedData, setCachedData } = useContext(DataCacheContext); 
 
   useEffect(() => {
     const cachedChannelData = getCachedData(`channel-data-${channelNumber}`);
@@ -43,9 +43,9 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
 
           const content = await response.json();
           setChannelContent(content);
-          setCachedData(`channel-data-${channelNumber}`, content); // Cache the entire content
+          setCachedData(`channel-data-${channelNumber}`, content); 
 
-          // Set and cache the background image
+          
           let bgImage = '';
           if (content.contentType === 'album' && content.content.length > 0) {
             bgImage = content.content.find(item =>
@@ -57,10 +57,10 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
 
           if (bgImage) {
             setBackgroundImage(bgImage);
-            setCachedData(`channel-bg-${channelNumber}`, bgImage); // Cache the background image
+            setCachedData(`channel-bg-${channelNumber}`, bgImage); 
           }
         } catch (error) {
-          setShowModal(true); // Show error modal if no content or error
+          setShowModal(true); 
         } finally {
           setLoading(false); 
         }
@@ -74,7 +74,7 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
     if (showModal) {
       const timer = setTimeout(() => {
         navigate('/overview');
-      }, 4000); // 7 seconds delay for modal
+      }, 4000); 
       return () => clearTimeout(timer); 
     }
   }, [showModal, navigate]);
@@ -106,7 +106,7 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
         event.preventDefault(); 
         const direction = event.deltaY > 0 ? 1 : -1;
 
-        // Handle video scrolling navigation
+        
         const videos = channelContent.content?.filter(asset => asset.fields?.file?.url && asset.fields.file.url.endsWith('.mp4'));
         if (videos && videos.length > 0) {
           setCurrentVideoIndex((prevIndex) => {
