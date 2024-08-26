@@ -364,3 +364,10 @@ margin: 0px;
 .text-fade-in.loaded {
   opacity: 1 !important;
 }
+
+.channel-page.dark-mode .text-section,
+.channel-page.dark-mode .image-section,
+.channel-page.dark-mode .help-text-span {
+  transition: none !important; /* Disable transition delays on text and image sections */
+  color: #ffffff; /* Ensure text color changes instantly */
+}

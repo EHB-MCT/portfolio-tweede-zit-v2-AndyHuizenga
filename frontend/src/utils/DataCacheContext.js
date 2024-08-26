@@ -1,4 +1,3 @@
-// DataCacheContext.js
 import React, { createContext, useState, useEffect } from 'react';
 
 const DataCacheContext = createContext();
@@ -11,11 +10,15 @@ export const DataCacheProvider = ({ children }) => {
 
   // Update localStorage whenever cache changes
   useEffect(() => {
-    localStorage.setItem('dataCache', JSON.stringify(cache));
+    if (cache) {
+      localStorage.setItem('dataCache', JSON.stringify(cache));
+    }
   }, [cache]);
 
   const getCachedData = (key) => cache[key];
-  const setCachedData = (key, data) => setCache((prevCache) => ({ ...prevCache, [key]: data }));
+  const setCachedData = (key, data) => {
+    setCache((prevCache) => ({ ...prevCache, [key]: data }));
+  };
 
   return (
     <DataCacheContext.Provider value={{ getCachedData, setCachedData }}>
