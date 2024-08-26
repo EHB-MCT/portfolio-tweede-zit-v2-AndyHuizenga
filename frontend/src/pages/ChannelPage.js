@@ -19,11 +19,16 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
   const containerRef = useRef(null);
   const navigate = useNavigate(); // useNavigate for redirection
 
-  // Function to close the modal and redirect to channel 00 (overview)
-  const handleModalClose = () => {
-    setShowModal(false);
-    navigate('/overview'); // Redirect to overview channel
-  };
+ 
+  useEffect(() => {
+    if (showModal) {
+      const timer = setTimeout(() => {
+        navigate('/overview');
+      }, 4000); // 4 seconds
+
+      return () => clearTimeout(timer); // Clean up the timer
+    }
+  }, [showModal, navigate]);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -40,7 +45,6 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
 
         const content = await response.json();
 
-        // Check if the fetched content is valid and has items to display
         if (content && content.content?.length > 0) {
           setChannelContent(content);
 
@@ -50,17 +54,15 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
             setBackgroundImage(firstImage);
           } else if (content.contentType === 'video' && content?.thumbnail?.fields?.file?.url) {
             const videoThumbnail = content.thumbnail.fields.file.url;
-            setBackgroundImage(videoThumbnail); // Set the video thumbnail as the background
+            setBackgroundImage(videoThumbnail);
           }
         } else {
-          // If no content available, show the modal and reset states
           setChannelContent(null);
-          setShowModal(true);
+          setShowModal(true); // Show the modal if no content is available
         }
       } catch (error) {
-        // If error occurs (e.g. no channel data), show the modal
         setChannelContent(null);
-        setShowModal(true); 
+        setShowModal(true); // Show the modal on error
       } finally {
         setLoading(false); // Stop loading spinner
       }
@@ -68,6 +70,11 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
 
     fetchContent();
   }, [channelNumber, setBackgroundImage]);
+
+  // Handle modal close and redirection (automatically triggered after a delay)
+  const handleModalClose = () => {
+    navigate('/overview');
+  };
 
   useEffect(() => {
     // Register the keypress event listener
@@ -209,19 +216,19 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
       </span>
 
       {/* Modal for no content pop-up */}
-      <Modal show={showModal} onHide={handleModalClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Information</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Ce canal n'a pas encore de contenu. Veuillez aller à la vue d'ensemble pour voir les canaux disponibles.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={handleModalClose}>
-            Aller à l'aperçu
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <Modal
+  show={showModal}
+  onHide={handleModalClose}
+  centered
+  className="no-border-modal"
+  backdrop="static"
+  keyboard={false}
+  animation={false}
+>
+  <Modal.Body className="text-center">
+    Ce canal n'a pas encore de contenu. Vous serez redirigé vers la vue d'ensemble.
+  </Modal.Body>
+</Modal>
     </div>
   );
 };

@@ -297,3 +297,70 @@ margin: 0px;
 .video-instructions .pause-icon:after {
   right: 0;
 }
+
+/* Custom Modal Styles */
+
+/* Target the modal backdrop to make it transparent or change its color */
+
+
+/* Customize the modal itself */
+.modal.no-border-modal .modal-dialog {
+  max-width: 700px; /* Limit the width of the modal */
+  margin: 0 auto; /* Center the modal */
+  border: none; /* Remove any border */
+
+
+}
+
+/* Customize the modal content */
+.modal.no-border-modal .modal-content {
+
+  border-radius: 10px; /* Rounded corners */
+  padding: 50px; /* Add padding to the modal content */
+
+  border: red 3px solid; /* Remove border */
+}
+
+/* Customize the modal text */
+.modal.no-border-modal .modal-body {
+  text-align: center; /* Center the text */
+  font-size: 1.6em; /* Increase font size */
+  color: #333; /* Dark text color */
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* Optional: Add animation to modal */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal.no-border-modal .modal-dialog {
+  animation: modalFadeIn 0.5s ease-in-out; /* Add fade-in animation */
+}
+
+/* Add to your ChannelPage.css */
+
+.image-fade-in {
+  opacity: 0;
+  transition: opacity 1s ease-in-out 0.5s !important; /* Added 0.5s delay */
+}
+
+.image-fade-in.loaded {
+  opacity: 1 !important;
+}
+
+.text-fade-in {
+  opacity: 0  !important;
+  transition: opacity 1s ease-in-out 0.5s  !important; /* Added 0.5s delay */
+}
+
+.text-fade-in.loaded {
+  opacity: 1 !important;
+}

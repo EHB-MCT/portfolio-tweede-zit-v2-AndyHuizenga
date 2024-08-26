@@ -85,3 +85,13 @@ body.dark-mode {
 *:focus {
   outline: none;
 }
+
+/* index.css */
+.fade-in {
+  opacity: 0;
+  transition: opacity 1s ease-in-out; /* Adjust timing as desired */
+}
+
+.fade-in-active {
+  opacity: 1;
+}
