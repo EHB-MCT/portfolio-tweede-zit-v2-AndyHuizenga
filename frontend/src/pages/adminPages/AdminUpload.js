@@ -8,7 +8,7 @@ import VerificationModal from '../../components/VerificationModal'; // Import th
 import styles from '../../css/AdminUpload.module.css'; // Importing CSS Module
 import DataCacheContext from '../../utils/DataCacheContext'; // Add this import
 
-const AdminForm = ({ handleOpenVerificationModal }) => { 
+const AdminForm = ({ handleOpenVerificationModal, darkMode }) => { 
   const { getCachedData, setCachedData } = useContext(DataCacheContext); // Access cache context
 
   const [channels, setChannels] = useState([]);
@@ -229,7 +229,7 @@ const AdminForm = ({ handleOpenVerificationModal }) => {
   
 
   return (
-    <div className={styles.adminForm}>
+    <div className={`${styles.adminForm} ${darkMode ? styles.darkMode : ''}`}> 
       <h2 className={styles.title}>Create New Recall Item</h2>
       {loading && <Spinner animation="border" className={styles.spinner} />}
       {uploading && <Spinner animation="border" className={styles.spinner} />}
@@ -246,18 +246,7 @@ const AdminForm = ({ handleOpenVerificationModal }) => {
 />
         </Form.Group>
 
-        <Form.Group controlId="formSelectedAuthor">
-          <Form.Label className={styles.label}>Selected Author</Form.Label>
-          <div className={styles.selectedAuthor}>
-            {selectedAuthorIndex !== null ? (
-              <div>
-                {authors[selectedAuthorIndex]?.name || 'No author selected'}
-              </div>
-            ) : (
-              <div>No author selected</div>
-            )}
-          </div>
-        </Form.Group>
+
 
         <Row>
           <Col md={3}>
@@ -327,24 +316,24 @@ const AdminForm = ({ handleOpenVerificationModal }) => {
         </Row>
 
         <Form.Group controlId="formContentFile">
-          <Form.Label className={styles.label}>Upload Content</Form.Label>
-          <Form.Control
-            type="file"
-            multiple
-            onChange={handleFileChange}
-            className={styles.fileInput}
-          />
-          {uploadedFileNames.length > 0 && (
-            <ul className={styles.fileList}>
-              {uploadedFileNames.map((fileName, index) => (
-                <li key={index} className={styles.fileItem}>{fileName}</li>
-              ))}
-            </ul>
-          )}
-        </Form.Group>
+  <Form.Label className={styles.label}>Upload Content</Form.Label>
+  <Form.Control
+    type="file"
+    multiple
+    onChange={handleFileChange}
+    className={styles.fileInput}
+  />
+  {uploadedFileNames.length > 0 && (
+    <ul className={`${styles.fileList} ${darkMode ? styles.darkMode : ''}`}>
+      {uploadedFileNames.map((fileName, index) => (
+        <li key={index} className={styles.fileItem}>{fileName}</li>
+      ))}
+    </ul>
+  )}
+</Form.Group>
 
         <Form.Group controlId="formDescription">
-          <Form.Label className={styles.label}>Description</Form.Label>
+        <Form.Label className={`${styles.label} ${styles.marginAboveDescription}`}>Description</Form.Label>
           <Form.Control
             as="textarea"
             rows={3}

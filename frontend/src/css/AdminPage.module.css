@@ -6,7 +6,7 @@
 
 .adminCard {
   border-radius: 15px; /* Slightly larger rounded corners */
-  border: 2px solid transparent; /* Start with a transparent border */
+  border: 2px solid ; /* Start with a transparent border */
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); /* Softer shadow */
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
@@ -24,11 +24,16 @@
 .adminCard.lightBlueCard {
   border-color: #87CEFA; /* Light blue border */
   color: #87CEFA; /* Light blue text and icon */
+  border-radius: 15px; /* Slightly larger rounded corners */
+  border: 3px solid ; /* Start with a transparent border */
 }
 
 .adminCard.purpleCard {
   border-color: #9370DB; /* Purple border */
   color: #9370DB; /* Purple text and icon */
+  border-radius: 15px; /* Slightly larger rounded corners */
+
+  border: 3px solid ; /* Start with a transparent border */
 }
 
 .adminCard.lightGreyCard {

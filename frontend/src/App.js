@@ -9,13 +9,14 @@ import OverviewPage from './pages/OverviewPage';
 import AdminPage from './pages/adminPages/AdminPage';
 import CreateAuthorPage from './pages/adminPages/CreateAuthorPage';
 import AdminForm from './pages/adminPages/AdminUpload';
-import SettingsPage from './pages/adminPages/SettingsPage';
+import InfoPage from './pages/adminPages/InfoPages';
 import SocialPage from './pages/SocialPage';
 import Overlay from './components/Overlay';
 import StepsShow from './pages/StepsShow';
 import VerificationModal from './components/VerificationModal';
 import './css/index.css';
 import './css/transitions.css';
+import AdminOverlay from './components/AdminOverlay'; 
 
 function App() {
   const location = useLocation();
@@ -34,7 +35,7 @@ function App() {
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => !prevMode);
     document.body.classList.toggle('dark-mode', !darkMode);
-
+    console.log('Dark Mode:', !darkMode);
 
   };
 
@@ -123,10 +124,7 @@ function App() {
                     </PageWrapper>
                   }
                 />
-                <Route
-                  path="/admin/settings"
-                  element={<PageWrapper><SettingsPage darkMode={darkMode} /></PageWrapper>}
-                />
+  <Route path="/admin/info" element={<PageWrapper><InfoPage /></PageWrapper>} />
                 <Route
                   path="/channel/:channelNumber"
                   element={
@@ -174,6 +172,10 @@ function App() {
         onVerify={handleVerify}
         author={pendingAuthor}
       />
+      <AdminOverlay 
+  visible={overlayVisible} 
+  onClose={() => setOverlayVisible(false)} 
+/>
     </div>
   );
 }

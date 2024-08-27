@@ -1,10 +1,11 @@
 .adminForm {
   max-width: 900px; /* Max width of the form */
   margin: auto; /* Center the form horizontally */
-  padding: 20px; /* Add padding inside the form */
+  padding: 40px; /* Increased padding for consistency with dark mode */
   background-color: #f9f9f9; /* Light background color */
-  border-radius: 8px; /* Rounded corners for the form container */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow around the form */
+  border-radius: 30px ; /* Increased border radius for consistency with dark mode */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow around the form */
+  border: solid 2px rgb(151, 151, 222);
 }
 
 .title {
@@ -35,14 +36,11 @@
   margin-bottom: 15px; /* Space below the form controls */
 }
 
-.fileInput {
-  margin-bottom: 15px; /* Space below the file input */
-}
-
 .fileUploadContainer {
   display: flex;
-  align-items: center; /* Vertically align items in the center */
+  align-items: center; /* Vertically align items */
   gap: 10px; /* Space between file input and filenames */
+  margin-top: 15px; /* Space above the container */
 }
 
 .fileInput {
@@ -50,39 +48,83 @@
 }
 
 .fileNames {
-  color: #6c757d; /* Muted text color */
+  color: #6c757d ; /* Muted text color */
   font-size: 0.9em; /* Slightly smaller text size */
-  overflow: hidden; /* Hide overflowing text */
-  white-space: nowrap; /* Prevent text from wrapping to the next line */
-  text-overflow: ellipsis; /* Show ellipsis if text overflows */
+  overflow: hidden; /* Hide overflow text */
+  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis; /* Show ellipsis for overflow text */
+  padding-top: 20px;
+}
+
+.submitButton {
+  padding: 8px 16px; /* Adjust padding for the button */
+  font-size: 0.9em; /* Adjust font size */
+  width: auto; /* Make sure the button width is determined by its content */
+  display: block; /* Ensure block-level behavior */
+  margin-left: auto !important; /* Push the button to the right */
+  margin-top: 20px; /* Add space above the button */
 }
 
 .fileList {
   list-style-type: none; /* Remove bullet points */
   padding: 0; /* Remove padding */
   margin: 10px 0; /* Space above and below the list */
+  display: flex; /* Use flexbox to align items horizontally */
+  flex-wrap: wrap; /* Allow wrapping to the next line if necessary */
+  gap: 10px; /* Space between file items */
 }
 
 .fileItem {
-  margin-bottom: 5px; /* Space below each file item */
+  margin-bottom: 0; /* Remove the bottom margin since items are now in a row */
+  background-color: rgba(255, 255, 255, 0.1); /* Slight background for contrast */
+  padding: 5px 10px; /* Add some padding around each file name */
+  border-radius: 5px; /* Slight rounding of the corners */
+}
+/* Dark Mode Styles */
+.adminForm.darkMode {
+  background-color: #d2d1d149;
+  color: rgb(255, 255, 255);
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Adds a shadow */
+  border: none
 }
 
-.submitButton {
-  margin-top: 20px; /* Space above the submit button */
-  float: right; /* Align the button to the right of the screen */
-  margin-top: 35px; /* Space above the upload button */
+.adminForm.darkMode .control,
+.adminForm.darkMode .fileNames,
+.adminForm.darkMode .fileItem {
+  color: black !important; /* Black text */
+  background-color: white !important; /* White background for form controls */
+  border: 1px solid #555 !important;
 }
 
-/* Admin form stays the same in dark mode */
-body.dark-mode .adminForm {
-  color: black; /* Keep the text color black */
-  background-color: #f9f9f9; /* Keep the background the same */
+.adminForm.darkMode .label {
+  color: rgb(255, 255, 255) !important; /* White text for labels */
 }
 
-/* Ensure form elements and labels also stay the same */
-body.dark-mode .adminForm .label,
-body.dark-mode .adminForm .control,
-body.dark-mode .adminForm .fileNames,
-body.dark-mode .adminForm .fileItem {
-  color: black; /* Keep text color black */
+.adminForm.darkMode .uploadButton {
+  background-color: #555; /* Darker background for the submit button */
+  color: #f9f9f9; /* Light text color */
+}
+
+.marginAboveDescription {
+  margin-top: 20px; /* Add some space above the description label */
+}
+
+/* Style for the file names list in dark mode */
+.darkMode .fileList {
+  background-color: transparent; /* Remove white background */
+  border: none; /* Remove border */
+}
+
+.darkMode .fileItem {
+  color: #f9f9f9; /* Light text color for file names */
+  background-color: transparent; /* Ensure background remains transparent */
+}
+
+/* Dark Mode Styles */
+.adminForm.darkMode .fileList .fileItem {
+  color: #f9f9f9 !important; /* White text color */
+  background-color: transparent !important; /* Transparent background */
+  border: none !important; /* Remove any borders */
 }

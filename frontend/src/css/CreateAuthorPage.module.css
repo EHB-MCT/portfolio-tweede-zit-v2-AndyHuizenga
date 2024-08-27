@@ -2,12 +2,14 @@
   max-width: 900px; /* Maintain the max-width for the page */
   margin: auto;
   padding: 20px; /* Add padding around the page content */
+  position: relative; /* Allow positioning for child elements */
 }
 
 .createAuthorForm {
   display: flex;
   flex-direction: column; /* Stack elements vertically */
   gap: 20px; /* Space between form elements */
+
 }
 
 /* Profile Picture section */
@@ -33,6 +35,7 @@
   overflow: hidden; /* Hide overflow text */
   white-space: nowrap; /* Prevent text wrapping */
   text-overflow: ellipsis; /* Show ellipsis for overflow text */
+  padding-top: 20px;
 }
 
 .uploadButton {
@@ -109,22 +112,75 @@
 
 
 .createAuthorPage.darkMode {
-  background-color: #ffffffc8;
-  color: rgb(0, 0, 0);
+  background-color: #d2d1d149;
+  color: rgb(255, 255, 255);
   padding: 40px;
   border-radius: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Adds a shadow */
+
 }
 
 
-
-.darkMode .formControl {
-  color: white !important;
-
-  border: 1px solid #555 !important;
-}
-
+.darkMode .formControl,
 .darkMode .fileInputControl {
-  color: white !important;
+  color: black !important; /* Black text */
+  background-color: white !important; /* White background for form controls */
+  border: 1px solid #555 !important; /* Maintain border for form controls */
+}
 
+.darkMode .formLabel {
+  color: rgb(255, 255, 255) !important; /* Black text for labels */
+}
+
+.darkMode .descriptionTextarea {
+  background-color: white !important; /* White background for textarea */
+  color: black !important; /* Black text for textarea */
   border: 1px solid #555 !important;
+}
+
+
+
+.darkMode .fileNames {
+  color: black !important; /* Black text for filenames */
+}
+
+/* Profile Stack Title */
+.existingAuthorsTitle {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 15px; /* Space between the title and the first image */
+  text-align: left;
+}
+
+.profileStack {
+  position: absolute;
+  top: 0; /* Align the top of the profile stack with the form */
+  margin-top: 20px;
+  right: -180px; /* Adjust distance from the form */
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Space between profile items */
+  z-index: 1; /* Ensure it floats above the background */
+}
+
+.profileStack .authorItem {
+  display: flex;
+  align-items: center; /* Align image and text horizontally */
+  gap: 10px; /* Space between the image and the name */
+}
+
+.profileStack .authorImage {
+  width: 70px; /* Fixed size for profile pictures */
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Soft shadow */
+}
+
+.profileStack .authorName {
+  font-size: 0.9rem;
+  text-align: left; /* Align text to the left */
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis; /* Add ellipsis for long names */
 }

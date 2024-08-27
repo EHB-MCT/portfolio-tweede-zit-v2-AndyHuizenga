@@ -18,8 +18,8 @@
 }
 
 .authorOption.selected {
-  border-color: #007bff; /* Border color for selected state */
-  background-color: #e7f0ff; /* Background color for selected state */
+  border-color: #fbfbfb; /* Border color for selected state */
+  background-color: #e7f0ff6e; /* Background color for selected state */
 }
 
 .authorImage {

@@ -1,0 +1,23 @@
+.infoPage {
+  padding: 20px;
+  text-align: center;
+}
+
+.userInfo {
+  margin: 20px 0;
+}
+
+.userPicture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 18px;
+  margin: 10px 0;
+}

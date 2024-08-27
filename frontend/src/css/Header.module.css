@@ -5,6 +5,7 @@
   align-items: center;
   padding: 0 100px;
   position: relative;
+  z-index: 1;
 }
 
 .headerRow {
@@ -87,6 +88,7 @@
   background: none;
   padding: 5px;
   font-family: 'Roboto Mono', monospace;
+  z-index: 4;
 }
 
 .time {

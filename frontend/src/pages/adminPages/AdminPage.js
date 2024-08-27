@@ -1,10 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react'; // Import useState here
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { FaUserPlus, FaFileAlt, FaCog } from 'react-icons/fa'; 
-import styles from '../../css/AdminPage.module.css'; 
+import styles from '../../css/AdminPage.module.css';
+import AdminOverlay from '../../components/AdminOverlay'; // Import AdminOverlay
 
-const AdminPage = ({ darkMode }) => { 
+const AdminPage = ({ darkMode }) => {
+  const [isAdminOverlayVisible, setAdminOverlayVisible] = useState(true); // Now useState is defined
+
+  const handleCloseAdminOverlay = () => {
+    setAdminOverlayVisible(false);
+  };
+
+  if (isAdminOverlayVisible) {
+    return (
+      <AdminOverlay
+        visible={isAdminOverlayVisible}
+        onClose={handleCloseAdminOverlay}
+      />
+    );
+  }
+
   return (
     <Container className={`${styles.adminPage} ${darkMode ? styles.darkMode : ''}`}>
       <h1>Admin Dashboard</h1>
@@ -29,16 +45,7 @@ const AdminPage = ({ darkMode }) => {
             </Card>
           </Link>
         </Col>
-        <Col md={4}>
-          <Link to="/admin/settings" className={styles.cardLink}>
-            <Card className={`${styles.adminCard} ${styles.lightGreyCard}`}>
-              <Card.Body className={styles.adminCardBody}>
-                <FaCog className={styles.adminCardIcon} />
-                <Card.Title className={styles.adminCardTitle}>Settings</Card.Title>
-              </Card.Body>
-            </Card>
-          </Link>
-        </Col>
+
       </Row>
     </Container>
   );

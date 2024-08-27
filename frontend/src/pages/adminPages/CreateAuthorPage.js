@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import styles from '../../css/CreateAuthorPage.module.css'; 
 import API_BASE_URL from "../config";
+import DataCacheContext from '../../utils/DataCacheContext';
 
 const CreateAuthorPage = ({ darkMode }) => {
   const [formData, setFormData] = useState({
@@ -20,7 +21,10 @@ const CreateAuthorPage = ({ darkMode }) => {
   const [success, setSuccess] = useState('');
   const [uploadedFileNames, setUploadedFileNames] = useState([]);
   const [thumbnails, setThumbnails] = useState([]);
+  const [authors, setAuthors] = useState([]); 
   const [isUploaded, setIsUploaded] = useState(false);
+  
+  const { getCachedData, setCachedData } = useContext(DataCacheContext);
 
   useEffect(() => {
     const fetchThumbnails = async () => {
@@ -41,6 +45,24 @@ const CreateAuthorPage = ({ darkMode }) => {
       [name]: value
     }));
   };
+  const fetchAuthors = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/authors`);
+      setAuthors(response.data); // Store authors data
+      setCachedData('authors', response.data);
+    } catch (error) {
+      console.error('Error fetching authors:', error);
+    }
+  };
+
+  useEffect(() => {
+    const cachedAuthors = getCachedData('authors');
+    if (cachedAuthors) {
+      setAuthors(cachedAuthors);
+    } else {
+      fetchAuthors();
+    }
+  }, [getCachedData]);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -143,6 +165,7 @@ const CreateAuthorPage = ({ darkMode }) => {
           console.error('Error sending email:', emailError);
           setError('Author created, but failed to send the email.');
         }
+        fetchAuthors();
         setSuccess(`Author created successfully! Code: ${response.data.code}`);
         setFormData({
           name: '',
@@ -156,6 +179,7 @@ const CreateAuthorPage = ({ darkMode }) => {
         setUploadedFileNames([]);
         setIsUploaded(false);
         setError('');
+
       } else {
         setError('Failed to create author.');
       }
@@ -166,7 +190,6 @@ const CreateAuthorPage = ({ darkMode }) => {
       setLoading(false);
     }
   };
-
   return (
     <div className={`${styles.createAuthorPage} ${darkMode ? styles.darkMode : ''}`}>
       <h2 className={styles.title}>Create New Author</h2>
@@ -176,111 +199,129 @@ const CreateAuthorPage = ({ darkMode }) => {
       {success && !uploading && <Alert variant="success" className={styles.alert}>{success}</Alert>}
       {error && <Alert variant="danger" className={styles.alert}>{error}</Alert>}
 
-      <Form className={styles.createAuthorForm}>
-        <div className={styles.fileUploadContainer}>
-          <Form.Group controlId="formContentFile" className={styles.fileInput}>
-            <Form.Label className="sr-only">Upload Content File</Form.Label>
-            <Form.Control
-              type="file"
-              name="content"
-              onChange={handleFileChange}
-              multiple
-              required
-              className={styles.fileInputControl}
+      <div className={styles.formContainer}>
+      {/* Floating author profile pictures */}
+      <div className={styles.profileStack}>
+        <div className={styles.existingAuthorsTitle}>Existing Authors</div>
+        {authors.map((author) => (
+          <div key={author.id} className={styles.authorItem}>
+            <img
+              src={author.profilePictureUrl || '/path/to/default-image.jpg'}
+              alt={author.name}
+              className={styles.authorImage}
             />
-          </Form.Group>
-          <div className={styles.fileNames}>
-            {uploadedFileNames.join(', ')}
+            <div className={styles.authorName}>{author.name}</div>
           </div>
-        </div>
+        ))}
+      </div>
 
-        <div className={styles.formFields}>
-          <Form.Group controlId="formName" className={styles.formGroup}>
-            <Form.Label className={styles.formLabel}>Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              className={styles.formControl}
-            />
-          </Form.Group>
+        {/* Form content */}
+        <Form className={styles.createAuthorForm}>
+          <div className={styles.fileUploadContainer}>
+            <Form.Group controlId="formContentFile" className={styles.fileInput}>
+              <Form.Label className="sr-only">Upload Profile picture</Form.Label>
+              <Form.Control
+                type="file"
+                name="content"
+                onChange={handleFileChange}
+                multiple
+                required
+                className={styles.fileInputControl}
+              />
+            </Form.Group>
+            <div className={styles.fileNames}>
+              {uploadedFileNames.join(', ')}
+            </div>
+          </div>
 
-          <Form.Group controlId="formRelationship" className={styles.formGroup}>
-            <Form.Label className={styles.formLabel}>Relationship</Form.Label>
-            <Form.Control
-              as="select"
-              name="relationship"
-              value={formData.relationship}
-              onChange={handleInputChange}
-              required
-              className={styles.formControl}
-            >
-              <option value="">Select Relationship</option>
-              <option value="Family">Family</option>
-              <option value="Doctor">Doctor</option>
-              <option value="Friends">Friends</option>
-            </Form.Control>
-          </Form.Group>
+          <div className={styles.formFields}>
+            <Form.Group controlId="formName" className={styles.formGroup}>
+              <Form.Label className={styles.formLabel}>Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className={styles.formControl}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="formEmail" className={styles.formGroup}>
-            <Form.Label className={styles.formLabel}>Email</Form.Label>
-            <Form.Control
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-              className={styles.formControl}
-            />
-          </Form.Group>
+            <Form.Group controlId="formRelationship" className={styles.formGroup}>
+              <Form.Label className={styles.formLabel}>Relationship</Form.Label>
+              <Form.Control
+                as="select"
+                name="relationship"
+                value={formData.relationship}
+                onChange={handleInputChange}
+                required
+                className={styles.formControl}
+              >
+                <option value="">Select Relationship</option>
+                <option value="Family">Family</option>
+                <option value="Doctor">Doctor</option>
+                <option value="Friends">Friends</option>
+              </Form.Control>
+            </Form.Group>
 
-          <Form.Group controlId="formContactNumber" className={styles.formGroup}>
-            <Form.Label className={styles.formLabel}>Contact Number</Form.Label>
-            <Form.Control
-              type="text"
-              name="contactnumber"
-              value={formData.contactnumber}
-              onChange={handleInputChange}
-              className={styles.formControl}
-            />
-          </Form.Group>
+            <Form.Group controlId="formEmail" className={styles.formGroup}>
+              <Form.Label className={styles.formLabel}>Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                className={styles.formControl}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="formDescription" className={styles.formGroup}>
-            <Form.Label className={styles.formLabel}>Description</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={5}
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              required
-              className={styles.descriptionTextarea}
-            />
-          </Form.Group>
+            <Form.Group controlId="formContactNumber" className={styles.formGroup}>
+              <Form.Label className={styles.formLabel}>Contact Number</Form.Label>
+              <Form.Control
+                type="text"
+                name="contactnumber"
+                value={formData.contactnumber}
+                onChange={handleInputChange}
+                className={styles.formControl}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="formBday" className={styles.formGroup}>
-            <Form.Label className={styles.formLabel}>Birthday</Form.Label>
-            <Form.Control
-              type="date"
-              name="bday"
-              value={formData.bday}
-              onChange={handleInputChange}
-              className={styles.formControl}
-            />
-          </Form.Group>
-        </div>
+            <Form.Group controlId="formDescription" className={styles.formGroup}>
+              <Form.Label className={styles.formLabel}>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={5}
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                required
+                className={styles.descriptionTextarea}
+              />
+            </Form.Group>
 
-        <Button
-          variant={isUploaded ? 'success' : 'primary'}
-          onClick={isUploaded ? handleSubmit : handleProfilePictureUpload}
-          disabled={loading || uploading || (!isUploaded && !formData.profilePicture.length)}
-          className={styles.uploadButton}
-        >
-          {isUploaded ? 'Confirm' : 'upload info'}
-        </Button>
-      </Form>
+            <Form.Group controlId="formBday" className={styles.formGroup}>
+              <Form.Label className={styles.formLabel}>Birthday</Form.Label>
+              <Form.Control
+                type="date"
+                name="bday"
+                value={formData.bday}
+                onChange={handleInputChange}
+                className={styles.formControl}
+              />
+            </Form.Group>
+          </div>
+
+          <Button
+            variant={isUploaded ? 'success' : 'primary'}
+            onClick={isUploaded ? handleSubmit : handleProfilePictureUpload}
+            disabled={loading || uploading || (!isUploaded && !formData.profilePicture.length)}
+            className={styles.uploadButton}
+          >
+            {isUploaded ? 'Confirm' : 'upload info'}
+          </Button>
+        </Form>
+      </div>
     </div>
   );
 };

@@ -36,7 +36,7 @@ const HomePage = ({ darkMode }) => {
           <Card.Body className={styles.cardBody}>
             <Card.Title className={styles.customCardTitle}>Option 1</Card.Title>
             <Card.Text>
-              Placez vos éléments lié sur le scanner pour accéder à leur contenu.
+              Placez vos éléments lié sur le scanner pour accéder à leur contenu. N'hésitez pas à utiliser le mode emploi.
             </Card.Text>
           </Card.Body>
         </Card>
@@ -45,7 +45,7 @@ const HomePage = ({ darkMode }) => {
           <Card.Body className={styles.cardBody}>
             <Card.Title className={styles.customCardTitle}>Option 2</Card.Title>
             <Card.Text>
-              Utilisez la télécommande pour naviguer à travers les différents chaines.
+              Utilisez la télécommande pour naviguer à travers les différents chaines. N'hésitez pas à utiliser le mode emploi.
             </Card.Text>
           </Card.Body>
         </Card>
