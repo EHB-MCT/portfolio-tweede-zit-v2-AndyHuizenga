@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react'; // Import useState here
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Card } from 'react-bootstrap';
-import { FaUserPlus, FaFileAlt, FaCog } from 'react-icons/fa'; 
+import { FaUserPlus, FaFolderPlus, FaCog } from 'react-icons/fa'; 
 import styles from '../../css/AdminPage.module.css';
 import AdminOverlay from '../../components/AdminOverlay'; // Import AdminOverlay
 
@@ -44,8 +44,8 @@ const AdminPage = ({ darkMode ,  setBackgroundImage}) => {
           <Link to="/admin/create-entry" className={styles.cardLink}>
             <Card className={`${styles.adminCard} ${styles.purpleCard}`}>
               <Card.Body className={styles.adminCardBody}>
-                <FaFileAlt className={styles.adminCardIcon} />
-                <Card.Title className={styles.adminCardTitle}>Create New Entry</Card.Title>
+              <FaFolderPlus className={styles.adminCardIcon} />
+                <Card.Title className={styles.adminCardTitle}>Create channel</Card.Title>
               </Card.Body>
             </Card>
           </Link>

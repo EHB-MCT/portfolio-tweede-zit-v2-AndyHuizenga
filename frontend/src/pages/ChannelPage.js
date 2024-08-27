@@ -170,6 +170,7 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
               className="padded-image"
               controls
               key={videoUrl}
+              autoPlay  
               style={{
                 width: '840px',
                 height: '551px',
