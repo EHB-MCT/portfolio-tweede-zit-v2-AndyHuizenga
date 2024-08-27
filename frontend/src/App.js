@@ -117,7 +117,7 @@ function App() {
             <div className="page-wrapper">
               <Routes location={location}>
                 <Route path="/" element={<PageWrapper><HomePage darkMode={darkMode} /></PageWrapper>} />
-                <Route path="/admin" element={<PageWrapper><AdminPage darkMode={darkMode} /></PageWrapper>} />
+                <Route path="/admin" element={<PageWrapper><AdminPage darkMode={darkMode}    setBackgroundImage={setBackgroundImage} /></PageWrapper>} />
                 <Route path="/admin/create-author" element={<PageWrapper><CreateAuthorPage darkMode={darkMode} setDisableNumberNavigation={setDisableNumberNavigation} /></PageWrapper>} />
                 <Route
                   path="/admin/create-entry"
@@ -126,7 +126,8 @@ function App() {
                       <AdminForm
                         darkMode={darkMode}
                         handleOpenVerificationModal={handleOpenVerificationModal}
-                        setDisableNumberNavigation={setDisableNumberNavigation}
+
+                        setBackgroundImage={setBackgroundImage}
                       />
                     </PageWrapper>
                   }
@@ -143,7 +144,7 @@ function App() {
                     </PageWrapper>
                   }
                 />
-                <Route path="/overview" element={<PageWrapper><OverviewPage darkMode={darkMode} /></PageWrapper>} />
+                <Route path="/overview" element={<PageWrapper><OverviewPage darkMode={darkMode} setBackgroundImage={setBackgroundImage} /></PageWrapper>} />
                 <Route
                   path="/social"
                   element={

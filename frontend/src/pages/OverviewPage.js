@@ -4,12 +4,14 @@ import styles from '../css/OverviewPage.module.css';
 import { Spinner } from 'react-bootstrap';
 import API_BASE_URL from './config';
 
-const OverviewPage = ({ darkMode }) => {
+const OverviewPage = ({  }) => {
   const [recalls, setRecalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null);
   const scrollbarRef = useRef(null);
 
+
+  
   useEffect(() => {
     const fetchRecalls = async () => {
       try {
@@ -80,7 +82,7 @@ const OverviewPage = ({ darkMode }) => {
   }
 
   return (
-    <div className={`${styles.overviewPage} ${darkMode ? styles.dark : ''}`}>
+    <div className={`${styles.overviewPage} `}>
       <div className={styles.topSection}>
         <div className={styles.topLeft}>
           <h1 className={styles.overviewTitle}>Liste de chaines</h1>
@@ -112,7 +114,7 @@ const OverviewPage = ({ darkMode }) => {
         </div>
       </div>
       <div className={styles.scrollbarContainer}>
-        <div className={`${styles.scrollbarThumb} ${darkMode ? styles.dark : ''}`} ref={scrollbarRef}></div>
+        <div className={`${styles.scrollbarThumb} `} ref={scrollbarRef}></div>
       </div>
     </div>
   );

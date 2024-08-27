@@ -16,6 +16,10 @@ const StepsShow = ({ darkMode, setBackgroundImage }) => {
   const scrollbarRef = useRef(null);
 
   const { getCachedData, setCachedData } = useContext(DataCacheContext);
+  useEffect(() => {
+    // Set the background image to the specified URL
+    setBackgroundImage('https://images.ctfassets.net/2x4vothfh006/7DOrlhULVWUmNbcPf4JXt8/0f6437c37b4b3e97d2716295697c377e/11_MonPetitDej_05.jpg');
+  }, [setBackgroundImage]);
 
   useEffect(() => {
     const cachedSteps = getCachedData('stepsData');
@@ -24,9 +28,7 @@ const StepsShow = ({ darkMode, setBackgroundImage }) => {
       setStepsData(cachedSteps);
       if (cachedSteps.steps.length > 0) {
         const firstStepImage = cachedSteps.steps[0]?.url;
-        if (firstStepImage) {
-          setBackgroundImage(firstStepImage);
-        }
+      
       }
       setLoading(false);  
     } else {

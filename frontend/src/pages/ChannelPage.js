@@ -6,6 +6,7 @@ import ImageGallery from 'react-image-gallery';
 import '../css/ChannelPage.css';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import API_BASE_URL from './config';
+import { FaInfoCircle } from 'react-icons/fa';  // Import the info icon
 import DataCacheContext from '../utils/DataCacheContext'; //
 
 const ChannelPage = ({ darkMode, setBackgroundImage }) => {
@@ -202,8 +203,8 @@ const ChannelPage = ({ darkMode, setBackgroundImage }) => {
           {renderContent()}
         </div>
       </div>
-      <span className="help-text-span">
-        <p>{channelContent?.contentType === 'video' ? 'Utilisez la molette pour passer à la video suivante' : 'Utilisez la molette pour passer à la photo suivante'}.</p>
+      <span className={`help-text-span ${darkMode ? 'dark-mode' : ''}`}>
+        <p> {channelContent?.contentType === 'video' ? 'Utilisez la molette pour passer à la video suivante' : 'Utilisez la molette pour passer à la photo suivante'}.</p>
       </span>
 
       <Modal

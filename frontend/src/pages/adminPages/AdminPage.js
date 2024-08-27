@@ -1,13 +1,16 @@
-import React, { useState } from 'react'; // Import useState here
+import React, { useState, useEffect} from 'react'; // Import useState here
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { FaUserPlus, FaFileAlt, FaCog } from 'react-icons/fa'; 
 import styles from '../../css/AdminPage.module.css';
 import AdminOverlay from '../../components/AdminOverlay'; // Import AdminOverlay
 
-const AdminPage = ({ darkMode }) => {
+const AdminPage = ({ darkMode ,  setBackgroundImage}) => {
   const [isAdminOverlayVisible, setAdminOverlayVisible] = useState(true); // Now useState is defined
-
+  useEffect(() => {
+    // Set the background image when the component mounts
+    setBackgroundImage('https://images.ctfassets.net/2x4vothfh006/2ZxOThsOzOeIUmbNnrfKPX/d019d59170532b9f04b94b6232966eb6/03_Mon_parcour_1.jpg');
+  }, [setBackgroundImage]);
   const handleCloseAdminOverlay = () => {
     setAdminOverlayVisible(false);
   };
@@ -20,6 +23,8 @@ const AdminPage = ({ darkMode }) => {
       />
     );
   }
+
+  
 
   return (
     <Container className={`${styles.adminPage} ${darkMode ? styles.darkMode : ''}`}>

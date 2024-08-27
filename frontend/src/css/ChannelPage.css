@@ -175,17 +175,26 @@
   transform: translateX(-50%); /* Center the text horizontally */
   text-align: center;
   font-family: 'Roboto Mono', monospace;
-  font-size: 12px;
-  color: rgb(255, 255, 255); /* Adjust for dark mode */
+  font-size: 13px !important;
+
   z-index: 3; /* Ensure it appears above other elements */
-  background-color: rgb(138, 165, 132);
+width: 100%;
   padding: 10px;
 border-radius: 10px;
+
+
 }
 
-.help-text-span *{
-margin: 0px;
+.channel-page .help-text-span * {
+  margin: 0px;
+  font-size: 13px !important;
 }
+
+.help-text-span.dark-mode {
+
+color: white;
+}
+
 
 
 
@@ -346,3 +355,9 @@ margin: 0px;
   animation: modalFadeIn 0.5s ease-in-out, modalFadeOut 0.5s ease-in-out 1.5s forwards; /* Add fade-out after 1.5 seconds */
 }
 
+
+.help-text-span .fa-info-circle {
+  font-size: 17px ;
+  color: #fff;
+  vertical-align: middle; /* Align the icon with the text */
+}
