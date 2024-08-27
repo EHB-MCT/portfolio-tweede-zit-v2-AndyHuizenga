@@ -25,6 +25,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [pendingAuthor, setPendingAuthor] = useState(null);
+  const [disableNumberNavigation, setDisableNumberNavigation] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState(
     'https://images.ctfassets.net/2x4vothfh006/6JMV9HK1W3fUrdySCC6AS8/031ddedabd3e7e7b090dc1827a1ec85d/selected_18.jpg'
   );
@@ -38,6 +39,10 @@ function App() {
     console.log('Dark Mode:', !darkMode);
 
   };
+
+  const isAdminPage = location.pathname.startsWith('/admin');
+
+  
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -95,10 +100,11 @@ function App() {
         </>
       )}
 
-      <Header
-        darkMode={darkMode}
-        isVerificationModalOpen={isVerificationModalOpen}
-      />
+<Header
+  darkMode={darkMode}
+  isVerificationModalOpen={isVerificationModalOpen}
+  isAdminPage={isAdminPage} 
+/>
 
       <div className="app-content">
         <TransitionGroup>
@@ -112,7 +118,7 @@ function App() {
               <Routes location={location}>
                 <Route path="/" element={<PageWrapper><HomePage darkMode={darkMode} /></PageWrapper>} />
                 <Route path="/admin" element={<PageWrapper><AdminPage darkMode={darkMode} /></PageWrapper>} />
-                <Route path="/admin/create-author" element={<PageWrapper><CreateAuthorPage darkMode={darkMode} /></PageWrapper>} />
+                <Route path="/admin/create-author" element={<PageWrapper><CreateAuthorPage darkMode={darkMode} setDisableNumberNavigation={setDisableNumberNavigation} /></PageWrapper>} />
                 <Route
                   path="/admin/create-entry"
                   element={
@@ -120,6 +126,7 @@ function App() {
                       <AdminForm
                         darkMode={darkMode}
                         handleOpenVerificationModal={handleOpenVerificationModal}
+                        setDisableNumberNavigation={setDisableNumberNavigation}
                       />
                     </PageWrapper>
                   }

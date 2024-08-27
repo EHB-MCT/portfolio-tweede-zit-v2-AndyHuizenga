@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import Overlay from '../components/Overlay';
 import styles from '../css/Header.module.css';
 
-const Header = ({ darkMode, isVerificationModalOpen }) => {   
+const Header = ({ darkMode, isVerificationModalOpen,isAdminPage  }) => {   
   const [currentTime, setCurrentTime] = useState(new Date());
   const [channelNumber, setChannelNumber] = useState('01');
   const [inputValue, setInputValue] = useState('');
@@ -101,8 +101,12 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (isVerificationModalOpen) {
+      if (isVerificationModalOpen ) {
         return; // Prevent keydown event when modal is open
+      }
+      if (isAdminPage) {
+        // If on an admin page, don't handle the navigation key events in the header
+        return;
       }
 
       const keyMapping = {
@@ -164,7 +168,8 @@ const Header = ({ darkMode, isVerificationModalOpen }) => {
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keydown', handleKeyDown);
+    
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);

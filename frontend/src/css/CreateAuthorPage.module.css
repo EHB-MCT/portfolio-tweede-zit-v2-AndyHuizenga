@@ -141,7 +141,7 @@
 
 
 .darkMode .fileNames {
-  color: black !important; /* Black text for filenames */
+  color: rgb(255, 255, 255) !important; /* Black text for filenames */
 }
 
 /* Profile Stack Title */

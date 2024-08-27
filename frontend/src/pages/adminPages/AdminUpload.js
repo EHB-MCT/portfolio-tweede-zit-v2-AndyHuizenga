@@ -8,8 +8,15 @@ import VerificationModal from '../../components/VerificationModal'; // Import th
 import styles from '../../css/AdminUpload.module.css'; // Importing CSS Module
 import DataCacheContext from '../../utils/DataCacheContext'; // Add this import
 
-const AdminForm = ({ handleOpenVerificationModal, darkMode }) => { 
+const AdminForm = ({ handleOpenVerificationModal, darkMode, setDisableNumberNavigation }) => { 
   const { getCachedData, setCachedData } = useContext(DataCacheContext); // Access cache context
+  useEffect(() => {
+    setDisableNumberNavigation(false); // Disable number navigation on mount
+
+    return () => {
+      setDisableNumberNavigation(false); // Re-enable number navigation on unmount
+    };
+  }, [setDisableNumberNavigation]);
 
   const [channels, setChannels] = useState([]);
   const [authors, setAuthors] = useState([]);
