@@ -231,25 +231,35 @@ const AdminForm = ({ handleOpenVerificationModal, darkMode }) => {
   
 
   return (
-    <div className={`${styles.adminForm} ${darkMode ? styles.darkMode : ''}`}> 
-      <h2 className={styles.title}>Create New Recall Item</h2>
+    <div className={`${styles.adminForm} ${darkMode ? styles.darkMode : ''}`}>
       {loading && <Spinner animation="border" className={styles.spinner} />}
       {uploading && <Spinner animation="border" className={styles.spinner} />}
       {error && <Alert variant="danger" className={styles.alert}>{error}</Alert>}
       {success && <Alert variant="success" className={styles.alert}>{success}</Alert>}
+      
+      <h2 className={styles.title}>Create New Recall Item</h2>
+  
+      {/* Author Selector positioned next to the form */}
+      <div className={styles.profileStack}>
+        <div className={styles.existingAuthorsTitle}>Select Author</div>
+        {authors.map((author, index) => (
+          <div 
+            key={author.id} 
+            className={`${styles.authorItem} ${index === selectedAuthorIndex ? styles.selected : ''}`}
+            onClick={() => handleAuthorSelect(author, index)}
+          >
+            <img
+              src={author.profilePictureUrl || '/path/to/default-image.jpg'}
+              alt={author.name}
+              className={styles.authorImage}
+            />
+            <div className={styles.authorName}>{author.name}</div>
+          </div>
+        ))}
+      </div>
+  
+      {/* Form content */}
       <Form onSubmit={handleSubmit} className={styles.form}>
-        <Form.Group controlId="formAuthor">
-          <Form.Label className={styles.label}>Author</Form.Label>
-          <AuthorSelector
-  authors={authors} // Pass the list of authors
-  onSelectAuthor={handleAuthorSelect} // Handle author selection
-  selectedAuthorIndex={selectedAuthorIndex} // Highlight selected author if applicable
-  className={styles.authorSelector}
-/>
-        </Form.Group>
-
-
-
         <Row>
           <Col md={3}>
             <Form.Group controlId="formChannel">
@@ -316,26 +326,27 @@ const AdminForm = ({ handleOpenVerificationModal, darkMode }) => {
             </Form.Group>
           </Col>
         </Row>
-
+  
+        {/* File Upload Section */}
         <Form.Group controlId="formContentFile">
-  <Form.Label className={styles.label}>Upload Content</Form.Label>
-  <Form.Control
-    type="file"
-    multiple
-    onChange={handleFileChange}
-    className={styles.fileInput}
-  />
-  {uploadedFileNames.length > 0 && (
-    <ul className={`${styles.fileList} ${darkMode ? styles.darkMode : ''}`}>
-      {uploadedFileNames.map((fileName, index) => (
-        <li key={index} className={styles.fileItem}>{fileName}</li>
-      ))}
-    </ul>
-  )}
-</Form.Group>
-
+          <Form.Label className={styles.label}>Upload Content</Form.Label>
+          <Form.Control
+            type="file"
+            multiple
+            onChange={handleFileChange}
+            className={styles.fileInput}
+          />
+          {uploadedFileNames.length > 0 && (
+            <ul className={`${styles.fileList} ${darkMode ? styles.darkMode : ''}`}>
+              {uploadedFileNames.map((fileName, index) => (
+                <li key={index} className={styles.fileItem}>{fileName}</li>
+              ))}
+            </ul>
+          )}
+        </Form.Group>
+  
         <Form.Group controlId="formDescription">
-        <Form.Label className={`${styles.label} ${styles.marginAboveDescription}`}>Description</Form.Label>
+          <Form.Label className={`${styles.label} ${styles.marginAboveDescription}`}>Description</Form.Label>
           <Form.Control
             as="textarea"
             rows={3}
@@ -345,7 +356,7 @@ const AdminForm = ({ handleOpenVerificationModal, darkMode }) => {
             className={styles.control}
           />
         </Form.Group>
-
+  
         {isUploaded && (
           <Form.Group controlId="formThumbnail">
             <Form.Label className={styles.label}>Thumbnail</Form.Label>
@@ -364,7 +375,7 @@ const AdminForm = ({ handleOpenVerificationModal, darkMode }) => {
             </Form.Control>
           </Form.Group>
         )}
-
+  
         <Button
           variant={isUploaded ? 'success' : 'primary'}
           onClick={isUploaded ? handleSubmit : uploadContent}
@@ -374,7 +385,6 @@ const AdminForm = ({ handleOpenVerificationModal, darkMode }) => {
           {isUploaded ? 'Submit' : 'Upload Content'}
         </Button>
       </Form>
-     
     </div>
   );
 };

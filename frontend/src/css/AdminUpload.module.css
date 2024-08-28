@@ -6,6 +6,7 @@
   border-radius: 30px ; /* Increased border radius for consistency with dark mode */
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow around the form */
   border: solid 2px rgb(151, 151, 222);
+  position: relative; 
 }
 
 .title {
@@ -20,7 +21,8 @@
 }
 
 .alert {
-  margin-bottom: 20px; /* Space below the alert */
+ 
+ 
 }
 
 .form {
@@ -128,3 +130,50 @@
   background-color: transparent !important; /* Transparent background */
   border: none !important; /* Remove any borders */
 }
+
+.profileStack {
+  position: absolute;
+  top: 0px;
+  right: -200px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1;
+}
+
+.profileStack .authorItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer; /* Make it clear that these are clickable */
+  transition: background-color 0.3s, transform 0.3s;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.profileStack .authorImage {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.profileStack .authorName {
+  font-size: 0.9rem;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profileStack .authorItem.selected {
+  background-color: #e0e0e090; /* Light grey background to show selection */
+  border: solid rgb(255, 255, 255);
+  transform: scale(1.05); /* Slightly enlarge the selected item */
+}
+
+.profileStack .authorItem.selected .authorName {
+  font-weight: bold; /* Bold text for the selected author's name */
+}
+
